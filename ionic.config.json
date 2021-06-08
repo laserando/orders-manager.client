@@ -1,0 +1,7 @@
+{
+  "name": "com.laserando.orders",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
