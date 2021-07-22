@@ -1,0 +1,24 @@
+ion-title {
+  color: blue;
+}
+
+#graphicLink {
+  color: blue;
+}
+
+ion-input,
+ion-textarea {
+  text-align: right;
+}
+
+ion-item {
+  >ion-label {
+    color: blue;
+  }
+}
+
+ion-card {
+  margin-left: 500px;
+  margin-right: 500px;
+
+}

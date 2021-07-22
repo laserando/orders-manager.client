@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      CREA TAG <ion-icon name="bookmark-outline"></ion-icon>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="wrapper">
+    <ion-card>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">#NomeTag</ion-label>
+          <ion-input placeholder="inserisci nome tag" [(ngModel)]="tag.name"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button shape="round" class="float-right" (click)="createTag()">
+      SALVA TAG <ion-icon name="bookmark-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

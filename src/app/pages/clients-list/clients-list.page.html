@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> LISTA CLIENTI <ion-icon name="person-circle-outline"></ion-icon> </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
+
+<div>
+  <ion-select placeholder="cliente" style="border: 1px solid black;" multiple name="" id="" 
+  (ionChange)="onFilterChange($event)">
+    <ion-select-option [value]="'isBusiness'"> VEDI CLIENTI BUSINESS </ion-select-option>
+    <ion-select-option [value]="'notBusiness'"> VEDI CLIENTI PRIVATI </ion-select-option>
+  </ion-select>
+</div>
+
+<div>
+  <ion-button shape="round" size="large" routerLink="/dashboard/add-client">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-button>
+</div>
+
+<ion-content>
+  <ion-card *ngFor="let client of clients" style="float: left;width: 45%; height: 70%;">
+    <ion-card-content>
+      <strong> CLIENTE N° : {{client.id}}
+        <p *ngIf="!client.isBusiness" style="color: sandybrown;">
+          PRIVATO
+          <ion-icon name="home-outline" style="font-size:medium;"></ion-icon>
+        </p>
+        <p *ngIf="client.isBusiness" style="color: royalblue;">
+          BUSINESS
+          <ion-icon name="business-outline" style="font-size: medium;"></ion-icon>
+        </p>
+      </strong> <br>
+      <p> {{client.name}}</p>
+      <p>{{client.surname}}</p>
+      <p>{{client.cf}}</p>
+      <a href="{{client.graphicLink}}">{{client.graphicLink}}</a>
+      <p>{{client.businessName}}</p>
+      <p>{{client.piva}}</p>
+      <p>{{client.billingAddress}}</p>
+      <p>{{client.shippingAddress}}</p>
+      <p> {{client.sdi}}</p>
+      <p> <a href="mailto:{{client.email}}">{{client.email}}</a> </p>
+      <p>{{client.cellphoneNumber}}</p>
+      <ion-button shape="round" size="icon-only" [routerLink]="'/dashboard/add-client/' + client.id">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+      <ion-button color="danger" shape="round" size="icon-only" (click)="deleteCustomer(client.id)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button shape="round" (click)="getNextPage()">
+      Vedi Altri...
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

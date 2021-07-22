@@ -1,0 +1,11 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>calendar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="calendar-wrapper">
+    <full-calendar #calendar [options]="calendarOptions" *ngIf="calendarOptions"></full-calendar>
+  </div>
+</ion-content>

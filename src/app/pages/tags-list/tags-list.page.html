@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>LISTA TAGS <ion-icon name="bookmark-outline"></ion-icon>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
+  <ion-card>
+    <ion-card-content>
+      <ion-button shape="round" size="large" routerLink="/dashboard/tag">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+      <table class="default">
+        <thead>
+          <tr>
+            <th>Numero #TAG</th>
+            <th>Nome #TAG</th>
+            <th>GESTISCI</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!tags.length">
+          <tr style="text-align: center;">
+            <td></td>
+            <td>Nessun Tag</td>
+            <td></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr *ngFor="let tag of tags,let i = index">
+            <td>
+              {{i+1}}
+            </td>
+            <td style="color: dodgerblue;">
+              {{tag.name}}
+            </td>
+            <td>
+              <ion-button shape="round" [routerLink]="'/dashboard/tag/' + tag.id">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="danger" (click)="deleteTag(tag.id)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ion-button shape="round" (click)="getNextPage()">vedi altri...</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

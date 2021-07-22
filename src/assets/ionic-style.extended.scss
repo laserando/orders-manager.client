@@ -1,0 +1,167 @@
+.pointer {
+  cursor: pointer;
+}
+
+.square {
+  width: 100%;
+}
+
+.square:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.modal-transparent {
+  --background: transform;
+}
+
+.modal-backdrop-transparent {
+  ion-backdrop {
+    --backdrop-opacity: 0;
+  }
+}
+
+ion-modal.top-round {
+  .modal-wrapper {
+    border-radius: 1em 1em 0 0;
+  }
+}
+
+ion-modal.flex-end {
+  align-items: flex-end;
+}
+
+ion-modal.auto-height {
+  &.bottom {
+    align-items: flex-end;
+  }
+
+  --height: auto;
+
+  .ion-page {
+    position: relative;
+    display: block;
+    contain: content;
+
+    .inner-content {
+      max-height: 80vh;
+      overflow: auto;
+      padding: 10px;
+    }
+  }
+
+  ion-backdrop {
+    background: black;
+  }
+}
+
+ion-modal.fit-80 {
+  .modal-wrapper {
+    max-height: 80vh;
+    max-width: 80%;
+  }
+}
+
+ion-modal.h100 {
+  .modal-wrapper {
+    height: 100vh;
+  }
+}
+
+ion-modal.w100 {
+  .modal-wrapper {
+    width: 100vh;
+  }
+}
+
+ion-modal.round {
+  .modal-wrapper {
+    border-radius: 1em;
+  }
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+ion-slides.ion-slides-auto-height,
+ion-slides.ion-slides-auto-height ion-slide {
+  height: auto !important;
+}
+
+ion-select-popover {
+  ion-list {
+    margin: 0 !important;
+  }
+}
+
+/* NEUTRAL GRID */
+ion-grid.neutral {
+  margin: 0;
+  padding: 0;
+
+  ion-row,
+  ion-col {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+// ANIMATION
+
+.fadein {
+  animation: fadein_effect 0.3s;
+}
+
+.fadeout {
+  //display: none;
+  opacity: 0;
+  animation: fadeout_effect 0.3s;
+}
+
+@keyframes fadein_effect {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeout_effect {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.rotation {
+  -webkit-animation: refresh_spin 2s linear infinite;
+  -moz-animation: refresh_spin 2s linear infinite;
+  animation: refresh_spin 2s linear infinite;
+}
+
+@-moz-keyframes refresh_spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes refresh_spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes refresh_spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

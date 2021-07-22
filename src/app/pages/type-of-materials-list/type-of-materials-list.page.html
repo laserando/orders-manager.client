@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>LISTA MATERIALI <ion-icon name="cube-outline"></ion-icon>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
+
+  <ion-card>
+    <ion-card-content>
+
+      <ion-button shape="round" size="large" routerLink="/dashboard/material">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+
+      <table class="default">
+        <thead>
+          <tr>
+            <th>Numero MATERIALE</th>
+            <th>Nome MATERIALE</th>
+            <th>GESTISCI</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!materials.length">
+          <tr style="text-align: center;">
+            <td></td>
+            <td>Nessun Materiale</td>
+            <td></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr *ngFor="let material of materials,let i = index">
+            <td>
+              {{i+1}}
+            </td>
+            <td style="color: dodgerblue;">
+              {{material.name}}
+            </td>
+            <td>
+              <ion-button shape="round" [routerLink]="'/dashboard/material/' + material.id">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="danger" (click)="deleteMaterial(material.id)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ion-button shape="round" (click)="getNextPage()">vedi altri...</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

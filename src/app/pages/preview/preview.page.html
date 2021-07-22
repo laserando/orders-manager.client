@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>ANTEPRIMA ORDINE</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card style="margin-left: 10%;margin-right:10%;">
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Nome Cliente</ion-label>
+        <p>{{order?.client.name}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Cognome Cliente</ion-label>
+        <p>{{order?.client.surname}}</p>
+      </ion-item>
+      <ion-item *ngIf="order?.client.graphicLink">
+        <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
+        <p>{{order?.client.graphicLink}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Indirizzo Di Fatturazione Cliente</ion-label>
+        <p>{{order?.client.billingAddress}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Indirizzo Di Spedizione Cliente</ion-label>
+        <p>{{order?.client.shippingAddress}}</p>
+      </ion-item>
+      <ion-item *ngIf="!order?.client.isBusiness">
+        <ion-label>Codice Fiscale: Cliente</ion-label>
+        <p> {{order?.client.cf}} </p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Email Cliente</ion-label>
+        <p>{{order?.client.email}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Numero di Telefono Cliente</ion-label>
+        <p>{{order?.client.cellphoneNumber}}</p>
+      </ion-item>
+      <ion-item *ngIf="order?.client.isBusiness">
+        <ion-label>Ragione Sociale Cliente</ion-label>
+        <p>{{order?.client.businessName}}</p>
+      </ion-item>
+      <ion-item *ngIf="order?.client.isBusiness">
+        <ion-label>pIVA Cliente</ion-label>
+        <p> {{order?.client.piva}} </p>
+      </ion-item>
+      <ion-item *ngIf="order?.client.isBusiness">
+        <ion-label>SDI Cliente</ion-label>
+        <p>{{order?.client.sdi}}</p>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card style="margin-left: 10%;margin-right:10%;">
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Descrizione lavoro </ion-label>
+        <p>{{order?.typeOfWork}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Tipologia di lavorazioneo</ion-label>
+        <p>{{order?.typesOfProcessing.name}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Tipologia materiale</ion-label>
+        <p>{{order?.typesOfMaterial.name}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Dimensioni articolo</ion-label>
+        <p>{{order?.itemSize}}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Indicazioni del cliente</ion-label>
+        <textarea>{{order?.clientIndications}}</textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label>Data di consegna</ion-label>
+        <p>{{order?.deliveryDate}}</p>
+      </ion-item>
+      <ion-item *ngIf="order?.isCompleted">
+        <ion-label>#TAG STATO ORDINE</ion-label>
+        <p *ngFor="let tag of order.tags">
+          {{tag.name}}
+        </p>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>

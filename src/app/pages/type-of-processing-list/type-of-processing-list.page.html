@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      LISTA LAVORAZIONI <ion-icon name="hammer-outline"></ion-icon>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
+
+  <ion-card>
+    <ion-card-content>
+
+      <ion-button shape="round" size="large" routerLink="/dashboard/type-of-processing">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+
+      <table class="default">
+        <thead>
+          <tr>
+            <th>Numero TIPOLOGIA DI LAVORAZIONE</th>
+            <th>Nome TIPOLOGIA DI LAVORAZIONE</th>
+            <th>GESTISCI</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!typesOfProcessing.length">
+          <tr style="text-align: center;">
+            <td></td> 
+            <td>Nessuna Tipologia</td> 
+            <td></td> 
+          </tr>
+        </tbody>
+        <tbody>
+          <tr *ngFor="let typeOfProcessing of typesOfProcessing ,let i = index">
+            <td>
+              {{i+1}}
+            </td>
+            <td style="color: dodgerblue;">
+              {{typeOfProcessing.name}}
+            </td>
+            <td>
+              <ion-button shape="round" [routerLink]="'/dashboard/type-of-processing/' + typeOfProcessing.id ">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="danger" (click)="deleteTypeOfProcessing(typeOfProcessing.id)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ion-button shape="round" (click)="getNextPage()">vedi altri...</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
