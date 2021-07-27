@@ -45,3 +45,11 @@ ion-list {
         }
     }
 }
+
+ion-menu {
+    ion-list {
+        ion-icon {
+            --padding-start: 1em;
+        }
+    }
+}

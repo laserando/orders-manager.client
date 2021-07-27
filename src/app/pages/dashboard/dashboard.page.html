@@ -2,8 +2,8 @@
   <ion-toolbar>
     <ion-title style="color: orangered; font-size: x-large;background-color: aliceblue;">
       LASERANDO MANAGEMENT SYSTEM
-        <img style="width: 40px; border-radius: 20px 20px  20px 20px ;"
-         src="/com.laserando.orders.client/src/app/img/laserando (1).png" alt=""> 
+      <img style="width: 40px; border-radius: 20px 20px  20px 20px ;"
+        src="/com.laserando.orders.client/src/app/img/laserando (1).png" alt="">
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -18,47 +18,39 @@
       <ion-content>
         <ion-list>
           <ion-item [routerLink]="'/dashboard/orders'">
-            <ion-icon name="document-outline"></ion-icon>
+            <ion-icon slot="start" name="document-outline"></ion-icon>
             GESTIONE ORDINI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/users'" *ngIf="role==='amministrazione'">
-            
-            <ion-icon name="person-outline"></ion-icon>
+            <ion-icon slot="start" name="person-outline"></ion-icon>
             GESTIONE UTENTI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/clients-list'" *ngIf="role==='amministrazione'">
-            
-            <ion-icon name="person-circle-outline"  ></ion-icon>
+            <ion-icon slot="start" name="person-circle-outline"></ion-icon>
             GESTIONE CLIENTI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/tags'" *ngIf="role==='amministrazione'">
-            
-            <ion-icon name="bookmark-outline" ></ion-icon>
+            <ion-icon slot="start" name="bookmark-outline"></ion-icon>            
             GESTIONE TAGS
           </ion-item>
           <ion-item [routerLink]="'/dashboard/materials'" *ngIf="role==='amministrazione'">
-            
-            <ion-icon name="cube-outline"></ion-icon>
+            <ion-icon slot="start" name="cube-outline"></ion-icon>
             GESTIONE MATERIALI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/types-of-processing'" *ngIf="role==='amministrazione'">
-            
-            <ion-icon name="hammer-outline" ></ion-icon>
+            <ion-icon slot="start" name="hammer-outline"></ion-icon>
             GESTIONE LAVORAZIONE
           </ion-item>
           <ion-item [routerLink]="'/dashboard/order-timing'" *ngIf="role==='amministrazione'">
-            
-            <ion-icon name="stopwatch-outline" ></ion-icon>
+            <ion-icon slot="start" name="stopwatch-outline"></ion-icon>
             GESTIONE TEMPISTICHE ORDINI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/calendar'">
-            
-            <ion-icon name="calendar-outline" ></ion-icon>
+            <ion-icon slot="start" name="calendar-outline"></ion-icon>
             CALENDARIO
           </ion-item>
           <ion-item [routerLink]="'/'" (click)="logout()">
-           
-            <ion-icon name="log-out-outline" ></ion-icon>
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
             LOGOUT
           </ion-item>
         </ion-list>

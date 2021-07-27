@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -24,32 +24,58 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
- 
+
 table.default {
-    width: calc(100% - 2em);
-    margin: 1em;
-  
-    th,
-    td {
-      text-align: left;
-      padding: 0.5em;
+  width: calc(100% - 2em);
+  margin: 1em;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.5em;
+  }
+
+  thead {
+    border-radius: 1em;
+    overflow: hidden;
+
+    th {
+      background: var(--ion-color-primary);
+      color: var(--ion-color-primary-contrast);
     }
-  
-    thead {
-      border-radius: 1em;
-      overflow: hidden;
-  
-      th {
-        background: var(--ion-color-primary);
-        color: var(--ion-color-primary-contrast);
-      }
-    }
-  
-    tbody {
-      tr:nth-child(odd) {
-        td {
-          background: var(--ion-color-light);
-        }
+  }
+
+  tbody {
+    tr:nth-child(odd) {
+      td {
+        background: var(--ion-color-light);
       }
     }
   }
+}
+
+.section {
+  ion-card-content {
+    ion-button {
+      margin-left: 1.2em;
+      margin-right: 1.2em;
+    }
+  }
+}
+
+.d-flex {
+  display: flex;
+  align-items: center;
+  > * {
+    flex: 1;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  #main {
+    ion-content {
+      --padding-start: 7em !important;
+      --padding-end: 7em !important;
+    }
+  }
+}

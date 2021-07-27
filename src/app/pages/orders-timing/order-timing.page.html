@@ -10,7 +10,7 @@
   <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
   <filter [inTimingPage]="inTimingPage" (filterChange)="onFilterChange($event)"></filter>
 
-  <ion-card>
+  <ion-card class="section">
     <ion-card-content>
       <table class="default">
         <thead>
@@ -53,7 +53,7 @@
               ARCHIVIATO
             </td>
             <td style="text-align: center;">
-              <ion-button shape="round" size="icon-only" (click)="openModal(order)">
+              <ion-button shape="round" size="small" size="icon-only" (click)="openModal(order)">
                 <ion-icon name="stopwatch-outline"></ion-icon>
               </ion-button>
             </td>
@@ -61,7 +61,7 @@
         </tbody>
       </table>
 
-      <ion-button shape="round" (click)="getNextPage()">vedi altri...</ion-button>
+      <ion-button shape="round" size="small" (click)="getNextPage()">vedi altri...</ion-button>
     </ion-card-content>
   </ion-card>
 

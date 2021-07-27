@@ -10,10 +10,10 @@
 
   <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
 
-  <ion-card>
+  <ion-card class="section">
     <ion-card-content>
 
-      <ion-button shape="round" size="large" routerLink="/dashboard/type-of-processing">
+      <ion-button shape="round" size="small" size="small" routerLink="/dashboard/type-of-processing">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>
 
@@ -41,17 +41,17 @@
               {{typeOfProcessing.name}}
             </td>
             <td>
-              <ion-button shape="round" [routerLink]="'/dashboard/type-of-processing/' + typeOfProcessing.id ">
+              <ion-button shape="round" size="small" [routerLink]="'/dashboard/type-of-processing/' + typeOfProcessing.id ">
                 <ion-icon name="pencil-outline"></ion-icon>
               </ion-button>
-              <ion-button color="danger" (click)="deleteTypeOfProcessing(typeOfProcessing.id)">
+              <ion-button color="danger" size="small" shape="round" (click)="deleteTypeOfProcessing(typeOfProcessing.id)">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
             </td>
           </tr>
         </tbody>
       </table>
-      <ion-button shape="round" (click)="getNextPage()">vedi altri...</ion-button>
+      <ion-button shape="round" size="small" (click)="getNextPage()">vedi altri...</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>
