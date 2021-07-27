@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Global } from "./global";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  public URL: string = "http://localhost:1337/auth/local";
+  public URL: string = `${Global.ENDPOINT.BASE}/auth/local`;
   private token: string;
   private user: string;
   private authenticate: boolean = false;

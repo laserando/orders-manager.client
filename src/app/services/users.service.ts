@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import qs from 'qs';
+import { Global } from './global';
 
 
 @Injectable({
@@ -9,7 +10,7 @@ import qs from 'qs';
 })
 export class UsersService {
 
-  public URL: string = "http://localhost:1337/users"
+  public URL: string = `${Global.ENDPOINT.BASE}/users`
 
   constructor(private http: HttpClient) { }
 

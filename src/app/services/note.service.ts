@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NoteModel } from '../models/note.model';
+import { Global } from './global';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NoteService {
 
-  public URL: string = "http://localhost:1337/notes"
+  public URL: string = `${Global.ENDPOINT.BASE}/notes`
 
   constructor(private http: HttpClient) { }
 

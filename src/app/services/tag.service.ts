@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TagModel } from '../models/tag.model';
 import qs from 'qs';
+import { Global } from './global';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TagService {
 
-  public URL: string = "http://localhost:1337/tags"
+  public URL: string = `${Global.ENDPOINT.BASE}/tags`
 
   constructor(private http: HttpClient) { }
 

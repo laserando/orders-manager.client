@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Role } from '../models/role.model';;
+import { Role } from '../models/role.model';import { Global } from './global';
+;
 
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService {
 
-  public URL: string = "http://localhost:1337/users-permissions/roles"
+  public URL: string = `${Global.ENDPOINT.BASE}/users-permissions/roles`
 
   constructor(private http: HttpClient) { }
 

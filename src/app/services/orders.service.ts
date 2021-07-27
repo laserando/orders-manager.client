@@ -6,13 +6,14 @@ import { LogService } from './log.service';
 import { NoteService } from './note.service';
 import { ClientService } from './client.service';
 import { ClientModel } from '../models/client.model';
+import { Global } from './global';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrdersService {
 
-  public URL: string = "http://localhost:1337/orders";
+  public URL: string = `${Global.ENDPOINT.BASE}/orders`;
 
   constructor(private http: HttpClient,
     private logService: LogService,

@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import qs from 'qs'
 import { ClientModel } from '../models/client.model';
+import { Global } from './global';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientService {
 
-  URL: string = "http://localhost:1337/clients"
+  URL: string = `${Global.ENDPOINT.BASE}/clients`
 
   constructor(private http: HttpClient) { }
 

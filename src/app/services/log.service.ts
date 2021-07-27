@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LogModel } from '../models/log.model';
 import qs from 'qs';
+import { Global } from './global';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogService {
 
-  public URL: string = "http://localhost:1337/logs";
+  public URL: string = `${Global.ENDPOINT.BASE}/logs`;
 
   constructor(private http: HttpClient) { }
 

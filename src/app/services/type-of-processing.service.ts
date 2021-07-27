@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TypeOfProcessingModel } from '../models/type-of-processing.model';
 import qs from 'qs';
+import { Global } from './global';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TypeOfProcessingService {
 
-  public URL: string = "http://localhost:1337/type-of-processings"
+  public URL: string = `${Global.ENDPOINT.BASE}/type-of-processings`
 
   constructor(private http: HttpClient) { }
 

@@ -2,13 +2,14 @@ import qs from 'qs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TypeOfMaterialModel } from '../models/type-of-material.model';
+import { Global } from './global';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TypeOfMaterialService {
 
-  public URL: string = "http://localhost:1337/materials"
+  public URL: string = `${Global.ENDPOINT.BASE}/materials`
 
   constructor(private http: HttpClient) { }
 
