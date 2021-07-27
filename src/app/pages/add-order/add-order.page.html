@@ -28,8 +28,8 @@
         <ion-label>
           <p><strong> CLIENTI BUSINESS ESISTENTI :</strong></p>
         </ion-label>
-        <ionic-selectable [(ngModel)]="client" [items]="businessClients" itemValueField="id" itemTextField="email"
-          [canSearch]="true">
+        <ionic-selectable [(ngModel)]="client" [items]="businessClients" itemValueField="id" itemTextField="fullname"
+          [canSearch]="true" (onChange)="cleanClient($event)">
         </ionic-selectable>
       </ion-item>
     </ion-card-content>
@@ -76,13 +76,13 @@
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
-          <ion-label>stesso indirizzo</ion-label>
-          <ion-toggle name="sameAddressChoose" [(ngModel)]="sameAddressChoose" (ionChange)="sameAddress()"></ion-toggle>
-        </ion-item>
-        <ion-item *ngIf="!routeToTags">
+          <ion-button size="small" name="sameAddressChoose" slot="start"
+            (click)="sameAddress()" >
+            Copia da "indirizzo di Fatturazione"
+          </ion-button>
           <ion-label>Indirizzo Di Spedizione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
-            [(ngModel)]="client.shippingAddress" required>
+            [(ngModel)]="client.shippingAddress" required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
@@ -146,7 +146,7 @@
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
-          <ion-label>stesso indirizzo</ion-label>
+          <ion-label> *stesso indirizzo* </ion-label>
           <ion-toggle name="sameAddressChoose" [(ngModel)]="sameAddressChoose" (ionChange)="sameAddress()"></ion-toggle>
         </ion-item>
         <ion-item *ngIf="!routeToTags">

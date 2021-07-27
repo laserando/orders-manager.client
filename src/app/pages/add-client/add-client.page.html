@@ -51,10 +51,9 @@
           </ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>stesso indirizzo</ion-label>
-          <ion-toggle name="sameAddressChoose" [(ngModel)]="sameAddressChoose" (ionChange)="sameAddress()"></ion-toggle>
-        </ion-item>
-        <ion-item>
+          <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
+            Copia da "indirizzo di Fatturazione"
+          </ion-button>
           <ion-label>Indirizzo Di Spedizione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
             [(ngModel)]="client.shippingAddress" required>
@@ -122,10 +121,9 @@
           </ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>stesso indirizzo:</ion-label>
-          <ion-toggle name="sameAddressChoose" [(ngModel)]="sameAddressChoose" (ionChange)="sameAddress()"></ion-toggle>
-        </ion-item>
-        <ion-item>
+          <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
+            Copia da "indirizzo di Fatturazione"
+          </ion-button>
           <ion-label>Indirizzo di Spedizione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di spedizione*" name="shippingAddress"
             [(ngModel)]="client.shippingAddress" required>

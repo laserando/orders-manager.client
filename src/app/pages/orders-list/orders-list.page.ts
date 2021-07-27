@@ -129,7 +129,6 @@ export class OrdersListPage implements OnInit {
 
   async onFilterChange(filter) {
     if (filter.tags && filter.tags.length) {
-      console.log(filter)
       this.filter.tags_contains = filter.tags;
     } else {
       delete this.filter.tags_contains;

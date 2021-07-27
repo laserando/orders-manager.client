@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrdersService } from 'src/app/services/orders.service';
-import { Order } from "src/app/models/order.model"
+import { Order } from "src/app/models/order.model";
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { TagModel } from 'src/app/models/tag.model';
@@ -63,6 +63,7 @@ export class AddOrderPage implements OnInit {
       return c;
     })
     this.privateClients = [{ id: 'new', fullname: 'Nuovo cliente' }, ...privateClients];
+
     const businessClients = (await this.clientService.find({ isBusiness: true })).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
@@ -134,12 +135,20 @@ export class AddOrderPage implements OnInit {
   }
 
   cleanClient(event) {
+    if(this.client.graphicLink){
+      this.graphicPresentChoose = true;
+    }
+    if(this.client.billingAddress == this.client.shippingAddress){
+      this.sameAddressChoose = true;
+    }
+
     if (event.value.id == "new") {
       this.client = new ClientModel()
     }
   }
 
   sameAddress() {
+    this.sameAddressChoose = !this.sameAddressChoose;
     if (this.sameAddressChoose) {
       this.client.shippingAddress = this.client.billingAddress
     } else {

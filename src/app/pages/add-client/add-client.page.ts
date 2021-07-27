@@ -30,7 +30,7 @@ export class AddClientPage implements OnInit {
       if (this.client.graphicLink) {
         this.graphicPresentChoose = true;
       }
-      if(this.client.shippingAddress == this.client.billingAddress){
+      if (this.client.shippingAddress == this.client.billingAddress) {
         this.sameAddressChoose = true;
       }
     }
@@ -61,9 +61,10 @@ export class AddClientPage implements OnInit {
   }
 
   sameAddress() {
+    this.sameAddressChoose = !this.sameAddressChoose;
     if (this.sameAddressChoose) {
-      this.client.shippingAddress = this.client.billingAddress
-    }else{
+      this.client.shippingAddress = this.client.billingAddress;
+    } else {
       this.client.shippingAddress = "";
     }
   }

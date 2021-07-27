@@ -32,10 +32,10 @@
       <div>
         <ion-select *ngIf="!inTimingPage" style="width: 50%;" placeholder="tags" style="border: 1px solid black;"
           multiple name="" id="" [(ngModel)]="filter.tags" (ngModelChange)="onFilterChange()">
-          <ion-select-option [value]="23">
+          <ion-select-option [value]="'#LAVOROinCORSO'">
             #LAVOROinCORSO
           </ion-select-option>
-          <ion-select-option [value]="tag.id" *ngFor="let tag of tags">
+          <ion-select-option [value]="tag.name" *ngFor="let tag of tags">
             {{tag.name}}
           </ion-select-option>
         </ion-select>

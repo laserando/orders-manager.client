@@ -20,8 +20,12 @@
           <ion-icon name="eye" (click)="type = !type" size="small" slot="end"></ion-icon>
         </ion-item>
         <ion-button expand="block" (click)="sendData()">ACCEDI</ion-button>
+        <p class="wrong-pass" *ngIf="wrong"> Password errata :( ... </p>
       </ion-card-content>
     </ion-card>
+    
   </div>
+
+  
 
 </ion-content>

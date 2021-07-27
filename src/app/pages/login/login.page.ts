@@ -12,6 +12,7 @@ export class LoginPage implements OnInit {
   public errore = false;
   public type = true;
   public login: { identifier?: string, password?: string } = {};
+  public wrong:boolean = false;
 
   constructor(private authService: AuthService,
     private router: Router) {
@@ -27,10 +28,14 @@ export class LoginPage implements OnInit {
   }
   
   async sendData() {
+    try {
     await this.authService.login(this.login.identifier, this.login.password)
     if (this.authService.authenticateForLogin) {
       this.router.navigate(['/dashboard/orders']);
     }
+  }catch(error){
+    this.wrong = true;
+  }
   }
 
 }
