@@ -93,6 +93,7 @@ export class AddOrderPage implements OnInit {
   }
 
   async addOrder() {
+    try{
     if (this.graphicPresentChoose == false) {
       this.client.graphicLink = "";
     }
@@ -124,6 +125,9 @@ export class AddOrderPage implements OnInit {
       this.client = new ClientModel();
       this.router.navigate(["/dashboard/orders"]);
     }
+  }catch(error){
+    alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
+  }
   }
 
   compareWith(currentValue: any, compareValue: any) {
@@ -143,7 +147,10 @@ export class AddOrderPage implements OnInit {
     }
 
     if (event.value.id == "new") {
+      console.log("in new")
       this.client = new ClientModel()
+      this.sameAddressChoose = false;
+      this.graphicPresentChoose = false;
     }
   }
 
