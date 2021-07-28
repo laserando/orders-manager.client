@@ -63,9 +63,8 @@
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Grafica presente</ion-label>
-          <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"
-           [disabled]="!!client.id">
-          </ion-toggle>          
+          <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose" [disabled]="!!client.id">
+          </ion-toggle>
         </ion-item>
         <ion-item *ngIf="graphicPresentChoose && !routeToTags">
           <ion-label style="color: dodgerblue;">Link file grafica</ion-label>

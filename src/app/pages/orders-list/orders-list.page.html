@@ -12,7 +12,8 @@
   <hr>
   <ion-card class="section">
     <ion-card-content>
-      <ion-button shape="round" size="small" size="small" *ngIf="role== 'amministrazione'" routerLink="/dashboard/order">
+      <ion-button shape="round" size="small" size="small" *ngIf="role== 'amministrazione'"
+        routerLink="/dashboard/order">
         <ion-icon name="add-outline"></ion-icon> Nuovo ordine
       </ion-button>
       <ion-button shape="round" size="small" size="small" style="float: right;" (click)="updateList()">
@@ -108,13 +109,15 @@
             <td>
               <ion-select (ionChange)="select($event,order)">
                 <ion-select-option *ngIf="role == 'amministrazione' && order.isCompleted" value="seeTags">
-                  <ion-button shape="round" size="small" size="icon-only" [routerLink]="'/dashboard/orders_/' + order.id">
+                  <ion-button shape="round" size="small" size="icon-only"
+                    [routerLink]="'/dashboard/orders_/' + order.id">
                     <ion-icon name="pricetags-outline"></ion-icon>
                     Tags
                   </ion-button>
                 </ion-select-option>
                 <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived " value="goToChangeOrder">
-                  <ion-button shape="round" size="small" size="icon-only" [routerLink]="'/dashboard/orders/' + order.id">
+                  <ion-button shape="round" size="small" size="icon-only"
+                    [routerLink]="'/dashboard/orders/' + order.id">
                     <ion-icon name="pencil-outline"></ion-icon>
                     Modifica
                   </ion-button>
@@ -126,7 +129,8 @@
                   </ion-button>
                 </ion-select-option>
                 <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
-                  <ion-button color="danger" size="small" shape="round" shape="round" size="icon-only" (click)="deleteOrder(order.id)">
+                  <ion-button color="danger" size="small" shape="round" shape="round" size="icon-only"
+                    (click)="deleteOrder(order.id)">
                     Elimina
                     <ion-icon name="trash-outline"></ion-icon>
                   </ion-button>

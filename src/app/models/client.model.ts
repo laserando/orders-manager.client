@@ -5,9 +5,9 @@ export class ClientModel {
     public surname: string;
     public businessName: string;
     public piva: string;
-    public cf:string;
+    public cf: string;
     public billingAddress: string;
-    public shippingAddress:string;
+    public shippingAddress: string;
     public sdi: string;
     public email: string;
     public cellphoneNumber: number;
@@ -15,7 +15,7 @@ export class ClientModel {
     public graphicLink: string;
 
     constructor(id?: number, name?: string, surname?: string, businessName?: string, piva?: string, billingAddress?: string,
-        sdi?: string, email?: string, cellphoneNumber?: number, graphicLink?:string) {
+        sdi?: string, email?: string, cellphoneNumber?: number, graphicLink?: string) {
         this.id = id;
         this.name = name;
         this.surname = surname;

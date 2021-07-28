@@ -93,41 +93,41 @@ export class AddOrderPage implements OnInit {
   }
 
   async addOrder() {
-    try{
-    if (this.graphicPresentChoose == false) {
-      this.client.graphicLink = "";
-    }
-    if (this.route.snapshot.params.id) {
-      if (confirm("sei sicuro di voler aggiornare l'ordine?")) {
+    try {
+      if (this.graphicPresentChoose == false) {
+        this.client.graphicLink = "";
+      }
+      if (this.route.snapshot.params.id) {
+        if (confirm("sei sicuro di voler aggiornare l'ordine?")) {
+          if (this.isBusinessClient) {
+            this.client.isBusiness = true;
+          } else {
+            this.client.isBusiness = false;
+          }
+          await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id);
+          this.ionToastService.alertMessage("update");
+          this.router.navigate(["/dashboard/orders"]);
+        }
+      } else {
+        if (this.graphicPresentChoose == false) {
+          this.client.graphicLink = "";
+        }
+        this.order.role = { name: "amministratore", id: 1 };
         if (this.isBusinessClient) {
           this.client.isBusiness = true;
         } else {
           this.client.isBusiness = false;
         }
-        await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id);
-        this.ionToastService.alertMessage("update");
+        this.order.tags.push({ name: "#LAVOROinCORSO", id: 1 })
+        await this.ordersService.addOrder(this.order, this.client);
+        this.ionToastService.alertMessage("add");
+        this.order = new Order();
+        this.client = new ClientModel();
         this.router.navigate(["/dashboard/orders"]);
       }
-    } else {
-      if (this.graphicPresentChoose == false) {
-        this.client.graphicLink = "";
-      }
-      this.order.role = { name: "amministratore", id: 1 };
-      if (this.isBusinessClient) {
-        this.client.isBusiness = true;
-      } else {
-        this.client.isBusiness = false;
-      }
-      this.order.tags.push({ name: "#LAVOROinCORSO", id: 1 })
-      await this.ordersService.addOrder(this.order, this.client);
-      this.ionToastService.alertMessage("add");
-      this.order = new Order();
-      this.client = new ClientModel();
-      this.router.navigate(["/dashboard/orders"]);
+    } catch (error) {
+      alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
     }
-  }catch(error){
-    alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
-  }
   }
 
   compareWith(currentValue: any, compareValue: any) {
@@ -139,10 +139,10 @@ export class AddOrderPage implements OnInit {
   }
 
   cleanClient(event) {
-    if(this.client.graphicLink){
+    if (this.client.graphicLink) {
       this.graphicPresentChoose = true;
     }
-    if(this.client.billingAddress == this.client.shippingAddress){
+    if (this.client.billingAddress == this.client.shippingAddress) {
       this.sameAddressChoose = true;
     }
 
