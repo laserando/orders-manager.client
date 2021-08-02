@@ -20,7 +20,7 @@
       </ion-item>
       <ion-item *ngIf="order?.client.graphicLink">
         <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
-        <p>{{order?.client.graphicLink}}</p>
+        <p> <a href="{{order?.client.graphicLink}}">{{order?.client.graphicLink}} </a></p>
       </ion-item>
       <ion-item>
         <ion-label>Indirizzo Di Fatturazione Cliente</ion-label>
@@ -61,7 +61,7 @@
     <ion-card-content>
       <ion-item>
         <ion-label>Descrizione lavoro </ion-label>
-        <p>{{order?.typeOfWork}}</p>
+        <textarea readonly>{{order?.typeOfWork}}</textarea>
       </ion-item>
       <ion-item>
         <ion-label>Tipologia di lavorazioneo</ion-label>
@@ -77,7 +77,7 @@
       </ion-item>
       <ion-item>
         <ion-label>Indicazioni del cliente</ion-label>
-        <textarea>{{order?.clientIndications}}</textarea>
+        <textarea readonly>{{order?.clientIndications}}</textarea>
       </ion-item>
       <ion-item>
         <ion-label>Data di consegna</ion-label>
