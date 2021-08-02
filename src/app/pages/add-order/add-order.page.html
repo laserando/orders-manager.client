@@ -75,11 +75,12 @@
             [(ngModel)]="client.billingAddress" required>
           </ion-input>
         </ion-item>
-        <ion-item *ngIf="!routeToTags">
-          <ion-button size="small" name="sameAddressChoose" slot="start"
-            (click)="sameAddress()" >
+        <ion-item lines="none">
+          <ion-button size="small" shape="round" name="sameAddressChoose" slot="start" (click)="sameAddress()">
             Copia da "indirizzo di Fatturazione"
           </ion-button>
+        </ion-item>        
+        <ion-item *ngIf="!routeToTags">
           <ion-label>Indirizzo Di Spedizione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
             [(ngModel)]="client.shippingAddress" required [readonly]="client.id">
