@@ -178,7 +178,6 @@ export class OrdersListPage implements OnInit {
   }
 
   select(event, order) {
-    console.log(event)
     switch (event.detail.value) {
       case "seeTags":
         this.router.navigate([`/dashboard/orders_/${order.id}`]);
@@ -190,7 +189,7 @@ export class OrdersListPage implements OnInit {
         this.openModal(order);
         break;
       case "deleteOrder":
-        this.deleteOrder(order);
+        this.deleteOrder(order.id);
         break;
       case "completeOrder":
         this.completeOrder(order);
