@@ -28,7 +28,7 @@ export class AddUserPage implements OnInit {
   async ionViewWillEnter() {
 
     this.roles = await this.rolesService.find()
-
+    
     if (this.route.snapshot.params.id) {
       this.user = await this.userService.findById(this.route.snapshot.params.id)
     }

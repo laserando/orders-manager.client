@@ -51,28 +51,31 @@
         <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE PRIVATO: </strong></p>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Nome</ion-label>
-          <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
+          <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required
+            [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Cognome</ion-label>
-          <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
+          <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required
+            [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Grafica presente</ion-label>
-          <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
+          <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose" [disabled]="!!client.id">
+          </ion-toggle>
         </ion-item>
         <ion-item *ngIf="graphicPresentChoose && !routeToTags">
           <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
           <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
-            name="graphicLink" required>
+            name="graphicLink" required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Indirizzo di Fatturazione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di fatturazione" name="billingAddress"
-            [(ngModel)]="client.billingAddress" required>
+            [(ngModel)]="client.billingAddress" required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item lines="none">
@@ -88,18 +91,19 @@
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Codice Fiscale:</ion-label>
-          <ion-input placeholder="*inserisci CF*" name="cf" [(ngModel)]="client.cf " required>
+          <ion-input placeholder="*inserisci CF*" name="cf" [(ngModel)]="client.cf " required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Email</ion-label>
-          <ion-input placeholder="*inserisci email*" type="email" name="email" [(ngModel)]="client.email" required>
+          <ion-input type="email" placeholder="*inserisci email*" type="email" name="email" [(ngModel)]="client.email"
+            required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Numero di Telefono</ion-label>
-          <ion-input placeholder="*inserisci numero di telefono*" type="number" name="cellphoneNumber"
-            [(ngModel)]="client.cellphoneNumber" required>
+          <ion-input type="number" placeholder="*inserisci numero di telefono*" type="number" name="cellphoneNumber"
+            [(ngModel)]="client.cellphoneNumber" required [readonly]="client.id">
           </ion-input>
         </ion-item>
       </ion-card-content>
@@ -111,65 +115,69 @@
         <p class="ion-text-center"><strong>ANAGRAFICA CLIENTE BUSINESS: </strong></p>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Nome</ion-label>
-          <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
+          <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required
+            [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Cognome</ion-label>
-          <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
+          <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required
+            [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Grafica presente</ion-label>
-          <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
+          <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose" [disabled]="!!client.id">
+          </ion-toggle>
         </ion-item>
         <ion-item *ngIf="graphicPresentChoose && !routeToTags">
           <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
           <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
-            name="graphicLink" required>
+            name="graphicLink" required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Ragione Sociale</ion-label>
           <ion-input placeholder="*inserisci ragione sociale" name="businessName" [(ngModel)]="client.businessName"
-            required>
+            required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>pIVA</ion-label>
-          <ion-input placeholder="*inserisci pIVA*" name="piva" [(ngModel)]="client.piva " required>
+          <ion-input placeholder="*inserisci pIVA*" name="piva" [(ngModel)]="client.piva " required
+            [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Indirizzo di Fatturazione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di fatturazione*" name="billingAddress"
-            [(ngModel)]="client.billingAddress" required>
+            [(ngModel)]="client.billingAddress" required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
-          <ion-label> *stesso indirizzo* </ion-label>
-          <ion-toggle name="sameAddressChoose" [(ngModel)]="sameAddressChoose" (ionChange)="sameAddress()"></ion-toggle>
-        </ion-item>
-        <ion-item *ngIf="!routeToTags">
+          <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()" [disabled]="client.id">
+            Copia da "indirizzo di Fatturazione"
+          </ion-button>
           <ion-label>Indirizzo Di Spedizione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
-            [(ngModel)]="client.shippingAddress" required>
+            [(ngModel)]="client.shippingAddress" required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>SDI</ion-label>
-          <ion-input placeholder="*inserisci SDI*" name="sdi" [(ngModel)]="client.sdi" required>
+          <ion-input placeholder="*inserisci SDI*" name="sdi" [(ngModel)]="client.sdi" required [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Email</ion-label>
-          <ion-input placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required>
+          <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required
+            [readonly]="client.id">
           </ion-input>
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Numero di Telefono</ion-label>
-          <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
-            [(ngModel)]="client.cellphoneNumber" required>
+          <ion-input type="number" placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
+            [(ngModel)]="client.cellphoneNumber" required [readonly]="client.id">
           </ion-input>
         </ion-item>
       </ion-card-content>
