@@ -34,7 +34,7 @@ export class OrdersService {
   }
 
   async addOrder(order: Order, client: ClientModel) {
-    order.client = client.id? client : await this.clientService.addCustomer(client);
+    order.client = client.id ? client : await this.clientService.addCustomer(client);
     return this.http.post(this.URL, order).toPromise();
   }
 
@@ -59,7 +59,7 @@ export class OrdersService {
     return;
   }
 
-  deleteOrder(id) {
+  deleteOrder(id: number) {
     return this.http.delete(this.URL + "/" + id).toPromise();
   }
 
