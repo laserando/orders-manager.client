@@ -59,7 +59,7 @@ export class OrdersListPage implements OnInit {
   async deleteOrder(index) {
     if (confirm("sei sicuro di voler eliminare l'ordine?")) {
       await this.orderService.deleteOrder(index);
-      this.orders = await this.orderService.find();
+      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
       this.ionToastService.alertMessage("delete");
     }
   }
