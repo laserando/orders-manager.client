@@ -25,7 +25,7 @@ export class ClientsListPage implements OnInit {
   async deleteCustomer(id) {
     if (confirm("SEI SICURO DI VOLER ELIMINARE IL CLIENTE")) {
       await this.clientService.deleteCustomer(id)
-      this.clients = await this.clientService.find();
+      this.clients = await this.clientService.find(this.filter, null, 0, 20);
     }
   }
 

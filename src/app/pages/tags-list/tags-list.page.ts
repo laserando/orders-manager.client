@@ -21,13 +21,13 @@ export class TagsListPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.tags = await this.tagService.find()
+    this.tags = await this.tagService.find(this.filter, null, 0, 20)
   }
 
   async deleteTag(id) {
     if (confirm("sei sicuro di voler eliminare il #TAG?")) {
       await this.tagService.deleteTag(id);
-      this.tags = await this.tagService.find();
+      this.tags = await this.tagService.find(this.filter, null, 0, 20);
       this.ionToastService.alertMessage("delete");
     }
   }

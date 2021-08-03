@@ -21,13 +21,13 @@ export class TypeOfMaterialsListPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.materials = await this.typeOfMaterialService.find()
+    this.materials = await this.typeOfMaterialService.find(this.filter, null, 0, 20)
   }
 
   async deleteMaterial(id) {
     if (confirm("sei sicuro di voler eliminare il seguente materiale?")) {
       await this.typeOfMaterialService.deleteMaterial(id);
-      this.materials = await this.typeOfMaterialService.find();
+      this.materials = await this.typeOfMaterialService.find(this.filter, null, 0, 20);
       this.ionToastService.alertMessage("delete");
     }
   }

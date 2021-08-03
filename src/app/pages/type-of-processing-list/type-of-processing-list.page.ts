@@ -21,13 +21,13 @@ export class TypeOfProcessingListPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.typesOfProcessing = await this.typeOfProcessingService.find()
+    this.typesOfProcessing = await this.typeOfProcessingService.find(this.filter, null, 0, 20)
   }
 
   async deleteTypeOfProcessing(id) {
     if (confirm("sei sicuro di voler eliminare la seguente tipologia di lavorazione?")) {
       await this.typeOfProcessingService.deleteProcessing(id);
-      this.typesOfProcessing = await this.typeOfProcessingService.find();
+      this.typesOfProcessing = await this.typeOfProcessingService.find(this.filter, null, 0, 20);
       this.ionToastService.alertMessage("delete");
     }
   }

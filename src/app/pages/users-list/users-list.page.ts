@@ -21,13 +21,13 @@ export class UsersListPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.users = await this.userService.find()
+    this.users = await this.userService.find(this.filter, null, 0, 20)
   }
 
   async deleteUser(id) {
     if (confirm("sei sicuro di voler eliminare il seguente utente?")) {
       await this.userService.deleteUser(id);
-      this.users = await this.userService.find();
+      this.users = await this.userService.find(this.filter, null, 0, 20);
       this.ionToastService.alertMessage("delete");
     }
   }
