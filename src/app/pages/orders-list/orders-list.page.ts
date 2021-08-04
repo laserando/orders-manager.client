@@ -54,6 +54,7 @@ export class OrdersListPage implements OnInit {
     this.tags = await this.tagsService.find()
     this.roles = await this.rolesService.find()
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    console.log(this.orders)
   }
 
   async deleteOrder(index) {
@@ -106,6 +107,7 @@ export class OrdersListPage implements OnInit {
 
   async changeState(order: Order) {
     if (confirm("SEI SICURO DI VOLER CAMBIARE L'ASSEGNAZIONE?")) {
+      console.log("in order list", order)
       await this.orderService.updateOrder(order, order.id);
     }
     this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');

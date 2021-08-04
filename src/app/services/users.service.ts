@@ -24,7 +24,8 @@ export class UsersService {
     if (where) query._where = where;
     if (sort) query._sort = sort;
 
-    return this.http.get<User[]>(`${this.URL}?${qs.stringify(query)}`).toPromise();
+    return this.http.get<User[]>(`${this.URL}?${qs.stringify(query)}`).toPromise()
+    .then(res => res.filter(response => response.username !== "Addo"));
   }
 
   findById(id: number) {

@@ -48,7 +48,7 @@
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
+              <td *ngIf="role == 'amministrazione'"></td>
 
             </tr>
           <tbody>
@@ -66,11 +66,13 @@
                 <a href="{{order.client.graphicLink}}" target="_blank" *ngIf="order.client.graphicLink">
                   SI <br>(clicca qui)
                 </a>
-                <div *ngIf="!order.client.graphicLink && (role=='amministrazione' || 'grafica') ">
-                  NO
+                <div *ngIf="!order.client.graphicLink && (role=='amministrazione' || 'grafica') "
+                  style="text-align: center;">
+                  NO 
                 </div>
                 <div *ngIf="role == 'grafica' ">
-                  <ion-button (click)="addGraphic(order.client)">clicca qui per aggiungere link grafica</ion-button>
+                  <ion-button size="small" (click)="addGraphic(order.client)"> Aggiungere / Cambiare Link Grafica
+                  </ion-button>
                 </div>
               </td>
               <!-- <td> {{order.clientIndications}}</td> -->
@@ -86,10 +88,9 @@
               <td *ngIf="order.isArchived">
                 ORA IN : <strong>{{order.role.name}}</strong>
               </td>
-              <td *ngIf="role== 'amministrazione' && order.isCompleted && !order.isArchived" style="color: green;">
+              <td *ngIf="role == 'amministrazione' && order.isCompleted && !order.isArchived" style="color: green;">
                 <p *ngIf="!order.tags.length">
-                  <strong> *ORDINE COMPLETATO* </strong> <br> (-INSERISCI TAG IN : <br> " <ion-icon
-                    name="pricetags-outline"></ion-icon> " )
+                  <strong> *ORDINE COMPLETATO* </strong> <br> (-INSERISCI TAG IN : <br> "Gestisci"/ "Tags" )
                 </p>
                 <div *ngIf="order.tags.length">
                   <p *ngFor="let tag of order.tags , let i= index ">
@@ -97,7 +98,7 @@
                   </p>
                 </div>
               </td>
-              <td *ngIf="role== 'amministrazione' && !order.isCompleted && !order.isArchived" style="color: red;">
+              <td *ngIf="role == 'amministrazione' && !order.isCompleted && !order.isArchived" style="color: red;">
                 <p *ngFor="let tag of order.tags , let i= index ">
                   {{tag.name}}
                 </p>
@@ -108,38 +109,38 @@
               <td>
                 <ion-select (ionChange)="select($event,order)" interface="popover">
                   <ion-select-option *ngIf="role == 'amministrazione' && order.isCompleted" value="seeTags">
-                      <ion-icon name="pricetags-outline"></ion-icon>
-                      Tags
+                    <ion-icon name="pricetags-outline"></ion-icon>
+                    Tags
                   </ion-select-option>
                   <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived " value="goToChangeOrder">
                     <ion-icon name="pencil-outline"></ion-icon>
                     Modifica
                   </ion-select-option>
                   <ion-select-option value="openModal">
-                      <ion-icon name="mail-outline"></ion-icon>
-                      Note
+                    <ion-icon name="mail-outline"></ion-icon>
+                    Note
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
-                      Elimina
-                      <ion-icon name="trash-outline"></ion-icon>
+                    Elimina
+                    <ion-icon name="trash-outline"></ion-icon>
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'produzione'" value="completeOrder">
-                      <ion-icon name="checkmark-outline"></ion-icon>
-                      Completa
+                    <ion-icon name="checkmark-outline"></ion-icon>
+                    Completa
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">
-                      Archivia
+                    Archivia
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione' && order.isArchived" value="restoreOrder">
-                      Ripristina
+                    Ripristina
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione' && order.isCompleted && !order.isArchived"
                     value="removeCompletion">
-                      Rimuovi Completamento
+                    Rimuovi Completamento
                   </ion-select-option>
                   <ion-select-option value="seePreview">
-                      Anteprima
-                      <ion-icon name="tv-outline"></ion-icon>
+                    Anteprima
+                    <ion-icon name="tv-outline"></ion-icon>
                   </ion-select-option>
                 </ion-select>
               </td>
