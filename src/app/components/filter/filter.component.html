@@ -18,14 +18,15 @@
     </div>
     <div class="w1">
       <div>
-        <ion-item *ngIf="!inTimingPage" style="width: 50%;">
+        <ion-item *ngIf="!inTimingPage" style="width: 70%;">
           <strong> DA :</strong>
-          <ion-input type="date" placeholder="inserisci giorno" style="width: 20px;"
+          <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;"
             [(ngModel)]="filter.deliveryDate.from" (ngModelChange)="onFilterChange()">
           </ion-input>
           <strong> A :</strong>
-          <ion-input type="date" placeholder="inserisci giorno" style="width: 20px;"
+          <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;"
             [(ngModel)]="filter.deliveryDate.to" (ngModelChange)="onFilterChange()"></ion-input>
+            <ion-button size="small" (click)="reset()"><ion-icon name="refresh-outline"></ion-icon></ion-button>
         </ion-item>
       </div>
 

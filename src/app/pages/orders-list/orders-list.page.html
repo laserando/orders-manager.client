@@ -14,7 +14,7 @@
     <ion-card-content>
       <ion-button shape="round" size="small" size="small" *ngIf="role== 'amministrazione'"
         routerLink="/dashboard/order">
-        <ion-icon name="add-outline"></ion-icon> Nuovo ordine
+        <ion-icon name="add-outline"></ion-icon>
       </ion-button>
       <ion-button shape="round" size="small" size="small" style="float: right;" (click)="updateList()">
         <ion-icon name="refresh-outline"></ion-icon>
@@ -68,7 +68,7 @@
                 </a>
                 <div *ngIf="!order.client.graphicLink && (role=='amministrazione' || 'grafica') "
                   style="text-align: center;">
-                  NO 
+                  NO
                 </div>
                 <div *ngIf="role == 'grafica' ">
                   <ion-button size="small" (click)="addGraphic(order.client)"> Aggiungere / Cambiare Link Grafica

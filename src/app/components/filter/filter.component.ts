@@ -32,4 +32,10 @@ export class FilterComponent implements OnInit {
     this.filterChange.emit(this.filter);
   }
 
+  reset() {
+    this.filter.deliveryDate.from = "";
+    this.filter.deliveryDate.to = "";
+    this.onFilterChange();
+  }
+
 }

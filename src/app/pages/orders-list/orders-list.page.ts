@@ -54,7 +54,6 @@ export class OrdersListPage implements OnInit {
     this.tags = await this.tagsService.find()
     this.roles = await this.rolesService.find()
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    console.log(this.orders)
   }
 
   async deleteOrder(index) {
