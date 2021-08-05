@@ -37,26 +37,35 @@ export class AddClientPage implements OnInit {
   }
 
   async saveCustomer() {
-    if (this.route.snapshot.params.id) {
-      confirm("SEI SICURO DI VOLER AGGIORNARE IL CLIENTE?")
-      if (this.isBusinessClient) {
-        this.client.isBusiness = true;
+    try {
+      if (this.route.snapshot.params.id) {
+        confirm("SEI SICURO DI VOLER AGGIORNARE IL CLIENTE?")
+        if (this.isBusinessClient) {
+          this.client.isBusiness = true;
+        } else {
+          this.client.isBusiness = false;
+        }
+        await this.clientService.updateCustomer(this.client);
+        this.ionToastService.alertMessage("update");
+        this.router.navigate(["/dashboard/clients-list"]);
       } else {
-        this.client.isBusiness = false;
+        if (this.isBusinessClient) {
+          this.client.isBusiness = true;
+        } else {
+          this.client.isBusiness = false;
+        }
+        await this.clientService.addCustomer(this.client);
+        this.ionToastService.alertMessage("add");
+        this.router.navigate(["/dashboard/clients-list"]);
+        this.client = new ClientModel()
       }
-      await this.clientService.updateCustomer(this.client);
-      this.ionToastService.alertMessage("update");
-      this.router.navigate(["/dashboard/clients-list"]);
-    } else {
-      if (this.isBusinessClient) {
-        this.client.isBusiness = true;
+    } catch (error) {
+      if (error.status == 400) {
+        alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
+        //console.log(":(", error.error.data.errors.email.find(element => { return element == 'email must be a valid email'; }));
       } else {
-        this.client.isBusiness = false;
+        alert(":(  : " + JSON.stringify(error));
       }
-      await this.clientService.addCustomer(this.client);
-      this.ionToastService.alertMessage("add");
-      this.router.navigate(["/dashboard/clients-list"]);
-      this.client = new ClientModel()
     }
   }
 

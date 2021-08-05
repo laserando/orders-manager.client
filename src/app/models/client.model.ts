@@ -10,12 +10,12 @@ export class ClientModel {
     public shippingAddress: string;
     public sdi: string;
     public email: string;
-    public cellphoneNumber: number;
+    public cellphoneNumber: string;
     public isBusiness: boolean = false;
     public graphicLink: string;
 
     constructor(id?: number, name?: string, surname?: string, businessName?: string, piva?: string, billingAddress?: string,
-        sdi?: string, email?: string, cellphoneNumber?: number, graphicLink?: string) {
+        sdi?: string, email?: string, cellphoneNumber?: string, graphicLink?: string) {
         this.id = id;
         this.name = name;
         this.surname = surname;

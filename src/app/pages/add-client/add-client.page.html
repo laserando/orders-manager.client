@@ -66,7 +66,7 @@
         </ion-item>
         <ion-item>
           <ion-label>Email</ion-label>
-          <ion-input placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required>
+          <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required>
           </ion-input>
         </ion-item>
         <ion-item>
@@ -136,7 +136,7 @@
         </ion-item>
         <ion-item>
           <ion-label>Email</ion-label>
-          <ion-input placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required>
+          <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required>
           </ion-input>
         </ion-item>
         <ion-item>
@@ -155,7 +155,8 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-button shape="round" size="small" class="float-right" (click)="saveCustomer()" [disabled]="addClientForm.invalid">
+    <ion-button shape="round" size="small" class="float-right" (click)="saveCustomer()"
+      [disabled]="addClientForm.invalid">
       SALVA CLIENTE
       <ion-icon name="person-circle-outline"></ion-icon>
     </ion-button>

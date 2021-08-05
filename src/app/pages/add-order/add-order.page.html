@@ -82,7 +82,7 @@
           <ion-button size="small" shape="round" name="sameAddressChoose" slot="start" (click)="sameAddress()">
             Copia da "indirizzo di Fatturazione"
           </ion-button>
-        </ion-item>        
+        </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Indirizzo Di Spedizione</ion-label>
           <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
@@ -102,7 +102,7 @@
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Numero di Telefono</ion-label>
-          <ion-input type="number" placeholder="*inserisci numero di telefono*" type="number" name="cellphoneNumber"
+          <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
             [(ngModel)]="client.cellphoneNumber" required [readonly]="client.id">
           </ion-input>
         </ion-item>
@@ -176,7 +176,7 @@
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Numero di Telefono</ion-label>
-          <ion-input type="number" placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
+          <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
             [(ngModel)]="client.cellphoneNumber" required [readonly]="client.id">
           </ion-input>
         </ion-item>

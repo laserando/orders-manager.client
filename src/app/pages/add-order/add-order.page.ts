@@ -126,7 +126,12 @@ export class AddOrderPage implements OnInit {
         this.router.navigate(["/dashboard/orders"]);
       }
     } catch (error) {
-      alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
+      if (error.status == 400) {
+        alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
+        //console.log(":(", error.error.data.errors.email.find(element => { return element == 'email must be a valid email'; }));
+      } else {
+        alert(":(  : " + JSON.stringify(error));
+      }
     }
   }
 

@@ -2,8 +2,6 @@
   <ion-toolbar>
     <ion-title style="color: orangered; font-size: x-large;background-color: aliceblue;">
       LASERANDO MANAGEMENT SYSTEM
-      <img style="width: 40px; border-radius: 20px 20px  20px 20px ;"
-        src="/com.laserando.orders.client/src/app/img/laserando (1).png" alt="">
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -30,7 +28,7 @@
             GESTIONE CLIENTI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/tags'" *ngIf="role==='amministrazione'">
-            <ion-icon slot="start" name="bookmark-outline"></ion-icon>            
+            <ion-icon slot="start" name="bookmark-outline"></ion-icon>
             GESTIONE TAGS
           </ion-item>
           <ion-item [routerLink]="'/dashboard/materials'" *ngIf="role==='amministrazione'">
