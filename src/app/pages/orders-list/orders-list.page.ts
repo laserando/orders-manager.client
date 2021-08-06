@@ -54,6 +54,7 @@ export class OrdersListPage implements OnInit {
     this.tags = await this.tagsService.find()
     this.roles = await this.rolesService.find()
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    console.log(this.orders)
   }
 
   async deleteOrder(index) {
@@ -79,7 +80,7 @@ export class OrdersListPage implements OnInit {
       order.isCompleted = true;
       order.role.id = 1;
       order.role.name = "amministrazione";
-      await this.ordersService.updateOrder(order, order.id);
+      await this.ordersService.updateOrder(order, order.id, order.client);
       this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
   }
@@ -88,8 +89,8 @@ export class OrdersListPage implements OnInit {
     if (confirm("sei sicuro di voler TOGLIERE il COMPLETAMENTO dell'ordine?")) {
       order.isCompleted = false;
       order.tags = [];
-      order.tags.push({ name: "#LAVOROinCORSO", id: 23 })
-      await this.ordersService.updateOrder(order, order.id);
+      order.tags.push({ name: "#LAVOROinCORSO", id: 1 })
+      await this.ordersService.updateOrder(order, order.id, order.client);
       this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
   }
@@ -106,8 +107,7 @@ export class OrdersListPage implements OnInit {
 
   async changeState(order: Order) {
     if (confirm("SEI SICURO DI VOLER CAMBIARE L'ASSEGNAZIONE?")) {
-      console.log("in order list", order)
-      await this.orderService.updateOrder(order, order.id);
+      await this.orderService.updateOrder(order, order.id, order.client);
     }
     this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
@@ -115,7 +115,7 @@ export class OrdersListPage implements OnInit {
   async storeOrder(order: Order) {
     if (confirm("SEI SICURO DI VOLER ARCHIVIARE L'ORDINE?")) {
       order.isArchived = true;
-      await this.ordersService.updateOrder(order, order.id);
+      await this.ordersService.updateOrder(order, order.id, order.client);
       this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
   }
@@ -123,7 +123,7 @@ export class OrdersListPage implements OnInit {
   async restoreOrder(order: Order) {
     if (confirm("SEI SICURO DI VOLER RIPRISTINARE L'ORDINE?")) {
       order.isArchived = false;
-      await this.ordersService.updateOrder(order, order.id);
+      await this.ordersService.updateOrder(order, order.id, order.client);
       this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
   }

@@ -85,8 +85,8 @@
       </ion-item>
       <ion-item *ngIf="order?.isCompleted">
         <ion-label>#TAG STATO ORDINE</ion-label>
-        <p *ngFor="let tag of order.tags">
-          {{tag.name}}
+        <p *ngFor="let tag of order?.tags">
+          {{tag?.name}}
         </p>
       </ion-item>
     </ion-card-content>

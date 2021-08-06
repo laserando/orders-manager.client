@@ -63,10 +63,10 @@
               <td> {{order.typesOfMaterial?.name}} </td>
               <td> {{order.itemSize}} </td>
               <td>
-                <a href="{{order.client.graphicLink}}" target="_blank" *ngIf="order.client.graphicLink">
+                <a href="{{order.client?.graphicLink}}" target="_blank" *ngIf="order.client?.graphicLink">
                   SI <br>(clicca qui)
                 </a>
-                <div *ngIf="!order.client.graphicLink && (role=='amministrazione' || 'grafica') "
+                <div *ngIf="!order.client?.graphicLink && (role=='amministrazione' || 'grafica') "
                   style="text-align: center;">
                   NO
                 </div>
@@ -86,7 +86,7 @@
                 </ion-select>
               </td>
               <td *ngIf="order.isArchived">
-                ORA IN : <strong>{{order.role.name}}</strong>
+                ORA IN : <strong>{{order.role?.name}}</strong>
               </td>
               <td *ngIf="role == 'amministrazione' && order.isCompleted && !order.isArchived" style="color: green;">
                 <p *ngIf="!order.tags.length">

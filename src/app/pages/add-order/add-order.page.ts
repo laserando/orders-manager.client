@@ -78,7 +78,11 @@ export class AddOrderPage implements OnInit {
         this.isBusinessClient = true;
       }
       this.order = await this.ordersService.findById(this.route.snapshot.params.id);
-      this.client = await this.clientService.findById(this.order.client.id);
+
+      if (this.order.client) {
+        this.client = await this.clientService.findById(this.order.client.id);
+      }
+
       if (this.client.graphicLink) {
         this.graphicPresentChoose = true;
       }
@@ -86,7 +90,7 @@ export class AddOrderPage implements OnInit {
         this.sameAddressChoose = true;
       }
     }
-    let routeToTags = this.router.url.substring(0, 18)
+    let routeToTags = this.router.url.substring(0, 18);
     if (routeToTags == "/dashboard/orders_") {
       this.routeToTags = true
     }
@@ -104,7 +108,7 @@ export class AddOrderPage implements OnInit {
           } else {
             this.client.isBusiness = false;
           }
-          await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id);
+          await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
           this.ionToastService.alertMessage("update");
           this.router.navigate(["/dashboard/orders"]);
         }
@@ -130,6 +134,7 @@ export class AddOrderPage implements OnInit {
         alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
         //console.log(":(", error.error.data.errors.email.find(element => { return element == 'email must be a valid email'; }));
       } else {
+        console.log(error)
         alert(":(  : " + JSON.stringify(error));
       }
     }
@@ -144,15 +149,18 @@ export class AddOrderPage implements OnInit {
   }
 
   cleanClient(event) {
+
     if (this.client.graphicLink) {
       this.graphicPresentChoose = true;
+    } else {
+      this.graphicPresentChoose = false;
     }
+
     if (this.client.billingAddress == this.client.shippingAddress) {
       this.sameAddressChoose = true;
     }
 
     if (event.value.id == "new") {
-      console.log("in new")
       this.client = new ClientModel()
       this.sameAddressChoose = false;
       this.graphicPresentChoose = false;

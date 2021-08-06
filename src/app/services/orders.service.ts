@@ -37,12 +37,11 @@ export class OrdersService {
     order.client = client.id ? client : await this.clientService.addCustomer(client);
     return this.http.post(this.URL, order).toPromise();
   }
-
   findById(id) {
     return this.http.get<Order>(this.URL + "/" + id).toPromise();
   }
 
-  async updateOrder(newOrder: Order, id: number) {
+  async updateOrder(newOrder: Order, id: number, client: ClientModel) {
     let oldRole = (await this.findById(id)).role;
     let newRole = newOrder.role;
     let order = newOrder;
@@ -55,6 +54,13 @@ export class OrdersService {
     }
     delete newOrder.logs;
     delete newOrder.notes;
+
+    if (!newOrder.client) {
+      newOrder.client = client.id ? client : await this.clientService.addCustomer(client);
+    }
+    else if (newOrder.client.id != client.id) {
+      newOrder.client = client.id ? client : await this.clientService.addCustomer(client);
+    }
     await this.http.put(this.URL + "/" + id, newOrder).toPromise();
     return;
   }
@@ -62,7 +68,5 @@ export class OrdersService {
   deleteOrder(id: number) {
     return this.http.delete(this.URL + "/" + id).toPromise();
   }
-
-
 
 }

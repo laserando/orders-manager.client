@@ -45,7 +45,7 @@
       </ion-card-content>
     </ion-card>
 
-
+    
     <ion-card *ngIf="!routeToTags && !isBusinessClient">
       <ion-card-content>
         <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE PRIVATO: </strong></p>
@@ -182,7 +182,8 @@
         </ion-item>
       </ion-card-content>
     </ion-card>
-
+  
+    <!-- -->
     <ion-card>
       <ion-card-content>
         <p class="ion-text-center"><strong>DETTAGLI ORDINE : </strong></p>
@@ -197,7 +198,7 @@
           <ion-select placeholder="*Seleziona Uno*" [interface]="'popover'" name="typeOfProcessing"
             [compareWith]="compareWith" [(ngModel)]="order.typesOfProcessing" required>
             <ion-select-option [value]="typeOfProcessing" *ngFor="let typeOfProcessing of typesOfProcessing">
-              {{typeOfProcessing.name}}
+              {{typeOfProcessing?.name}}
             </ion-select-option>
           </ion-select>
         </ion-item>
@@ -206,7 +207,7 @@
           <ion-select placeholder="*Seleziona Uno*" [interface]="'popover'" name="typeOfMaterial"
             [(ngModel)]="order.typesOfMaterial" [compareWith]="compareWith" required>
             <ion-select-option [value]="material" *ngFor="let material of materials">
-              {{material.name}}
+              {{material?.name}}
             </ion-select-option>
           </ion-select>
         </ion-item>
@@ -233,7 +234,7 @@
           <ion-select multiple placeholder="Selezione Multipla" name="tags" [compareWith]="compareWith"
             [(ngModel)]="order.tags">
             <ion-select-option [value]="tag" *ngFor="let tag of tags">
-              {{tag.name}}
+              {{tag?.name}}
             </ion-select-option>
           </ion-select>
         </ion-item>
@@ -241,6 +242,7 @@
     </ion-card>
   </form>
 </ion-content>
+
 <ion-footer>
   <ion-toolbar>
     <ion-button shape="round" size="small" class="float-right" (click)="addOrder()" [disabled]="addOrderForm.invalid">
