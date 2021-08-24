@@ -58,20 +58,20 @@ export class AddOrderPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    const privateClients = (await this.clientService.find({ isBusiness: false })).map((c: any) => {
+    const privateClients = (await this.clientService.find({ isBusiness: false }, this.term, 0, 1000)).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })
-    this.privateClients = [{ id: 'new', fullname: 'Nuovo cliente' }, ...privateClients];
+    this.privateClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...privateClients];
 
-    const businessClients = (await this.clientService.find({ isBusiness: true })).map((c: any) => {
+    const businessClients = (await this.clientService.find({ isBusiness: true }, this.term, 0, 1000)).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })
-    this.businessClients = [{ id: 'new', fullname: 'Nuovo cliente' }, ...businessClients];
-    this.tags = await this.tagService.find();
-    this.materials = await this.typeOfMaterialService.find();
-    this.typesOfProcessing = await this.typeOfProcessingService.find();
+    this.businessClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...businessClients];
+    this.tags = await this.tagService.find(this.filter, this.term, 0, 1000);
+    this.materials = await this.typeOfMaterialService.find(this.filter, this.term, 0, 1000);
+    this.typesOfProcessing = await this.typeOfProcessingService.find(this.filter, this.term, 0, 1000);
     this.roles = await this.rolesService.find();
     if (this.route.snapshot.params.id) {
       if (this.client.isBusiness) {
@@ -134,7 +134,7 @@ export class AddOrderPage implements OnInit {
         alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
         //console.log(":(", error.error.data.errors.email.find(element => { return element == 'email must be a valid email'; }));
       } else {
-        console.log(error)
+        console.log(error);
         alert(":(  : " + JSON.stringify(error));
       }
     }
@@ -148,7 +148,7 @@ export class AddOrderPage implements OnInit {
     return compareValue.id == currentValue.id;
   }
 
-  cleanClient(event) {
+  async cleanClient(event) {
 
     if (this.client.graphicLink) {
       this.graphicPresentChoose = true;
@@ -159,6 +159,7 @@ export class AddOrderPage implements OnInit {
     if (this.client.billingAddress == this.client.shippingAddress) {
       this.sameAddressChoose = true;
     }
+
 
     if (event.value.id == "new") {
       this.client = new ClientModel()
