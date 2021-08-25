@@ -66,7 +66,7 @@ export class OrdersListPage implements OnInit {
   }
 
   async search() {
-    this.orders = await this.orderService.find(this.filter, this.term);
+    this.orders = await this.orderService.find(this.filter, this.term, 0, 20);
   }
 
   async getNextPage() {

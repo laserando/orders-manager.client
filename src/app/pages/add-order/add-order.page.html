@@ -8,34 +8,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card *ngIf="!routeToTags && !isBusinessClient">
-    <ion-card-content>
-      <ion-item>
-        <ion-label>
-          <p><strong> CLIENTI PRIVATI ESISTENTI :</strong></p>
-        </ion-label>
-        <ionic-selectable [(ngModel)]="client" [items]="privateClients" itemValueField="id" itemTextField="fullname"
-          [canSearch]="true" (onChange)="cleanClient($event)">
-        </ionic-selectable>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
 
-  <ion-card *ngIf="!routeToTags && isBusinessClient">
-    <ion-card-content>
-      <ion-item>
-        <ion-label>
-          <p><strong> CLIENTI BUSINESS ESISTENTI :</strong></p>
-        </ion-label>
-        <ionic-selectable [(ngModel)]="client" [items]="businessClients" itemValueField="id" itemTextField="fullname"
-          [canSearch]="true" (onChange)="cleanClient($event)">
-        </ionic-selectable>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+<ion-content>
 
   <form #addOrderForm="ngForm">
+
     <ion-card>
       <ion-card-content>
         <ion-item *ngIf="!routeToTags">
@@ -45,6 +22,35 @@
       </ion-card-content>
     </ion-card>
 
+    <ion-card *ngIf="!routeToTags && !isBusinessClient">
+      <ion-card-content>
+        <ion-item>
+          <ion-label>
+            <p><strong> CLIENTI PRIVATI ESISTENTI :</strong></p>
+          </ion-label>
+          <ionic-selectable name="privateClients" [(ngModel)]="client" [items]="privateClients" itemValueField="id"  
+            itemTextField="fullname" [canSearch]="true" (onChange)="cleanClient($event)" 
+            (onSearch)="search('private',$event)" [hasInfiniteScroll]="true" 
+            (onInfiniteScroll)="getMoreClients('private',$event)">
+          </ionic-selectable>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="!routeToTags && isBusinessClient">
+      <ion-card-content>
+        <ion-item>
+          <ion-label>
+            <p><strong> CLIENTI BUSINESS ESISTENTI :</strong></p>
+          </ion-label>
+          <ionic-selectable name="businessClients" [(ngModel)]="client" [items]="businessClients" itemValueField="id"
+            itemTextField="fullname" [canSearch]="true" (onChange)="cleanClient($event)"
+            (onSearch)="search('business',$event)" [hasInfiniteScroll]="true" 
+            (onInfiniteScroll)="getMoreClients('business',$event)">
+          </ionic-selectable>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
 
     <ion-card *ngIf="!routeToTags && !isBusinessClient">
       <ion-card-content>
@@ -195,7 +201,7 @@
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Tipologia di lavorazione</ion-label>
-          <ion-select placeholder="*Seleziona Uno*" [interface]="'popover'" name="typeOfProcessing"
+          <ion-select placeholder="*Seleziona Uno*" [interface]="'alert'" name="typeOfProcessing"
             [compareWith]="compareWith" [(ngModel)]="order.typesOfProcessing" required>
             <ion-select-option [value]="typeOfProcessing" *ngFor="let typeOfProcessing of typesOfProcessing">
               {{typeOfProcessing?.name}}
@@ -204,7 +210,7 @@
         </ion-item>
         <ion-item *ngIf="!routeToTags">
           <ion-label>Tipologia materiale</ion-label>
-          <ion-select placeholder="*Seleziona Uno*" [interface]="'popover'" name="typeOfMaterial"
+          <ion-select placeholder="*Seleziona Uno*" [interface]="'alert'" name="typeOfMaterial"
             [(ngModel)]="order.typesOfMaterial" [compareWith]="compareWith" required>
             <ion-select-option [value]="material" *ngFor="let material of materials">
               {{material?.name}}

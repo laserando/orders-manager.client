@@ -33,7 +33,7 @@ export class TypeOfMaterialsListPage implements OnInit {
   }
 
   async search() {
-    this.materials = await this.typeOfMaterialService.find(null, this.term);
+    this.materials = await this.typeOfMaterialService.find(null, this.term, 0, 20);
   }
 
   async getNextPage() {

@@ -107,25 +107,20 @@
                 #ARCHIVIATO
               </td>
               <td>
-                <ion-select (ionChange)="select($event,order)" interface="popover">
+                <ion-select (ionChange)="select($event,order)" interface="alert">
                   <ion-select-option *ngIf="role == 'amministrazione' && order.isCompleted" value="seeTags">
-                    <ion-icon name="pricetags-outline"></ion-icon>
                     Tags
                   </ion-select-option>
                   <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived " value="goToChangeOrder">
-                    <ion-icon name="pencil-outline"></ion-icon>
                     Modifica
                   </ion-select-option>
                   <ion-select-option value="openModal">
-                    <ion-icon name="mail-outline"></ion-icon>
                     Note
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
                     Elimina
-                    <ion-icon name="trash-outline"></ion-icon>
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'produzione'" value="completeOrder">
-                    <ion-icon name="checkmark-outline"></ion-icon>
                     Completa
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">

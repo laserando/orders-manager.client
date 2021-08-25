@@ -30,7 +30,7 @@ export class ClientsListPage implements OnInit {
   }
 
   async search() {
-    this.clients = await this.clientService.find(this.filter, this.term);
+    this.clients = await this.clientService.find(this.filter, this.term, 0, 20);
   }
 
   async getNextPage() {

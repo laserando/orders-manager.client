@@ -39,7 +39,7 @@ export class ClientService {
     return this.http.put<ClientModel>(this.URL + "/" + newClient.id, newClient).toPromise()
   }
 
-  deleteCustomer(clientId){
-    return this.http.delete<ClientModel>(this.URL+ "/" + clientId).toPromise()
+  deleteCustomer(clientId) {
+    return this.http.delete<ClientModel>(this.URL + "/" + clientId).toPromise()
   }
 }

@@ -14,6 +14,7 @@ import { RolesService } from 'src/app/services/roles.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClientModel } from 'src/app/models/client.model';
 import { ClientService } from 'src/app/services/client.service';
+import { IonicSelectableComponent } from 'ionic-selectable';
 
 @Component({
   selector: 'app-add-order',
@@ -58,20 +59,20 @@ export class AddOrderPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    const privateClients = (await this.clientService.find({ isBusiness: false }, this.term, 0, 1000)).map((c: any) => {
+    const privateClients = (await this.clientService.find({ isBusiness: false }, null)).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })
     this.privateClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...privateClients];
 
-    const businessClients = (await this.clientService.find({ isBusiness: true }, this.term, 0, 1000)).map((c: any) => {
+    const businessClients = (await this.clientService.find({ isBusiness: true }, null)).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })
     this.businessClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...businessClients];
-    this.tags = await this.tagService.find(this.filter, this.term, 0, 1000);
-    this.materials = await this.typeOfMaterialService.find(this.filter, this.term, 0, 1000);
-    this.typesOfProcessing = await this.typeOfProcessingService.find(this.filter, this.term, 0, 1000);
+    this.tags = await this.tagService.find(this.filter, null, 0, 1000);
+    this.materials = await this.typeOfMaterialService.find(this.filter, null, 0, 1000);
+    this.typesOfProcessing = await this.typeOfProcessingService.find(this.filter, null, 0, 1000);
     this.roles = await this.rolesService.find();
     if (this.route.snapshot.params.id) {
       if (this.client.isBusiness) {
@@ -160,7 +161,6 @@ export class AddOrderPage implements OnInit {
       this.sameAddressChoose = true;
     }
 
-
     if (event.value.id == "new") {
       this.client = new ClientModel()
       this.sameAddressChoose = false;
@@ -174,6 +174,56 @@ export class AddOrderPage implements OnInit {
       this.client.shippingAddress = this.client.billingAddress
     } else {
       this.client.shippingAddress = "";
+    }
+  }
+
+  async search(typeOfClient, event) {
+
+    this.term = event.text
+    if (typeOfClient == "private") {
+
+      const privateClients = (await this.clientService.find({ isBusiness: false }, this.term, 0, 20)).map((c: any) => {
+        c.fullname = c.name + ' ' + c.surname;
+        return c;
+      })
+
+      this.privateClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...privateClients];
+    } else {
+
+      const businessClients = (await this.clientService.find({ isBusiness: true }, this.term, 0, 20)).map((c: any) => {
+        c.fullname = c.name + ' ' + c.surname;
+        return c;
+      })
+
+      this.businessClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...businessClients];
+    }
+  }
+
+  async getMoreClients(typeOfClient, event) {
+
+    let privateClients: any = [];
+    let businessClients: any = [];
+
+    if (typeOfClient == "private") {
+
+      privateClients = (await this.clientService.find({ isBusiness: true }, this.term, this.privateClients.length)).map((c: any) => {
+        c.fullname = c.name + ' ' + c.surname;
+        return c;
+      })
+      this.privateClients.push(...privateClients);
+
+    } else {
+
+      businessClients = (await this.clientService.find({ isBusiness: true }, this.term, this.businessClients.length)).map((c: any) => {
+        c.fullname = c.name + ' ' + c.surname;
+        return c;
+      })
+      this.businessClients.push(...businessClients);
+    }
+    event.component.endInfiniteScroll();
+
+    if (!businessClients.length && !privateClients.length) {
+      event.component.disableInfiniteScroll();
     }
   }
 
