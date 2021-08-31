@@ -19,7 +19,6 @@ export class StorageModalComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log(this.order)
     if (!this.storageForNote) {
       for (let log of this.order.logs as any[]) {
         log.newRole = await this.rolesService.findById(log.newRole);

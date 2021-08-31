@@ -5,7 +5,6 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
   <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
   <filter (filterChange)="onFilterChange($event)" *ngIf="role == 'amministrazione'"></filter>
@@ -75,13 +74,12 @@
                   </ion-button>
                 </div>
               </td>
-              <!-- <td> {{order.clientIndications}}</td> -->
               <td> {{order.deliveryDate | date:'dd/MM/YYYY'}}</td>
               <td *ngIf="!order.isArchived">
                 ORA IN : <strong>{{order.role.name}}</strong><br>
                 ASSEGNA A:
-                <ion-select placeholder="inserisci assegnazione ruolo" style="border: 1px solid black;" name="" id=""
-                  [(ngModel)]="order.role" (ngModelChange)="changeState(order)">
+                <ion-select placeholder="inserisci assegnazione ruolo" name="" id="" [(ngModel)]="order.role"
+                  (ngModelChange)="changeState(order)">
                   <ion-select-option value="{{role.id}}" *ngFor="let role of roles"> {{role.name}} </ion-select-option>
                 </ion-select>
               </td>
@@ -90,7 +88,7 @@
               </td>
               <td *ngIf="role == 'amministrazione' && order.isCompleted && !order.isArchived" style="color: green;">
                 <p *ngIf="!order.tags.length">
-                  <strong> *ORDINE COMPLETATO* </strong> <br> (-INSERISCI TAG IN : <br> "Gestisci"/ "Tags" )
+                  <strong> *ORDINE COMPLETATO* </strong> <br> (-INSERISCI TAG IN : <br> "GESTISCI"/ "Tags #" )
                 </p>
                 <div *ngIf="order.tags.length">
                   <p *ngFor="let tag of order.tags , let i= index ">
@@ -107,34 +105,34 @@
                 #ARCHIVIATO
               </td>
               <td>
-                <ion-select (ionChange)="select($event,order)" interface="alert">
+                <ion-select class="manage" (ionChange)="select($event,order)" interface="alert" placeholder="⚙">
                   <ion-select-option *ngIf="role == 'amministrazione' && order.isCompleted" value="seeTags">
-                    Tags
+                    Tags #
                   </ion-select-option>
                   <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived " value="goToChangeOrder">
-                    Modifica
+                    Modifica 🖊
                   </ion-select-option>
                   <ion-select-option value="openModal">
-                    Note
+                    Note 💬
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
-                    Elimina
+                    Elimina ❌
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'produzione'" value="completeOrder">
-                    Completa
+                    Completa ✅
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">
-                    Archivia
+                    Archivia 📦
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione' && order.isArchived" value="restoreOrder">
-                    Ripristina
+                    Ripristina 🔄
                   </ion-select-option>
                   <ion-select-option *ngIf="role== 'amministrazione' && order.isCompleted && !order.isArchived"
                     value="removeCompletion">
-                    Rimuovi Completamento
+                    Rimuovi Completamento 🔙
                   </ion-select-option>
                   <ion-select-option value="seePreview">
-                    Anteprima
+                    Anteprima 📺
                     <ion-icon name="tv-outline"></ion-icon>
                   </ion-select-option>
                 </ion-select>
@@ -144,7 +142,6 @@
         </table>
       </div>
       <ion-button shape="round" size="small" size="small" (click)="getNextPage()"> vedi altri... </ion-button>
-
     </ion-card-content>
   </ion-card>
 </ion-content>

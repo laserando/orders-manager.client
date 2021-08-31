@@ -13,6 +13,7 @@ import { StorageModalComponent } from "src/app/components/modal/storage-modal.co
 import { ClientService } from 'src/app/services/client.service';
 import { ClientModel } from 'src/app/models/client.model';
 import { Router } from '@angular/router';
+import { ConfirmService } from 'src/app/services/confirm.service';
 
 @Component({
   selector: 'app-orders-list',
@@ -39,7 +40,8 @@ export class OrdersListPage implements OnInit {
     private tagsService: TagService,
     private modalCtrl: ModalController,
     private clientService: ClientService,
-    private router: Router) { }
+    private router: Router,
+    private confirmService: ConfirmService) { }
 
   async ngOnInit() {
     this.role = this.authService.getParseOfUserObject();
@@ -54,15 +56,14 @@ export class OrdersListPage implements OnInit {
     this.tags = await this.tagsService.find()
     this.roles = await this.rolesService.find()
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    console.log(this.orders)
   }
 
   async deleteOrder(index) {
     if (confirm("sei sicuro di voler eliminare l'ordine?")) {
       await this.orderService.deleteOrder(index);
-      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
       this.ionToastService.alertMessage("delete");
     }
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async search() {
@@ -116,16 +117,16 @@ export class OrdersListPage implements OnInit {
     if (confirm("SEI SICURO DI VOLER ARCHIVIARE L'ORDINE?")) {
       order.isArchived = true;
       await this.ordersService.updateOrder(order, order.id, order.client);
-      this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
+    this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
   }
 
   async restoreOrder(order: Order) {
     if (confirm("SEI SICURO DI VOLER RIPRISTINARE L'ORDINE?")) {
       order.isArchived = false;
       await this.ordersService.updateOrder(order, order.id, order.client);
-      this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
+    this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
   }
 
   async onFilterChange(filter) {
@@ -171,7 +172,8 @@ export class OrdersListPage implements OnInit {
       component: StorageModalComponent,
       componentProps: { order: order, storageForNote: true }
     })
-    await modal.present()
+    await modal.present();
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async updateList() {
