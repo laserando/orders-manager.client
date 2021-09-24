@@ -6,142 +6,154 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
-  <filter (filterChange)="onFilterChange($event)" *ngIf="role == 'amministrazione'"></filter>
-  <hr>
-  <ion-card class="section">
-    <ion-card-content>
-      <ion-button shape="round" size="small" size="small" *ngIf="role== 'amministrazione'"
-        routerLink="/dashboard/order">
-        <ion-icon name="add-outline"></ion-icon>
-      </ion-button>
-      <ion-button shape="round" size="small" size="small" style="float: right;" (click)="updateList()">
-        <ion-icon name="refresh-outline"></ion-icon>
-      </ion-button>
-      <div class="table-wrapper">
-        <table class="default">
-          <thead>
-            <tr>
-              <th>N° Ordine</th>
-              <th>Nome</th>
-              <th>Cognome</th>
-              <th>Tipologia lavorazione</th>
-              <th>Tipologia materiale</th>
-              <th>Dimensioni articolo</th>
-              <th>Grafica presente</th>
-              <th>Data consegna</th>
-              <th>Assegnato a</th>
-              <th *ngIf="role == 'amministrazione'">#TAG stato ordine</th>
-              <th>GESTISCI</th>
-            </tr>
-          </thead>
-          <tbody *ngIf="!orders.length">
-            <tr class="ion-text-center">
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td style="text-align: center;">Nessun Ordine</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td *ngIf="role == 'amministrazione'"></td>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
+        <filter (filterChange)="onFilterChange($event)" *ngIf="role == 'amministrazione'"></filter>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="section">
+          <ion-card-content>
+            <ion-button shape="round" size="small" *ngIf="role== 'amministrazione'" routerLink="/dashboard/order">
+              <ion-icon name="add-outline"></ion-icon>
+            </ion-button>
+            <ion-button shape="round" size="small" style="float: right;" (click)="updateList()">
+              <ion-icon name="refresh-outline"></ion-icon>
+            </ion-button>
+            <div class="table-wrapper">
+              <table class="default">
+                <thead>
+                  <tr>
+                    <th>N° Ordine</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Tipologia lavorazione</th>
+                    <th>Tipologia materiale</th>
+                    <th>Dimensioni articolo</th>
+                    <th>Grafica presente</th>
+                    <th>Data consegna</th>
+                    <th>Assegnato a</th>
+                    <th *ngIf="role == 'amministrazione'">#TAG stato ordine</th>
+                    <th>GESTISCI</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="!orders.length">
+                  <tr class="ion-text-center">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: center;">Nessun Ordine</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td *ngIf="role == 'amministrazione'"></td>
 
-            </tr>
-          <tbody>
-            <tr *ngFor="let order of orders,let i = index">
-              <td
-                style="color: rgb(189, 42, 42);font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
-                {{order.id}}
-              </td>
-              <td> {{order.client?.name}} </td>
-              <td> {{order.client?.surname}} </td>
-              <td> {{order.typesOfProcessing?.name}} </td>
-              <td> {{order.typesOfMaterial?.name}} </td>
-              <td> {{order.itemSize}} </td>
-              <td>
-                <a href="{{order.client?.graphicLink}}" target="_blank" *ngIf="order.client?.graphicLink">
-                  SI <br>(clicca qui)
-                </a>
-                <div *ngIf="!order.client?.graphicLink && (role=='amministrazione' || 'grafica') "
-                  style="text-align: center;">
-                  NO
-                </div>
-                <div *ngIf="role == 'grafica' ">
-                  <ion-button size="small" (click)="addGraphic(order.client)"> Aggiungere / Cambiare Link Grafica
-                  </ion-button>
-                </div>
-              </td>
-              <td> {{order.deliveryDate | date:'dd/MM/YYYY'}}</td>
-              <td *ngIf="!order.isArchived">
-                ORA IN : <strong>{{order.role.name}}</strong><br>
-                ASSEGNA A:
-                <ion-select placeholder="inserisci assegnazione ruolo" name="" id="" [(ngModel)]="order.role"
-                  (ngModelChange)="changeState(order)">
-                  <ion-select-option value="{{role.id}}" *ngFor="let role of roles"> {{role.name}} </ion-select-option>
-                </ion-select>
-              </td>
-              <td *ngIf="order.isArchived">
-                ORA IN : <strong>{{order.role?.name}}</strong>
-              </td>
-              <td *ngIf="role == 'amministrazione' && order.isCompleted && !order.isArchived" style="color: green;">
-                <p *ngIf="!order.tags.length">
-                  <strong> *ORDINE COMPLETATO* </strong> <br> (-INSERISCI TAG IN : <br> "GESTISCI"/ "Tags #" )
-                </p>
-                <div *ngIf="order.tags.length">
-                  <p *ngFor="let tag of order.tags , let i= index ">
-                    {{tag.name}}
-                  </p>
-                </div>
-              </td>
-              <td *ngIf="role == 'amministrazione' && !order.isCompleted && !order.isArchived" style="color: red;">
-                <p *ngFor="let tag of order.tags , let i= index ">
-                  {{tag.name}}
-                </p>
-              </td>
-              <td *ngIf="role== 'amministrazione' && order.isArchived" style="color: blueviolet;">
-                #ARCHIVIATO
-              </td>
-              <td>
-                <ion-select class="manage" (ionChange)="select($event,order)" interface="alert" placeholder="⚙">
-                  <ion-select-option *ngIf="role == 'amministrazione' && order.isCompleted" value="seeTags">
-                    Tags #
-                  </ion-select-option>
-                  <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived " value="goToChangeOrder">
-                    Modifica 🖊
-                  </ion-select-option>
-                  <ion-select-option value="openModal">
-                    Note 💬
-                  </ion-select-option>
-                  <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
-                    Elimina ❌
-                  </ion-select-option>
-                  <ion-select-option *ngIf="role== 'produzione'" value="completeOrder">
-                    Completa ✅
-                  </ion-select-option>
-                  <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">
-                    Archivia 📦
-                  </ion-select-option>
-                  <ion-select-option *ngIf="role== 'amministrazione' && order.isArchived" value="restoreOrder">
-                    Ripristina 🔄
-                  </ion-select-option>
-                  <ion-select-option *ngIf="role== 'amministrazione' && order.isCompleted && !order.isArchived"
-                    value="removeCompletion">
-                    Rimuovi Completamento 🔙
-                  </ion-select-option>
-                  <ion-select-option value="seePreview">
-                    Anteprima 📺
-                    <ion-icon name="tv-outline"></ion-icon>
-                  </ion-select-option>
-                </ion-select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <ion-button shape="round" size="small" size="small" (click)="getNextPage()"> vedi altri... </ion-button>
-    </ion-card-content>
-  </ion-card>
+                  </tr>
+                <tbody>
+                  <tr *ngFor="let order of orders,let i = index">
+                    <td
+                      style="color: rgb(189, 42, 42);font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                      {{order.id}}
+                    </td>
+                    <td> {{order.client?.name}} </td>
+                    <td> {{order.client?.surname}} </td>
+                    <td> {{order.typesOfProcessing?.name}} </td>
+                    <td> {{order.typesOfMaterial?.name}} </td>
+                    <td> {{order.itemSize}} </td>
+                    <td>
+                      <a href="{{order.client?.graphicLink}}" target="_blank" *ngIf="order.client?.graphicLink">
+                        SI <br>(clicca qui)
+                      </a>
+                      <div *ngIf="!order.client?.graphicLink && (role=='amministrazione' || 'grafica') "
+                        style="text-align: center;">
+                        NO
+                      </div>
+                      <div *ngIf="role == 'grafica' ">
+                        <ion-button size="small" (click)="addGraphic(order.client)"> Aggiungere / Cambiare Link Grafica
+                        </ion-button>
+                      </div>
+                    </td>
+                    <td> {{order.deliveryDate | date:'dd/MM/YYYY'}}</td>
+                    <td *ngIf="!order.isArchived">
+                      ORA IN : <strong>{{order.role.name}}</strong><br>
+                      ASSEGNA A:
+                      <ion-select placeholder="inserisci assegnazione ruolo" name="" id="" [(ngModel)]="order.role"
+                        (ngModelChange)="changeState(order)">
+                        <ion-select-option value="{{role.id}}" *ngFor="let role of roles"> {{role.name}}
+                        </ion-select-option>
+                      </ion-select>
+                    </td>
+                    <td *ngIf="order.isArchived">
+                      ORA IN : <strong>{{order.role?.name}}</strong>
+                    </td>
+                    <td *ngIf="role == 'amministrazione' && order.isCompleted && !order.isArchived"
+                      style="color: green;">
+                      <p *ngIf="!order.tags.length">
+                        <strong> *ORDINE COMPLETATO* </strong> <br> (-INSERISCI TAG IN : <br> "GESTISCI"/ "Tags #" )
+                      </p>
+                      <div *ngIf="order.tags.length">
+                        <p *ngFor="let tag of order.tags , let i= index ">
+                          {{tag.name}}
+                        </p>
+                      </div>
+                    </td>
+                    <td *ngIf="role == 'amministrazione' && !order.isCompleted && !order.isArchived"
+                      style="color: red;">
+                      <p *ngFor="let tag of order.tags , let i= index ">
+                        {{tag.name}}
+                      </p>
+                    </td>
+                    <td *ngIf="role== 'amministrazione' && order.isArchived" style="color: blueviolet;">
+                      #ARCHIVIATO
+                    </td>
+                    <td>
+                      <ion-select class="manage" (ionChange)="select($event,order)" interface="alert" placeholder="⚙">
+                        <ion-select-option *ngIf="role == 'amministrazione' && order.isCompleted" value="seeTags">
+                          Tags #
+                        </ion-select-option>
+                        <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived "
+                          value="goToChangeOrder">
+                          Modifica 🖊
+                        </ion-select-option>
+                        <ion-select-option value="openModal">
+                          Note 💬
+                        </ion-select-option>
+                        <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
+                          Elimina ❌
+                        </ion-select-option>
+                        <ion-select-option *ngIf="role== 'produzione'" value="completeOrder">
+                          Completa ✅
+                        </ion-select-option>
+                        <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">
+                          Archivia 📦
+                        </ion-select-option>
+                        <ion-select-option *ngIf="role== 'amministrazione' && order.isArchived" value="restoreOrder">
+                          Ripristina 🔄
+                        </ion-select-option>
+                        <ion-select-option *ngIf="role== 'amministrazione' && order.isCompleted && !order.isArchived"
+                          value="removeCompletion">
+                          Rimuovi Completamento 🔙
+                        </ion-select-option>
+                        <ion-select-option value="seePreview">
+                          Anteprima 📺
+                          <ion-icon name="tv-outline"></ion-icon>
+                        </ion-select-option>
+                      </ion-select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ion-button shape="round" size="small" size="small" (click)="getNextPage()"> vedi altri... </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

@@ -12,7 +12,6 @@ const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
-  
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
@@ -20,15 +19,15 @@ const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [AuthGuardService],
-    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule), 
+    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule),
   },
   {
     path: 'order-timing',
-    loadChildren: () => import('./pages/orders-timing/order-timing.module').then( m => m.OrderTimingPageModule)
+    loadChildren: () => import('./pages/orders-timing/order-timing.module').then(m => m.OrderTimingPageModule)
   },
   {
     path: 'preview',
-    loadChildren: () => import('./pages/preview/preview.module').then( m => m.PreviewPageModule)
+    loadChildren: () => import('./pages/preview/preview.module').then(m => m.PreviewPageModule)
   }
 ];
 

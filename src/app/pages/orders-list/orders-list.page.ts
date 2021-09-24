@@ -46,9 +46,9 @@ export class OrdersListPage implements OnInit {
   async ngOnInit() {
     this.role = this.authService.getParseOfUserObject();
     if (this.authService.getUser().role.id == 1) {
-      this.filter = { isArchived: false }
+      this.filter = { isArchived: false };
     } else if (this.authService.getUser().role.id != 1) {
-      this.filter = { role: this.authService.getUser().role.id, isArchived: false }
+      this.filter = { role: this.authService.getUser().role.id, isArchived: false };
     }
   }
 

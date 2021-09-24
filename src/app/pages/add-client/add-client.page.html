@@ -1,162 +1,161 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons>
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-title>SALVA CLIENTE<ion-icon name="person-circle-outline"></ion-icon>
-    </ion-title>
-  </ion-toolbar>
+  <ion-buttons>
+    <ion-back-button></ion-back-button>
+  </ion-buttons>
 </ion-header>
 
 <ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col offset="3" sizeLg="6" sizeXl="6" sizeMd="6" sizeSm="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>
+              ATTIVA CLIENTE BUSINESS :
+            </ion-card-subtitle>
+            <ion-toggle name="choose" [(ngModel)]="isBusinessClient"></ion-toggle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col sizeLg="12" sizeXl="12" sizeMd="12" sizeSm="12">
+        <form #addClientForm="ngForm">
+          <ion-card *ngIf="!isBusinessClient">
+            <ion-card-content>
+              <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE PRIVATO: </strong></p>
+              <ion-item>
+                <ion-label>Nome</ion-label>
+                <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Cognome</ion-label>
+                <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Grafica presente</ion-label>
+                <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
+              </ion-item>
+              <ion-item *ngIf="graphicPresentChoose">
+                <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
+                <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
+                  name="graphicLink" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Indirizzo di Fatturazione</ion-label>
+                <ion-input placeholder="*inserisci indirizzo di fatturazione" name="billingAddress"
+                  [(ngModel)]="client.billingAddress" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
+                  Copia da "indirizzo di Fatturazione"
+                </ion-button>
+                <ion-label>Indirizzo Di Spedizione</ion-label>
+                <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
+                  [(ngModel)]="client.shippingAddress" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Codice Fiscale:</ion-label>
+                <ion-input placeholder="*inserisci CF*" name="cf" [(ngModel)]="client.cf " required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Email</ion-label>
+                <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Numero di Telefono</ion-label>
+                <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
+                  [(ngModel)]="client.cellphoneNumber" required>
+                </ion-input>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
 
-  <ion-card>
-    <ion-card-content>
-      <ion-item>
-        <ion-label style="color: cornflowerblue;">ATTIVA CLIENTE BUSINESS :</ion-label>
-        <ion-toggle name="choose" [(ngModel)]="isBusinessClient"></ion-toggle>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
-
-  <form #addClientForm="ngForm">
-
-    <ion-card *ngIf="!isBusinessClient">
-      <ion-card-content>
-        <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE PRIVATO: </strong></p>
-        <ion-item>
-          <ion-label>Nome</ion-label>
-          <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Cognome</ion-label>
-          <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Grafica presente</ion-label>
-          <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
-        </ion-item>
-        <ion-item *ngIf="graphicPresentChoose">
-          <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
-          <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
-            name="graphicLink" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Indirizzo di Fatturazione</ion-label>
-          <ion-input placeholder="*inserisci indirizzo di fatturazione" name="billingAddress"
-            [(ngModel)]="client.billingAddress" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
-            Copia da "indirizzo di Fatturazione"
-          </ion-button>
-          <ion-label>Indirizzo Di Spedizione</ion-label>
-          <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
-            [(ngModel)]="client.shippingAddress" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Codice Fiscale:</ion-label>
-          <ion-input placeholder="*inserisci CF*" name="cf" [(ngModel)]="client.cf " required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Email</ion-label>
-          <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Numero di Telefono</ion-label>
-          <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
-            [(ngModel)]="client.cellphoneNumber" required>
-          </ion-input>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card *ngIf="isBusinessClient">
-      <ion-card-content>
-        <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE BUSINESS: </strong></p>
-        <ion-item>
-          <ion-label>Nome</ion-label>
-          <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Cognome</ion-label>
-          <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-item>
-            <ion-label>Grafica presente</ion-label>
-            <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
-          </ion-item>
-          <ion-item *ngIf="graphicPresentChoose">
-            <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
-            <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
-              name="graphicLink" required>
-            </ion-input>
-          </ion-item>
-        </ion-item>
-        <ion-item>
-          <ion-label>Ragione Sociale</ion-label>
-          <ion-input placeholder="*inserisci ragione sociale" name="businessName" [(ngModel)]="client.businessName"
-            required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>pIVA</ion-label>
-          <ion-input placeholder="*inserisci pIVA*" name="piva" [(ngModel)]="client.piva " required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Indirizzo di Fatturazione</ion-label>
-          <ion-input placeholder="*inserisci indirizzo di fatturazione*" name="billingAddress"
-            [(ngModel)]="client.billingAddress" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
-            Copia da "indirizzo di Fatturazione"
-          </ion-button>
-          <ion-label>Indirizzo di Spedizione</ion-label>
-          <ion-input placeholder="*inserisci indirizzo di spedizione*" name="shippingAddress"
-            [(ngModel)]="client.shippingAddress" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>SDI</ion-label>
-          <ion-input placeholder="*inserisci SDI*" name="sdi" [(ngModel)]="client.sdi" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Email</ion-label>
-          <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email" required>
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Numero di Telefono</ion-label>
-          <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
-            [(ngModel)]="client.cellphoneNumber" required>
-          </ion-input>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-
-  </form>
+          <ion-card *ngIf="isBusinessClient">
+            <ion-card-content>
+              <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE BUSINESS: </strong></p>
+              <ion-item>
+                <ion-label>Nome</ion-label>
+                <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Cognome</ion-label>
+                <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-item>
+                  <ion-label>Grafica presente</ion-label>
+                  <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
+                </ion-item>
+                <ion-item *ngIf="graphicPresentChoose">
+                  <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
+                  <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
+                    name="graphicLink" required>
+                  </ion-input>
+                </ion-item>
+              </ion-item>
+              <ion-item>
+                <ion-label>Ragione Sociale</ion-label>
+                <ion-input placeholder="*inserisci ragione sociale" name="businessName"
+                  [(ngModel)]="client.businessName" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>pIVA</ion-label>
+                <ion-input placeholder="*inserisci pIVA*" name="piva" [(ngModel)]="client.piva " required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Indirizzo di Fatturazione</ion-label>
+                <ion-input placeholder="*inserisci indirizzo di fatturazione*" name="billingAddress"
+                  [(ngModel)]="client.billingAddress" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
+                  Copia da "indirizzo di Fatturazione"
+                </ion-button>
+                <ion-label>Indirizzo di Spedizione</ion-label>
+                <ion-input placeholder="*inserisci indirizzo di spedizione*" name="shippingAddress"
+                  [(ngModel)]="client.shippingAddress" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>SDI</ion-label>
+                <ion-input placeholder="*inserisci SDI*" name="sdi" [(ngModel)]="client.sdi" required>
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Email</ion-label>
+                <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Numero di Telefono</ion-label>
+                <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
+                  [(ngModel)]="client.cellphoneNumber" required>
+                </ion-input>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 
 
 <ion-footer>
   <ion-toolbar>
-    <ion-button shape="round" size="small" class="float-right" (click)="saveCustomer()"
-      [disabled]="addClientForm.invalid">
+    <ion-button shape="block" size="medium" (click)="saveCustomer()" [disabled]="addClientForm.invalid">
       SALVA CLIENTE
       <ion-icon name="person-circle-outline"></ion-icon>
     </ion-button>

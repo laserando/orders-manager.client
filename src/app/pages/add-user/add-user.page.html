@@ -1,48 +1,51 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons>
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-title>
-      SALVA UTENTE <ion-icon name="person-outline"></ion-icon>
-    </ion-title>
-  </ion-toolbar>
+  <ion-buttons>
+    <ion-back-button></ion-back-button>
+  </ion-buttons>
 </ion-header>
 
 <ion-content>
-  <div id="wrapper">
-    <ion-card>
-      <ion-card-content>
-        <form #addUserForm="ngForm">
-          <ion-item>
-            <ion-label position="floating">NOME UTENTE</ion-label>
-            <ion-input name="username" required  placeholder="inserisci nome utente" [(ngModel)]="user.username"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating" >EMAIL UTENTE</ion-label>
-            <ion-input name="email" required  placeholder="inserisci email utente" [(ngModel)]="user.email"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating" >PASSWORD</ion-label>
-            <ion-input name="password" required  placeholder="inserisci password" [(ngModel)]="user.password"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label>RUOLO</ion-label>
-            <ion-select name="role" required  placeholder="select one" placeholder="Select one" [compareWith]="compareWith"
-              [interface]="'popover'" name="user_role" [(ngModel)]="user.role">
-              <ion-select-option [value]="role" *ngFor="let role of roles">
-                {{role.name}}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-        </form>
-      </ion-card-content>
-    </ion-card>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col offsetLg="1" offsetXl="2" offsetMd="1" sizeSm="12" sizeMd="10" sizeLg="10" sizeXl="8">
+        <ion-card>
+          <ion-card-content>
+            <form #addUserForm="ngForm">
+              <ion-item>
+                <ion-label position="floating">NOME UTENTE</ion-label>
+                <ion-input name="username" required placeholder="inserisci nome utente" [(ngModel)]="user.username">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">EMAIL UTENTE</ion-label>
+                <ion-input name="email" required placeholder="inserisci email utente" [(ngModel)]="user.email">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">PASSWORD</ion-label>
+                <ion-input name="password" required placeholder="inserisci password" [(ngModel)]="user.password">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>RUOLO</ion-label>
+                <ion-select name="role" required placeholder="select one" placeholder="Select one"
+                  [compareWith]="compareWith" [interface]="'popover'" name="user_role" [(ngModel)]="user.role">
+                  <ion-select-option [value]="role" *ngFor="let role of roles">
+                    {{role.name}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </form>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-button shape="round" size="small" class="float-right" (click)="addOrUpdateUser()" [disabled]="addUserForm.invalid">
+    <ion-button shape="round" size="small" class="float-right" (click)="addOrUpdateUser()"
+      [disabled]="addUserForm.invalid">
       SALVA UTENTE <ion-icon name="person-outline"></ion-icon>
     </ion-button>
   </ion-toolbar>

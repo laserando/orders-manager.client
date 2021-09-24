@@ -1,46 +1,44 @@
-<ion-card>
-  <ion-card-content>
-    <p style="font-size: larger;"> <strong> FILTRA PER: </strong> </p>
-    <div class="w1">
-      <div>
-        <ion-select placeholder="archivio" style="border: 1px solid black;" multiple name="" id=""
-          [(ngModel)]="filter.isArchived" (ngModelChange)="onFilterChange()">
-          <ion-select-option value="isArchived"> VEDI ARCHIVIO </ion-select-option>
-          <ion-select-option value="notArchived"> VEDI ORDINI ATTIVI </ion-select-option>
-        </ion-select>
-      </div>
-      <div>
-        <ion-select placeholder="ruolo" style="border: 1px solid black;" multiple name="" id=""
-          [(ngModel)]="filter.roles" (ngModelChange)="onFilterChange()" *ngIf="!inTimingPage">
-          <ion-select-option [value]="role.id" *ngFor="let role of roles"> {{role.name}} </ion-select-option>
-        </ion-select>
-      </div>
-    </div>
-    <div class="w1">
-      <div>
-        <ion-item *ngIf="!inTimingPage" style="width: 70%;">
-          <strong> DA :</strong>
-          <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;"
-            [(ngModel)]="filter.deliveryDate.from" (ngModelChange)="onFilterChange()">
-          </ion-input>
-          <strong> A :</strong>
-          <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;"
-            [(ngModel)]="filter.deliveryDate.to" (ngModelChange)="onFilterChange()"></ion-input>
-            <ion-button size="small" (click)="reset()"><ion-icon name="refresh-outline"></ion-icon></ion-button>
-        </ion-item>
-      </div>
-
-      <div>
-        <ion-select *ngIf="!inTimingPage" style="width: 50%;" placeholder="tags" style="border: 1px solid black;"
-          multiple name="" id="" [(ngModel)]="filter.tags" (ngModelChange)="onFilterChange()">
-          <ion-select-option [value]="1">
-            #LAVOROinCORSO
-          </ion-select-option>
-          <ion-select-option [value]="tag.id" *ngFor="let tag of tags">
-            {{tag.name}}
-          </ion-select-option>
-        </ion-select>
-      </div>
-    </div>
-  </ion-card-content>
-</ion-card>
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <ion-select placeholder="archivio" style="border: 1px solid black;" multiple name="" id=""
+        [(ngModel)]="filter.isArchived" (ngModelChange)="onFilterChange()">
+        <ion-select-option value="isArchived"> VEDI ARCHIVIO </ion-select-option>
+        <ion-select-option value="notArchived"> VEDI ORDINI ATTIVI </ion-select-option>
+      </ion-select>
+    </ion-col>
+    <ion-col>
+      <ion-select placeholder="ruolo" style="border: 1px solid black;" multiple name="" id="" [(ngModel)]="filter.roles"
+        (ngModelChange)="onFilterChange()" *ngIf="!inTimingPage">
+        <ion-select-option [value]="role.id" *ngFor="let role of roles"> {{role.name}} </ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col *ngIf="!inTimingPage">
+      <ion-item>
+        <strong> DA :</strong>
+        <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;"
+          [(ngModel)]="filter.deliveryDate.from" (ngModelChange)="onFilterChange()">
+        </ion-input>
+        <strong> A :</strong>
+        <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;" [(ngModel)]="filter.deliveryDate.to"
+          (ngModelChange)="onFilterChange()"></ion-input>
+        <ion-button size="small" (click)="reset()">
+          <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-col>
+    <ion-col *ngIf="!inTimingPage">
+      <ion-select placeholder="tags" style="border: 1px solid black;" multiple name="" id="" [(ngModel)]="filter.tags"
+        (ngModelChange)="onFilterChange()">
+        <ion-select-option [value]="1">
+          #LAVOROinCORSO
+        </ion-select-option>
+        <ion-select-option [value]="tag.id" *ngFor="let tag of tags">
+          {{tag.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+</ion-grid>

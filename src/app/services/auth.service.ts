@@ -38,7 +38,6 @@ export class AuthService {
       localStorage.setItem('token', this.token);
       return;
     }
-
     localStorage.removeItem('token');
   }
 

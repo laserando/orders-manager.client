@@ -14,14 +14,12 @@ import { RolesService } from 'src/app/services/roles.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClientModel } from 'src/app/models/client.model';
 import { ClientService } from 'src/app/services/client.service';
-import { IonicSelectableComponent } from 'ionic-selectable';
 
 @Component({
   selector: 'app-add-order',
   templateUrl: './add-order.page.html',
   styleUrls: ['./add-order.page.scss'],
 })
-
 
 export class AddOrderPage implements OnInit {
 
@@ -133,7 +131,6 @@ export class AddOrderPage implements OnInit {
     } catch (error) {
       if (error.status == 400) {
         alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
-        //console.log(":(", error.error.data.errors.email.find(element => { return element == 'email must be a valid email'; }));
       } else {
         console.log(error);
         alert(":(  : " + JSON.stringify(error));

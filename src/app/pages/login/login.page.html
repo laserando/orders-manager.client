@@ -14,8 +14,7 @@
         </ion-item>
         <ion-item>
           <ion-label position="floating">PASSWORD</ion-label>
-          <ion-input placeholder="inserisci password" 
-          [type]=" type ? 'password' : 'text' "
+          <ion-input placeholder="inserisci password" [type]=" type ? 'password' : 'text' "
             [(ngModel)]="login.password"> </ion-input>
           <ion-icon name="eye" (click)="type = !type" size="small" slot="end"></ion-icon>
         </ion-item>
@@ -23,9 +22,8 @@
         <p class="wrong-pass" *ngIf="wrong"> Password errata :( ... </p>
       </ion-card-content>
     </ion-card>
-    
   </div>
 
-  
+
 
 </ion-content>

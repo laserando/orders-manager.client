@@ -52,7 +52,7 @@ export class OrderTimingPage implements OnInit {
   }
 
   async search() {
-    this.orders = await this.orderService.find(null, this.term);
+    this.orders = await this.orderService.find(this.filter, this.term);
   }
 
   async getNextPage() {

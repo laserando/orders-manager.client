@@ -37,6 +37,7 @@ export class OrdersService {
     order.client = client.id ? client : await this.clientService.addCustomer(client);
     return this.http.post(this.URL, order).toPromise();
   }
+  
   findById(id) {
     return this.http.get<Order>(this.URL + "/" + id).toPromise();
   }

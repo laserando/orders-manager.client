@@ -1,28 +1,28 @@
 <ion-header>
-  <ion-toolbar>
     <ion-buttons>
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>CREA TIPOLOGIA DI LAVORAZIONE <ion-icon name="hammer-outline"></ion-icon>
-    </ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div id="wrapper">
-    <ion-card>
-      <ion-card-content>
-        <ion-item>
-          <ion-label position="floating">NOME TIPOLOGIA DI LAVORAZIONE</ion-label>
-          <ion-input placeholder="inserisci nome tipologia" [(ngModel)]="typeOfProcessing.name"></ion-input>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col offsetLg="1" offsetXl="2" offsetMd="1" sizeSm="12" sizeMd="10" sizeLg="10" sizeXl="8">
+        <ion-card>
+          <ion-card-content>
+            <ion-item>
+              <ion-label position="floating">NOME TIPOLOGIA DI LAVORAZIONE</ion-label>
+              <ion-input placeholder="inserisci nome tipologia" [(ngModel)]="typeOfProcessing.name"></ion-input>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-button shape="round" size="small" class="float-right" (click)="createTypeOfProcessing()">
+    <ion-button shape="block" size="medium" (click)="createTypeOfProcessing()">
       SALVA TIPOLOGIA DI LAVORAZIONE <ion-icon name="hammer-outline"></ion-icon>
     </ion-button>
   </ion-toolbar>
