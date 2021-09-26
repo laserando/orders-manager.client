@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FilterComponent } from './filter/filter.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { LegendComponent } from './legend/legend.component';
 
-const declarations = [FilterComponent]
+const declarations = [FilterComponent, LegendComponent]
 
 @NgModule({
   declarations: declarations,

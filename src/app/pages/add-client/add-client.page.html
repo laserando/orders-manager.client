@@ -7,7 +7,7 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col offset="3" sizeLg="6" sizeXl="6" sizeMd="6" sizeSm="6">
+      <ion-col sizeLg="6" sizeXl="6" sizeMd="6" sizeSm="6">
         <ion-card>
           <ion-card-header>
             <ion-card-subtitle>
@@ -17,18 +17,23 @@
           </ion-card-header>
         </ion-card>
       </ion-col>
+      <ion-col sizeLg="4" sizeXl="4" sizeMd="6" sizeSm="6">
+        <app-legend></app-legend>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col sizeLg="12" sizeXl="12" sizeMd="12" sizeSm="12">
         <form #addClientForm="ngForm">
           <ion-card *ngIf="!isBusinessClient">
             <ion-card-content>
               <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE PRIVATO: </strong></p>
               <ion-item>
-                <ion-label>Nome</ion-label>
+                <ion-label>*Nome* :</ion-label>
                 <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Cognome</ion-label>
+                <ion-label>*Cognome* :</ion-label>
                 <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
                 </ion-input>
               </ion-item>
@@ -37,13 +42,13 @@
                 <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
               </ion-item>
               <ion-item *ngIf="graphicPresentChoose">
-                <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
+                <ion-label style="color: dodgerblue;">*Link file grafica* :</ion-label>
                 <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
                   name="graphicLink" required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Indirizzo di Fatturazione</ion-label>
+                <ion-label>*Indirizzo di Fatturazione* :</ion-label>
                 <ion-input placeholder="*inserisci indirizzo di fatturazione" name="billingAddress"
                   [(ngModel)]="client.billingAddress" required>
                 </ion-input>
@@ -52,23 +57,23 @@
                 <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
                   Copia da "indirizzo di Fatturazione"
                 </ion-button>
-                <ion-label>Indirizzo Di Spedizione</ion-label>
+                <ion-label>*Indirizzo Di Spedizione* :</ion-label>
                 <ion-input placeholder="*inserisci indirizzo di spedizione" name="shippingAddress"
                   [(ngModel)]="client.shippingAddress" required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Codice Fiscale:</ion-label>
-                <ion-input placeholder="*inserisci CF*" name="cf" [(ngModel)]="client.cf " required>
+                <ion-label>Codice Fiscale :</ion-label>
+                <ion-input placeholder="*inserisci CF*" name="cf" [(ngModel)]="client.cf ">
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Email</ion-label>
+                <ion-label>Email :</ion-label>
                 <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email">
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Numero di Telefono</ion-label>
+                <ion-label>*Numero di Telefono* :</ion-label>
                 <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
                   [(ngModel)]="client.cellphoneNumber" required>
                 </ion-input>
@@ -80,40 +85,40 @@
             <ion-card-content>
               <p class="ion-text-center"><strong> ANAGRAFICA CLIENTE BUSINESS: </strong></p>
               <ion-item>
-                <ion-label>Nome</ion-label>
+                <ion-label>*Nome* :</ion-label>
                 <ion-input placeholder="*inserisci nome*" name="name" [(ngModel)]="client.name" required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Cognome</ion-label>
+                <ion-label>*Cognome* :</ion-label>
                 <ion-input placeholder="*inserisci cognome*" name="surname" [(ngModel)]="client.surname" required>
                 </ion-input>
               </ion-item>
               <ion-item>
                 <ion-item>
-                  <ion-label>Grafica presente</ion-label>
+                  <ion-label>Grafica presente :</ion-label>
                   <ion-toggle name="graphicPresentChoose" [(ngModel)]="graphicPresentChoose"></ion-toggle>
                 </ion-item>
                 <ion-item *ngIf="graphicPresentChoose">
-                  <ion-label style="color: dodgerblue;">Link file grafica</ion-label>
+                  <ion-label style="color: dodgerblue;">*Link file grafica* :</ion-label>
                   <ion-input placeholder="*inserisci link file Grafica*" type="url" [(ngModel)]="client.graphicLink"
                     name="graphicLink" required>
                   </ion-input>
                 </ion-item>
               </ion-item>
               <ion-item>
-                <ion-label>Ragione Sociale</ion-label>
+                <ion-label>*Ragione Sociale* :</ion-label>
                 <ion-input placeholder="*inserisci ragione sociale" name="businessName"
                   [(ngModel)]="client.businessName" required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>pIVA</ion-label>
+                <ion-label>*pIVA* :</ion-label>
                 <ion-input placeholder="*inserisci pIVA*" name="piva" [(ngModel)]="client.piva " required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Indirizzo di Fatturazione</ion-label>
+                <ion-label>*Indirizzo di Fatturazione* :</ion-label>
                 <ion-input placeholder="*inserisci indirizzo di fatturazione*" name="billingAddress"
                   [(ngModel)]="client.billingAddress" required>
                 </ion-input>
@@ -122,23 +127,23 @@
                 <ion-button size="small" name="sameAddressChoose" slot="start" (click)="sameAddress()">
                   Copia da "indirizzo di Fatturazione"
                 </ion-button>
-                <ion-label>Indirizzo di Spedizione</ion-label>
+                <ion-label>*Indirizzo di Spedizione* :</ion-label>
                 <ion-input placeholder="*inserisci indirizzo di spedizione*" name="shippingAddress"
                   [(ngModel)]="client.shippingAddress" required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>SDI</ion-label>
+                <ion-label>*SDI* :</ion-label>
                 <ion-input placeholder="*inserisci SDI*" name="sdi" [(ngModel)]="client.sdi" required>
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Email</ion-label>
+                <ion-label>Email :</ion-label>
                 <ion-input type="email" placeholder="*inserisci email*" name="email" [(ngModel)]="client.email">
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Numero di Telefono</ion-label>
+                <ion-label>*Numero di Telefono* :</ion-label>
                 <ion-input placeholder="*inserisci numero di telefono*" name="cellphoneNumber"
                   [(ngModel)]="client.cellphoneNumber" required>
                 </ion-input>
