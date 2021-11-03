@@ -11,13 +11,13 @@ import { TagService } from 'src/app/services/tag.service';
 })
 export class FilterComponent implements OnInit {
   @Input() inTimingPage: boolean;
+  @Input() inPreventivePage:boolean;
   @Output() public filterChange: EventEmitter<any> = new EventEmitter();
 
   public from: string;
   public to: string;
   public roles: Role[] = [];
   public tags: TagModel[] = [];
-
   public filter: any = { deliveryDate: {} };
 
   constructor(private rolesService: RolesService,

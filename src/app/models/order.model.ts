@@ -22,11 +22,12 @@ export class Order {
     public isCompleted: boolean = false;
     public created_at: string;
     public isArchived: boolean = false;
+    public isPreventive: boolean = false;
     public notes: NoteModel[] = [];
 
     constructor(clientIndications?: string, typeOfWork?: string, typesOfProcessing?: TypeOfProcessingModel,
         typesOfMaterial?: TypeOfMaterialModel, itemSize?: string, deliveryDate?: string, role?: Role, id?: number, tags?: TagModel[], logs?: LogModel[],
-        isCompleted?: boolean, created_at?: string, isArchived?: boolean, notes?: NoteModel[], client?: ClientModel) {
+        isCompleted?: boolean, created_at?: string, isArchived?: boolean,isPreventive?: boolean, notes?: NoteModel[], client?: ClientModel) {
         this.client = client;
         this.typeOfWork = typeOfWork;
         this.typesOfProcessing = typesOfProcessing;
@@ -41,6 +42,7 @@ export class Order {
         this.isCompleted = isCompleted;
         this.created_at = created_at;
         this.isArchived = isArchived;
+        this.isPreventive = isPreventive;
         this.notes = notes || [];
     }
 }

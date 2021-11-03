@@ -1,15 +1,16 @@
 <ion-grid>
   <ion-row>
     <ion-col>
-      <ion-select placeholder="archivio" style="border: 1px solid black;" multiple name="" id=""
-        [(ngModel)]="filter.isArchived" (ngModelChange)="onFilterChange()">
+      <ion-select *ngIf="!inPreventivePage" placeholder=" 'archiviato' / 'attivo' / 'completato' " style="border: 1px solid black;" multiple
+        name="" id="" [(ngModel)]="filter.isArchived" (ngModelChange)="onFilterChange()">
         <ion-select-option value="isArchived"> VEDI ARCHIVIO </ion-select-option>
         <ion-select-option value="notArchived"> VEDI ORDINI ATTIVI </ion-select-option>
+        <ion-select-option value="complete"> VEDI ORDINI COMPLETATI </ion-select-option>
       </ion-select>
     </ion-col>
     <ion-col>
       <ion-select placeholder="ruolo" style="border: 1px solid black;" multiple name="" id="" [(ngModel)]="filter.roles"
-        (ngModelChange)="onFilterChange()" *ngIf="!inTimingPage">
+        (ngModelChange)="onFilterChange()" *ngIf="!inTimingPage && !inPreventivePage">
         <ion-select-option [value]="role.id" *ngFor="let role of roles"> {{role.name}} </ion-select-option>
       </ion-select>
     </ion-col>

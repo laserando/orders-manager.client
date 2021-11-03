@@ -20,6 +20,10 @@
             <ion-icon slot="start" name="document-outline"></ion-icon>
             GESTIONE ORDINI
           </ion-item>
+          <ion-item [routerLink]="'/dashboard/preventives'">
+            <ion-icon slot="start" name="receipt-outline"></ion-icon>
+            GESTIONE PREVENTIVI
+          </ion-item>
           <ion-item [routerLink]="'/dashboard/users'" *ngIf="role==='amministrazione'">
             <ion-icon slot="start" name="person-outline"></ion-icon>
             GESTIONE UTENTI

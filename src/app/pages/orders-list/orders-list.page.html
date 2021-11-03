@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>LISTA ORDINI<ion-icon name="document-outline"></ion-icon>
+    <ion-title>
+      <ion-icon name="document-outline"></ion-icon>
+      LISTA ORDINI
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -74,9 +76,8 @@
 
                   </tr>
                 <tbody>
-                  <tr *ngFor="let order of orders,let i = index">
-                    <td
-                      style="color: rgb(189, 42, 42);font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                  <tr *ngFor="let order of orders,let i = index" [ngClass]="{'complete' : order.isCompleted}">
+                    <td id="number">
                       {{order.id}}
                     </td>
                     <td> {{order.client?.name}} </td>
@@ -128,8 +129,7 @@
                     </td>
                     <td>
                       <div>
-                        <ion-select class="manage" (ionChange)="select($event,order)" interface="popover"
-                          placeholder="⚙">
+                        <ion-select class="manage" (ionChange)="select($event,order)" placeholder="⚙">
                           <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived "
                             value="goToChangeOrder">
                             🖊 Modifica
@@ -137,7 +137,7 @@
                           <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
                             ❌ Elimina
                           </ion-select-option>
-                          <ion-select-option *ngIf="role== 'produzione'" value="completeOrder">
+                          <ion-select-option *ngIf="role== 'produzione' || role == 'grafica' " value="completeOrder">
                             ✅ Completa
                           </ion-select-option>
                           <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">
@@ -148,7 +148,10 @@
                           </ion-select-option>
                           <ion-select-option *ngIf="role== 'amministrazione' && order.isCompleted && !order.isArchived"
                             value="removeCompletion">
-                            🔙 Rimuovi Completamento
+                            ⛔ Rimuovi "Completato"
+                          </ion-select-option>
+                          <ion-select-option value="changeInPreventive">
+                            ⏪ Sposta in Preventivi
                           </ion-select-option>
                           <ion-select-option value="seePreview">
                             📺 Anteprima

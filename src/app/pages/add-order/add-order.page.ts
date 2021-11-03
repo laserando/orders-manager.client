@@ -32,7 +32,7 @@ export class AddOrderPage implements OnInit {
   public graphicPresentChoose: boolean = false;
   public isBusinessClient: boolean = false;
   public routeParams: boolean = false;
-  public routeToTags: boolean = false;
+  public routeToPreventive: boolean = false;
   public role: string;
   public businessClients: (ClientModel & { fullname?: string })[] = [];
   public privateClients: (ClientModel & { fullname?: string })[] = [];
@@ -89,9 +89,10 @@ export class AddOrderPage implements OnInit {
         this.sameAddressChoose = true;
       }
     }
-    let routeToTags = this.router.url.substring(0, 18);
-    if (routeToTags == "/dashboard/orders_") {
-      this.routeToTags = true
+    let routeToPreventive = this.router.url.substring(0, 18);
+    console.log(routeToPreventive);
+    if (routeToPreventive == "/dashboard/prevent") {
+      this.routeToPreventive = true;
     }
   }
 
@@ -126,6 +127,49 @@ export class AddOrderPage implements OnInit {
         this.order = new Order();
         this.client = new ClientModel();
         this.router.navigate(["/dashboard/orders"]);
+      }
+    } catch (error) {
+      if (error.status == 400) {
+        alert("EMAIL DEVE ESSERE DI TIPO : EMAIL@");
+      } else {
+        console.log(error);
+        alert(":(  : " + JSON.stringify(error));
+      }
+    }
+  }
+
+  async savePreventive() {
+    try {
+      this.order.isPreventive = true;
+      if (this.graphicPresentChoose == false) {
+        this.client.graphicLink = "";
+      }
+      if (this.route.snapshot.params.id) {
+        if (confirm("sei sicuro di voler aggiornare l'ordine?")) {
+          if (this.isBusinessClient) {
+            this.client.isBusiness = true;
+          } else {
+            this.client.isBusiness = false;
+          }
+          await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
+          this.ionToastService.alertMessage("update");
+          this.router.navigate(["/dashboard/preventives"]);
+        }
+      } else {
+        if (this.graphicPresentChoose == false) {
+          this.client.graphicLink = "";
+        }
+        this.order.role = { name: "amministratore", id: 1 };
+        if (this.isBusinessClient) {
+          this.client.isBusiness = true;
+        } else {
+          this.client.isBusiness = false;
+        }
+        await this.ordersService.addOrder(this.order, this.client);
+        this.ionToastService.alertMessage("add");
+        this.order = new Order();
+        this.client = new ClientModel();
+        this.router.navigate(["/dashboard/preventives"]);
       }
     } catch (error) {
       if (error.status == 400) {

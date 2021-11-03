@@ -19,6 +19,16 @@ const routes: Routes = [
         loadChildren: () => import('../add-order/add-order.module').then(m => m.AddOrderPageModule)
       },
       {
+        path: 'preventive',
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('../add-order/add-order.module').then(m => m.AddOrderPageModule)
+      },
+      {
+        path: 'preventive/:id',
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('../add-order/add-order.module').then(m => m.AddOrderPageModule)
+      },
+      {
         path: 'orders/:id',
         canActivate: [AuthGuardService],
         loadChildren: () => import('../add-order/add-order.module').then(m => m.AddOrderPageModule)
@@ -117,6 +127,10 @@ const routes: Routes = [
         path: 'add-client/:id',
         canActivate: [AuthGuardService],
         loadChildren: () => import('../add-client/add-client.module').then(m => m.AddClientPageModule)
+      },
+      {
+        path: 'preventives',
+        loadChildren: () => import('../preventives-list/preventives-list.module').then( m => m.PreventivesListPageModule)
       }
 
     ]

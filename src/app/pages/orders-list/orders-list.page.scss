@@ -4,25 +4,38 @@ ion-select {
   border-radius: 10px;
 }
 
+#number {
+  color: #e94e1b;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
 .manage {
   font-size: x-large;
 }
 
-.selectable{
+.selectable {
   color: gray;
 }
 
-.tags-select{
-  color:gray;
+.tags-select {
+  color: gray;
   width: 250px;
 }
 
-.tags-div{
-  >p{
+.tags-div {
+  >p {
     margin-left: 1%;
     font-size: medium;
   }
- 
+
   text-align: left;
   color: green;
+}
+
+.complete {
+  border: 2px solid green;
+
+  >#number {
+    color: green;
+  }
 }

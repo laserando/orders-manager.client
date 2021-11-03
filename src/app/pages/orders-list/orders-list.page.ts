@@ -13,7 +13,6 @@ import { StorageModalComponent } from "src/app/components/modal/storage-modal.co
 import { ClientService } from 'src/app/services/client.service';
 import { ClientModel } from 'src/app/models/client.model';
 import { Router } from '@angular/router';
-import { ConfirmService } from 'src/app/services/confirm.service';
 import { NoteService } from 'src/app/services/note.service';
 
 @Component({
@@ -44,16 +43,15 @@ export class OrdersListPage implements OnInit {
     private modalCtrl: ModalController,
     private clientService: ClientService,
     private router: Router,
-    private confirmService: ConfirmService,
     public notesService: NoteService,
     public menu: MenuController) { }
 
   async ngOnInit() {
     this.role = this.authService.getParseOfUserObject();
     if (this.authService.getUser().role.id == 1) {
-      this.filter = { isArchived: false };
+      this.filter = { isArchived: false, isPreventive: false };
     } else if (this.authService.getUser().role.id != 1) {
-      this.filter = { role: this.authService.getUser().role.id, isArchived: false };
+      this.filter = { role: this.authService.getUser().role.id, isArchived: false,isPreventive: false };
     }
   }
 
@@ -82,7 +80,7 @@ export class OrdersListPage implements OnInit {
   async searchByClient(event) {
     this.term = event.text
 
-    const clients = (await this.clientService.find(null, this.term, 0, 20,'surname:ASC')).map((c: any) => {
+    const clients = (await this.clientService.find(null, this.term, 0, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })
@@ -92,7 +90,7 @@ export class OrdersListPage implements OnInit {
 
   async getMoreClients(event) {
 
-    const clients = (await this.clientService.find(null, this.term, this.clients.length,20,'surname:ASC')).map((c: any) => {
+    const clients = (await this.clientService.find(null, this.term, this.clients.length, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })
@@ -123,7 +121,6 @@ export class OrdersListPage implements OnInit {
 
   async completeOrder(order: Order) {
     if (confirm("sei sicuro di voler completare l'ordine?")) {
-      order.tags = [];
       order.isCompleted = true;
       order.role.id = 1;
       order.role.name = "amministrazione";
@@ -135,7 +132,6 @@ export class OrdersListPage implements OnInit {
   async removeCompletion(order: Order) {
     if (confirm("sei sicuro di voler TOGLIERE il COMPLETAMENTO dell'ordine?")) {
       order.isCompleted = false;
-      order.tags = [];
       await this.ordersService.updateOrder(order, order.id, order.client);
       this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
@@ -209,6 +205,13 @@ export class OrdersListPage implements OnInit {
     } else {
       this.filter.isArchived = false;
     }
+    if (filter.isArchived) {
+      if (filter.isArchived.find(ia => ia == 'complete')) {
+        this.filter.isCompleted = true;
+      } else {
+        delete this.filter.isCompleted
+      }
+    }
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
@@ -251,6 +254,17 @@ export class OrdersListPage implements OnInit {
       case "seePreview":
         this.router.navigate([`/dashboard/preview/${order.id}`]);
         break;
+      case "changeInPreventive":
+        this.changeInPreventive(order)
+        break;
+    }
+  }
+
+  async changeInPreventive(order) {
+    if (confirm("Sei sicuro di voler spostare l'ordine nella lista preventivi?")) {
+      order.isPreventive = true;
+      await this.orderService.updateOrder(order, order.id, order.client);
+      this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     }
   }
 
@@ -261,8 +275,9 @@ export class OrdersListPage implements OnInit {
     return compareValue.id == currentValue.id;
   }
 
-  updateTags(order){
-    this.orderService.updateOrder(order,order.id,order.client)
+  async updateTags(order) {
+    await this.orderService.updateOrder(order, order.id, order.client);
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
 }
