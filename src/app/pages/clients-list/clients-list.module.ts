@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { ClientsListPageRoutingModule } from './clients-list-routing.module';
 import { ClientsListPage } from './clients-list.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     ClientsListPageRoutingModule,
+    IonicSelectableModule,
     ComponentsModule
   ],
   declarations: [ClientsListPage]

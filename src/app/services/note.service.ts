@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NoteModel } from '../models/note.model';
+import { Order } from '../models/order.model';
 import { Global } from './global';
 
 @Injectable({
@@ -8,7 +9,8 @@ import { Global } from './global';
 })
 export class NoteService {
 
-  public URL: string = `${Global.ENDPOINT.BASE}/notes`
+  public URL: string = `${Global.ENDPOINT.BASE}/notes`;
+  public order: Order;
 
   constructor(private http: HttpClient) { }
 
@@ -22,5 +24,14 @@ export class NoteService {
         order: order_id
       }
     ).toPromise()
+  }
+
+  notesCount(order) {
+    this.order = order;
+    let count = 0;
+    for (let note of this.order.notes) {
+      count++;
+    }
+    return count;
   }
 }

@@ -57,15 +57,11 @@
   <ng-container *ngIf="storageForNote && order.notes.length">
     <ion-card>
       <ion-card-content>
-        <div *ngFor="let note of order.notes">
+        <div *ngFor="let note of order.notes" class="note-div">
           DA: <strong> {{note.noteByRole?.role?.name}} </strong>
           A: <strong> {{note.noteToRole?.role?.name}} </strong> <br>
-          NOTA : <br> <span style="color: red;"> {{note.textNote}} </span>
-          <ion-list>
-            <ion-item>
-
-            </ion-item>
-          </ion-list>
+          NOTA : <br> <span> "{{note.textNote}}" </span>
+         <br>
         </div>
       </ion-card-content>
     </ion-card>

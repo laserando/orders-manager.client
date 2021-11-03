@@ -23,7 +23,7 @@
             <ion-card-content>
               <ion-item>
                 <ion-label>
-                  <p><strong> CLIENTI PRIVATI ESISTENTI :</strong></p>
+                  <p><strong> CLIENTI PRIVATI ESISTENTI</strong></p>
                 </ion-label>
                 <ionic-selectable name="privateClients" [(ngModel)]="client" [items]="privateClients"
                   itemValueField="id" itemTextField="fullname" [canSearch]="true" (onChange)="cleanClient($event)"
@@ -38,7 +38,7 @@
             <ion-card-content>
               <ion-item>
                 <ion-label>
-                  <p><strong> CLIENTI BUSINESS ESISTENTI :</strong></p>
+                  <p><strong> CLIENTI BUSINESS ESISTENTI</strong></p>
                 </ion-label>
                 <ionic-selectable name="businessClients" [(ngModel)]="client" [items]="businessClients"
                   itemValueField="id" itemTextField="fullname" [canSearch]="true" (onChange)="cleanClient($event)"
@@ -48,9 +48,6 @@
               </ion-item>
             </ion-card-content>
           </ion-card>
-        </ion-col>
-        <ion-col offsetXl="4" offsetLg="4" offsetSm="3" offsetMd="3" sizeLg="4" sizeXl="4" sizeMd="6" sizeSm="6">
-          <app-legend></app-legend>
         </ion-col>
       </ion-row>
 
@@ -257,12 +254,6 @@
     </form>
   </ion-grid>
 </ion-content>
-
-
-
-
-
-
 
 <ion-footer>
   <ion-toolbar>

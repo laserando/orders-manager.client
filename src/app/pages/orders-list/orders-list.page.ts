@@ -8,12 +8,13 @@ import { Role } from 'src/app/models/role.model';
 import { RolesService } from 'src/app/services/roles.service';
 import { TagService } from 'src/app/services/tag.service';
 import { TagModel } from 'src/app/models/tag.model';
-import { ModalController } from '@ionic/angular';
+import { MenuController, ModalController } from '@ionic/angular';
 import { StorageModalComponent } from "src/app/components/modal/storage-modal.component";
 import { ClientService } from 'src/app/services/client.service';
 import { ClientModel } from 'src/app/models/client.model';
 import { Router } from '@angular/router';
 import { ConfirmService } from 'src/app/services/confirm.service';
+import { NoteService } from 'src/app/services/note.service';
 
 @Component({
   selector: 'app-orders-list',
@@ -31,6 +32,8 @@ export class OrdersListPage implements OnInit {
   public tags: TagModel[] = [];
   public to: string;
   public from: string;
+  public clients: (ClientModel & { fullname?: string })[] = [];
+  public client: ClientModel;
 
   constructor(private orderService: OrdersService,
     private ionToastService: IonToastService,
@@ -41,7 +44,9 @@ export class OrdersListPage implements OnInit {
     private modalCtrl: ModalController,
     private clientService: ClientService,
     private router: Router,
-    private confirmService: ConfirmService) { }
+    private confirmService: ConfirmService,
+    public notesService: NoteService,
+    public menu: MenuController) { }
 
   async ngOnInit() {
     this.role = this.authService.getParseOfUserObject();
@@ -53,6 +58,10 @@ export class OrdersListPage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    this.clients = [...(await this.clientService.find()).map((c: any) => {
+      c.fullname = c.name + ' ' + c.surname;
+      return c;
+    })];
     this.tags = await this.tagsService.find()
     this.roles = await this.rolesService.find()
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
@@ -68,6 +77,43 @@ export class OrdersListPage implements OnInit {
 
   async search() {
     this.orders = await this.orderService.find(this.filter, this.term, 0, 20);
+  }
+
+  async searchByClient(event) {
+    this.term = event.text
+
+    const clients = (await this.clientService.find(null, this.term, 0, 20,'surname:ASC')).map((c: any) => {
+      c.fullname = c.name + ' ' + c.surname;
+      return c;
+    })
+    this.clients = [...clients]
+
+  }
+
+  async getMoreClients(event) {
+
+    const clients = (await this.clientService.find(null, this.term, this.clients.length,20,'surname:ASC')).map((c: any) => {
+      c.fullname = c.name + ' ' + c.surname;
+      return c;
+    })
+    this.clients.push(...clients);
+
+    event.component.endInfiniteScroll();
+
+    if (!clients.length) {
+      event.component.disableInfiniteScroll();
+    }
+  }
+
+  async cleanClient(event) {
+    if (event == 'clean') {
+      delete this.filter.client;
+      this.client = null;
+      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    } else {
+      this.filter.client = event.value.id;
+      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    }
   }
 
   async getNextPage() {
@@ -90,7 +136,6 @@ export class OrdersListPage implements OnInit {
     if (confirm("sei sicuro di voler TOGLIERE il COMPLETAMENTO dell'ordine?")) {
       order.isCompleted = false;
       order.tags = [];
-      order.tags.push({ name: "#LAVOROinCORSO", id: 1 })
       await this.ordersService.updateOrder(order, order.id, order.client);
       this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
@@ -188,9 +233,6 @@ export class OrdersListPage implements OnInit {
       case "goToChangeOrder":
         this.router.navigate([`/dashboard/orders/${order.id}`]);
         break;
-      case "openModal":
-        this.openModal(order);
-        break;
       case "deleteOrder":
         this.deleteOrder(order.id);
         break;
@@ -210,6 +252,17 @@ export class OrdersListPage implements OnInit {
         this.router.navigate([`/dashboard/preview/${order.id}`]);
         break;
     }
+  }
+
+  compareWith(currentValue: any, compareValue: any) {
+    if (Array.isArray(compareValue)) {
+      return (compareValue || []).map(cv => cv.id).indexOf(currentValue.id) > -1;
+    }
+    return compareValue.id == currentValue.id;
+  }
+
+  updateTags(order){
+    this.orderService.updateOrder(order,order.id,order.client)
   }
 
 }

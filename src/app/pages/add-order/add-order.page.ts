@@ -121,7 +121,6 @@ export class AddOrderPage implements OnInit {
         } else {
           this.client.isBusiness = false;
         }
-        this.order.tags.push({ name: "#LAVOROinCORSO", id: 1 })
         await this.ordersService.addOrder(this.order, this.client);
         this.ionToastService.alertMessage("add");
         this.order = new Order();

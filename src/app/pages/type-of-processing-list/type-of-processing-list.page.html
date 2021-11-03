@@ -20,16 +20,16 @@
       <table class="default">
         <thead>
           <tr>
-            <th>Numero TIPOLOGIA DI LAVORAZIONE</th>
-            <th>Nome TIPOLOGIA DI LAVORAZIONE</th>
+            <th>N°</th>
+            <th>Nome</th>
             <th>GESTISCI</th>
           </tr>
         </thead>
         <tbody *ngIf="!typesOfProcessing.length">
           <tr style="text-align: center;">
-            <td></td> 
-            <td>Nessuna Tipologia</td> 
-            <td></td> 
+            <td></td>
+            <td>Nessuna Tipologia</td>
+            <td></td>
           </tr>
         </tbody>
         <tbody>
@@ -41,10 +41,12 @@
               {{typeOfProcessing.name}}
             </td>
             <td>
-              <ion-button shape="round" size="small" [routerLink]="'/dashboard/type-of-processing/' + typeOfProcessing.id ">
+              <ion-button shape="round" size="small"
+                [routerLink]="'/dashboard/type-of-processing/' + typeOfProcessing.id ">
                 <ion-icon name="pencil-outline"></ion-icon>
               </ion-button>
-              <ion-button color="danger" size="small" shape="round" (click)="deleteTypeOfProcessing(typeOfProcessing.id)">
+              <ion-button color="danger" size="small" shape="round"
+                (click)="deleteTypeOfProcessing(typeOfProcessing.id)">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
             </td>

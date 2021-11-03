@@ -7,3 +7,22 @@ ion-select {
 .manage {
   font-size: x-large;
 }
+
+.selectable{
+  color: gray;
+}
+
+.tags-select{
+  color:gray;
+  width: 250px;
+}
+
+.tags-div{
+  >p{
+    margin-left: 1%;
+    font-size: medium;
+  }
+ 
+  text-align: left;
+  color: green;
+}

@@ -24,7 +24,7 @@
         <strong> A :</strong>
         <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;" [(ngModel)]="filter.deliveryDate.to"
           (ngModelChange)="onFilterChange()"></ion-input>
-        <ion-button size="small" (click)="reset()">
+        <ion-button [fill]="'clear'" size="small" (click)="reset()">
           <ion-icon name="refresh-outline"></ion-icon>
         </ion-button>
       </ion-item>

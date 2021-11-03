@@ -12,6 +12,8 @@ export class ClientsListPage implements OnInit {
   public clients: ClientModel[] = [];
   public filter: any = {};
   public term: string;
+  public client: ClientModel;
+  public clientsInSelectable: ClientModel[] = [];
 
   constructor(private clientService: ClientService) { }
 
@@ -24,7 +26,7 @@ export class ClientsListPage implements OnInit {
 
   async deleteCustomer(id) {
     if (confirm("SEI SICURO DI VOLER ELIMINARE IL CLIENTE")) {
-      await this.clientService.deleteCustomer(id)
+      await this.clientService.deleteCustomer(id);
       this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
     }
   }
@@ -55,4 +57,43 @@ export class ClientsListPage implements OnInit {
     }
     this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
   }
+
+  async searchByClient(event) {
+
+    this.term = event.text;
+    const clients = (await this.clientService.find(null, this.term, 0, 20, 'surname:ASC')).map((c: any) => {
+      c.fullname = c.name + ' ' + c.surname;
+      return c;
+    })
+    this.clientsInSelectable = [...clients]
+
+  }
+
+  async getMoreClients(event) {
+
+    const clients = (await this.clientService.find(null, this.term, this.clients.length, 20, 'surname:ASC')).map((c: any) => {
+      c.fullname = c.name + ' ' + c.surname;
+      return c;
+    })
+    this.clientsInSelectable.push(...clients);
+
+    event.component.endInfiniteScroll();
+
+    if (!clients.length) {
+      event.component.disableInfiniteScroll();
+    }
+  }
+
+
+  async cleanClient(event) {
+    if (event == 'clean') {
+      delete this.filter.id;
+      this.client = null;
+      this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
+    } else {
+      this.filter.id = event.value.id;
+      this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
+    }
+  }
+
 }

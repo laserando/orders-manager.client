@@ -1,8 +1,13 @@
-
+<ion-header class="ion-margin">
+  <ion-buttons>
+    <ion-menu-button>
+    </ion-menu-button>
+  </ion-buttons>
+</ion-header>
 <ion-content>
   <ion-split-pane contentId="main">
     <ion-menu contentId="main">
-      <ion-header>
+      <ion-header> 
         <ion-img [src]="">
         </ion-img>
         <ion-toolbar>
@@ -37,7 +42,7 @@
           </ion-item>
           <ion-item [routerLink]="'/dashboard/order-timing'" *ngIf="role==='amministrazione'">
             <ion-icon slot="start" name="stopwatch-outline"></ion-icon>
-            GESTIONE TEMPISTICHE ORDINI
+            TEMPISTICHE
           </ion-item>
           <ion-item [routerLink]="'/dashboard/calendar'">
             <ion-icon slot="start" name="calendar-outline"></ion-icon>

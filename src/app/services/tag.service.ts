@@ -25,7 +25,6 @@ export class TagService {
 
     return this.http.get<TagModel[]>(`${this.URL}?${qs.stringify(query)}`).toPromise()
     .then(res => res)
-    .then(res => res.filter(response => response.name != "#LAVOROinCORSO"))
   }
 
   findById(id : number) {
