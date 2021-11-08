@@ -153,19 +153,23 @@
                           <ion-select-option value="changeInPreventive">
                             ⏪ Sposta in Preventivi
                           </ion-select-option>
-                          <ion-select-option value="seePreview">
-                            📺 Anteprima
-                            <ion-icon name="tv-outline"></ion-icon>
-                          </ion-select-option>
                         </ion-select>
                       </div>
-                      <div>
-                        <ion-button [size]="'small'" [disabled]="notesService.notesCount(order) == 0"
-                          (click)="openModal(order)">
-                          <ion-icon slot="icon-only" [name]="'mail-outline'">
-                          </ion-icon>
-                          <span>{{notesService.notesCount(order)}}</span>
-                        </ion-button>
+                      <div class="button-bottom">
+                        <div>
+                          <ion-button [size]="'small'" [disabled]="notesService.notesCount(order) == 0"
+                            (click)="openModal(order)">
+                            <ion-icon slot="icon-only" [name]="'mail-outline'">
+                            </ion-icon>
+                            <span>{{notesService.notesCount(order)}}</span>
+                          </ion-button>
+                        </div>
+                        <div>
+                          <ion-button [size]="'small'" (click)="seePreview(order)">
+                            <ion-icon slot="icon-only" [name]="'tv-outline'">
+                            </ion-icon>
+                          </ion-button>
+                        </div>
                       </div>
                     </td>
                   </tr>

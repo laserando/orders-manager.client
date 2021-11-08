@@ -90,7 +90,6 @@ export class AddOrderPage implements OnInit {
       }
     }
     let routeToPreventive = this.router.url.substring(0, 18);
-    console.log(routeToPreventive);
     if (routeToPreventive == "/dashboard/prevent") {
       this.routeToPreventive = true;
     }

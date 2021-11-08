@@ -251,13 +251,14 @@ export class OrdersListPage implements OnInit {
       case "removeCompletion":
         this.removeCompletion(order);
         break;
-      case "seePreview":
-        this.router.navigate([`/dashboard/preview/${order.id}`]);
-        break;
       case "changeInPreventive":
         this.changeInPreventive(order)
         break;
     }
+  }
+
+  seePreview(order){
+    this.router.navigate([`/dashboard/preview/${order.id}`]);
   }
 
   async changeInPreventive(order) {
