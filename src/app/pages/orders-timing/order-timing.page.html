@@ -19,12 +19,14 @@
             <th>Ore in Amministrazione</th>
             <th>Ore in Grafica</th>
             <th>Ore in Produzione</th>
+            <th>Ore in Stampa</th>
             <th>Stato</th>
             <th style="text-align: center;">GESTISCI</th>
           </tr>
         </thead>
         <tbody *ngIf="!orders.length">
           <tr class="ion-text-center">
+            <td></td>
             <td></td>
             <td></td>
             <td>Nessun Ordine</td>
@@ -46,6 +48,9 @@
             </td>
             <td>
               {{order.status?.s4 || '0'}} h
+            </td>
+            <td>
+              {{order.status?.s5 || '0'}} h
             </td>
             <td *ngIf="!order.isArchived" style="color: green;">
               ATTIVO

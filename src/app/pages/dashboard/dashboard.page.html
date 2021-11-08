@@ -7,7 +7,7 @@
 <ion-content>
   <ion-split-pane contentId="main">
     <ion-menu contentId="main">
-      <ion-header> 
+      <ion-header>
         <ion-img [src]="">
         </ion-img>
         <ion-toolbar>
@@ -20,7 +20,7 @@
             <ion-icon slot="start" name="document-outline"></ion-icon>
             GESTIONE ORDINI
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/preventives'">
+          <ion-item [routerLink]="'/dashboard/preventives'" *ngIf="role==='amministrazione'">
             <ion-icon slot="start" name="receipt-outline"></ion-icon>
             GESTIONE PREVENTIVI
           </ion-item>
@@ -44,7 +44,7 @@
             <ion-icon slot="start" name="hammer-outline"></ion-icon>
             GESTIONE LAVORAZIONE
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/order-timing'" *ngIf="role==='amministrazione'">
+          <ion-item [routerLink]="'/dashboard/order-timing'">
             <ion-icon slot="start" name="stopwatch-outline"></ion-icon>
             TEMPISTICHE
           </ion-item>
