@@ -130,6 +130,7 @@ const routes: Routes = [
       },
       {
         path: 'preventives',
+        canActivate: [AuthGuardService],
         loadChildren: () => import('../preventives-list/preventives-list.module').then( m => m.PreventivesListPageModule)
       }
 

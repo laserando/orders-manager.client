@@ -1,21 +1,33 @@
-#wrapper {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-
-  >ion-card {
-    margin: 0 auto;
-  }
+ion-input {
+  border-radius: 5px;
+  --background: whitesmoke;
 }
 
-ion-title {
-  color: blue;
+h1 {
+  color: #e94e1b;
 }
 
-.wrong-pass{
-  color: red;
-  text-align: center;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: larger;
+ion-card {
+  margin: auto;
+  margin-top: 15%;
+  width: 30%;
+}
+
+.seePass {
+  position: absolute;
+  right: 5px;
+}
+
+.data {
+  margin: 20px;
+}
+
+.errors {
+  font-size: small;
+  color: white;
+  background: var(--ion-color-danger);
+  padding-left: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
 }
