@@ -12,6 +12,7 @@ import { TagService } from 'src/app/services/tag.service';
 export class FilterComponent implements OnInit {
   @Input() inTimingPage: boolean;
   @Input() inPreventivePage:boolean;
+  @Input() inArchivedPage:boolean;
   @Output() public filterChange: EventEmitter<any> = new EventEmitter();
 
   public from: string;

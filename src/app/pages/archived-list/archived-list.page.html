@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>
       <ion-icon name="receipt-outline"></ion-icon>
-      LISTA PREVENTIVI
+      LISTA ORDINI ARCHIVIATI
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -29,7 +29,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <filter [inPreventivePage]="inPreventivePage" (filterChange)="onFilterChange($event)"></filter>
+        <filter [inArchivedPage]="inArchivedPage" (filterChange)="onFilterChange($event)"></filter>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -54,11 +54,12 @@
                     <th>Dimensioni articolo</th>
                     <th>Grafica presente</th>
                     <th>Data consegna</th>
+                    <th>Assegnato a</th>
                     <th>#TAG stato ordine</th>
                     <th>GESTISCI</th>
                   </tr>
                 </thead>
-                <tbody *ngIf="!preventives.length">
+                <tbody *ngIf="!archives.length">
                   <tr class="ion-text-center">
                     <td></td>
                     <td></td>
@@ -70,61 +71,59 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                   </tr>
                 <tbody>
-                  <tr *ngFor="let preventive of preventives,let i = index">
-                    <td style="color: black;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
-                      {{preventive.id}}
+                  <tr *ngFor="let archive of archives,let i = index">
+                    <td style="color: blue;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                      {{archive.id}}
                     </td>
-                    <td> {{preventive.client?.name}} </td>
-                    <td> {{preventive.client?.surname}} </td>
-                    <td> {{preventive.typesOfProcessing?.name}} </td>
-                    <td> {{preventive.typesOfMaterial?.name}} </td>
-                    <td> {{preventive.itemSize}} </td>
+                    <td> {{archive.client?.name}} </td>
+                    <td> {{archive.client?.surname}} </td>
+                    <td> {{archive.typesOfProcessing?.name}} </td>
+                    <td> {{archive.typesOfMaterial?.name}} </td>
+                    <td> {{archive.itemSize}} </td>
                     <td>
-                      <a href="{{preventive.client?.graphicLink}}" target="_blank"
-                        *ngIf="preventive.client?.graphicLink">
+                      <a href="{{archive.client?.graphicLink}}" target="_blank" *ngIf="archive.client?.graphicLink">
                         SI <br>(clicca qui)
                       </a>
-                      <div *ngIf="!preventive.client?.graphicLink" style="text-align: center;">
+                      <div *ngIf="!archive.client?.graphicLink" style="text-align: center;">
                         NO
                       </div>
                     </td>
-                    <td> {{preventive.deliveryDate | date:'dd/MM/YYYY'}}</td>
+                    <td> {{archive.deliveryDate | date:'dd/MM/YYYY'}}</td>
                     <td>
-                      <ion-select class="tags-select" multiple placeholder="Selezione Multipla" name="tags"
-                        [compareWith]="compareWith" [(ngModel)]="preventive.tags"
-                        (ngModelChange)="updateTags(preventive)">
-                        <ion-select-option [value]="tag" *ngFor="let tag of tags">
-                          {{tag?.name}}
-                        </ion-select-option>
-                      </ion-select>
-                      <div *ngIf="preventive.tags.length" class="tags-div">
-                        <p *ngFor="let tag of preventive.tags , let i= index ">
-                          {{tag.name}}
-                        </p>
-                      </div>
+                      ORA IN : <strong>{{archive.role?.name}}</strong>
+                    </td>
+                    <td style="color: blueviolet;">
+                      #ARCHIVIATO
                     </td>
                     <td>
                       <div>
-                        <ion-select class="manage" (ionChange)="select($event,preventive)" placeholder="⚙">
-                          <ion-select-option *ngIf="role == 'amministrazione' && !preventive.isArchived "
-                            value="goToChangePreventive">
-                            🖊 Modifica
+                        <ion-select class="manage" (ionChange)="select($event,archive)" placeholder="⚙">
+                          <ion-select-option value="restoreOrder">
+                            🔄 Ripristina
                           </ion-select-option>
-                          <ion-select-option value="deletePreventive">
+                          <ion-select-option value="deleteOrder">
                             ❌ Elimina
-                          </ion-select-option>
-                          <ion-select-option value="changeInOrder">
-                            ⏩ Sposta in Ordini
                           </ion-select-option>
                         </ion-select>
                       </div>
-                      <div>
-                        <ion-button [size]="'small'" (click)="seePreview(preventive)">
-                          <ion-icon slot="icon-only" [name]="'tv-outline'">
-                          </ion-icon>
-                        </ion-button>
+                      <div class="button-bottom">
+                        <div>
+                          <ion-button [size]="'small'" [disabled]="notesService.notesCount(archive) == 0"
+                            (click)="openModal(archive)">
+                            <ion-icon slot="icon-only" [name]="'mail-outline'">
+                            </ion-icon>
+                            <span>{{notesService.notesCount(archive)}}</span>
+                          </ion-button>
+                        </div>
+                        <div>
+                          <ion-button [size]="'small'" (click)="seePreview(archive)">
+                            <ion-icon slot="icon-only" [name]="'tv-outline'">
+                            </ion-icon>
+                          </ion-button>
+                        </div>
                       </div>
                     </td>
                   </tr>

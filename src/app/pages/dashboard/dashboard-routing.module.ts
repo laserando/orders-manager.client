@@ -117,7 +117,7 @@ const routes: Routes = [
         path: 'clients-list',
         canActivate: [AuthGuardService],
         loadChildren: () => import('../clients-list/clients-list.module').then(m => m.ClientsListPageModule)
-      }, 
+      },
       {
         path: 'add-client',
         canActivate: [AuthGuardService],
@@ -131,7 +131,11 @@ const routes: Routes = [
       {
         path: 'preventives',
         canActivate: [AuthGuardService],
-        loadChildren: () => import('../preventives-list/preventives-list.module').then( m => m.PreventivesListPageModule)
+        loadChildren: () => import('../preventives-list/preventives-list.module').then(m => m.PreventivesListPageModule)
+      },
+      {
+        path: 'archived-list',
+        loadChildren: () => import('../archived-list/archived-list.module').then(m => m.ArchivedListPageModule)
       }
 
     ]

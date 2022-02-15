@@ -10,8 +10,7 @@ export class AuthService {
   public URL: string = `${Global.ENDPOINT.BASE}/auth/local`;
   private token: string;
   private user: string;
-  private authenticate: boolean = false;
-
+  
   constructor(private http: HttpClient) {
     if (localStorage.getItem('token')) {
       this.setToken(localStorage.getItem('token'));
@@ -23,7 +22,6 @@ export class AuthService {
       .then(res => {
         this.setToken(res.jwt);
         this.setUser(res.user);
-        this.authenticateForLogin()
       });
     return request;
   }
@@ -49,10 +47,6 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  authenticateForLogin() {
-    this.authenticate = true
-  }
-
   logout() {
     this.setToken(null);
     this.setUser(null);
@@ -70,7 +64,6 @@ export class AuthService {
       localStorage.setItem('user', JSON.stringify(this.user));
       return;
     }
-
     localStorage.removeItem('user')
   }
 

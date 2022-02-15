@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { PreventivesListPageRoutingModule } from './preventives-list-routing.module';
-import { PreventivesListPage } from './preventives-list.page';
+import { ArchivedListPageRoutingModule } from './archived-list-routing.module';
+import { ArchivedListPage } from './archived-list.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { IonicSelectableModule } from 'ionic-selectable';
 
@@ -12,10 +12,10 @@ import { IonicSelectableModule } from 'ionic-selectable';
     CommonModule,
     FormsModule,
     IonicModule,
-    IonicSelectableModule,
-    PreventivesListPageRoutingModule,
-    ComponentsModule
+    ArchivedListPageRoutingModule,
+    ComponentsModule,
+    IonicSelectableModule
   ],
-  declarations: [PreventivesListPage]
+  declarations: [ArchivedListPage]
 })
-export class PreventivesListPageModule {}
+export class ArchivedListPageModule {}
