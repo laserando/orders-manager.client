@@ -10,9 +10,11 @@ import { TagService } from 'src/app/services/tag.service';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
+
   @Input() inTimingPage: boolean;
-  @Input() inPreventivePage:boolean;
-  @Input() inArchivedPage:boolean;
+  @Input() inPreventivePage: boolean;
+  @Input() inArchivedPage: boolean;
+  @Input() inCompletedPage: boolean;
   @Output() public filterChange: EventEmitter<any> = new EventEmitter();
 
   public from: string;

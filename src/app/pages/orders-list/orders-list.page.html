@@ -73,10 +73,9 @@
                     <td></td>
                     <td></td>
                     <td *ngIf="role == 'amministrazione'"></td>
-
                   </tr>
                 <tbody>
-                  <tr *ngFor="let order of orders,let i = index" [ngClass]="{'complete' : order.isCompleted}">
+                  <tr *ngFor="let order of orders,let i = index">
                     <td id="number">
                       {{order.id}}
                     </td>

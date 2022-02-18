@@ -134,9 +134,19 @@ const routes: Routes = [
         loadChildren: () => import('../preventives-list/preventives-list.module').then(m => m.PreventivesListPageModule)
       },
       {
-        path: 'archived-list',
-        loadChildren: () => import('../archived-list/archived-list.module').then(m => m.ArchivedListPageModule)
-      }
+        path: 'completed-list',
+        loadChildren: () => import('../completed-list/completed-list.module').then(m => m.CompletedListPageModule)
+      },
+      {
+        path: 'preventive/:id',
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('../add-order/add-order.module').then(m => m.AddOrderPageModule)
+      },
+      {
+        path: 'order-complete/:id',
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('../add-order/add-order.module').then(m => m.AddOrderPageModule)
+      },
 
     ]
   }

@@ -24,9 +24,9 @@
             <ion-icon slot="start" name="receipt-outline"></ion-icon>
             GESTIONE PREVENTIVI
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/archived-list'" *ngIf="role==='amministrazione'">
+          <ion-item [routerLink]="'/dashboard/completed-list'">
             <ion-icon slot="start" name="file-tray-stacked-outline"></ion-icon>
-            GESTIONE ARCHIVIATI
+            GESTIONE COMPLETATI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/users'" *ngIf="role==='amministrazione'">
             <ion-icon slot="start" name="person-outline"></ion-icon>

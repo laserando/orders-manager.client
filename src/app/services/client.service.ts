@@ -9,7 +9,8 @@ import { Global } from './global';
 })
 export class ClientService {
 
-  URL: string = `${Global.ENDPOINT.BASE}/clients`
+  public URL: string = `${Global.ENDPOINT.BASE}/clients`
+  public newClient: ClientModel[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -32,14 +33,25 @@ export class ClientService {
   }
 
   addCustomer(client: ClientModel) {
-    return this.http.post<ClientModel>(this.URL, client).toPromise()
+    this.newClient.push(client);
+    return this.http.post<ClientModel>(this.URL, client).toPromise();
+  }
+
+  checkClient() {
+    if (this.newClient.length > 0) {
+      this.newClient = [];
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
   updateCustomer(newClient: ClientModel) {
-    return this.http.put<ClientModel>(this.URL + "/" + newClient.id, newClient).toPromise()
+    return this.http.put<ClientModel>(this.URL + "/" + newClient.id, newClient).toPromise();
   }
 
   deleteCustomer(clientId) {
-    return this.http.delete<ClientModel>(this.URL + "/" + clientId).toPromise()
+    return this.http.delete<ClientModel>(this.URL + "/" + clientId).toPromise();
   }
 }

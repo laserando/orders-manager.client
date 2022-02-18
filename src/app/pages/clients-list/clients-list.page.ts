@@ -17,11 +17,14 @@ export class ClientsListPage implements OnInit {
 
   constructor(private clientService: ClientService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
   }
 
-  async ionViewWillEnter() {
-    this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
+  async ionViewWillEnter(){
+    if(this.clientService.checkClient()){
+      this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
+    }
   }
 
   async deleteCustomer(id) {

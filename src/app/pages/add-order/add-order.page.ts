@@ -39,6 +39,7 @@ export class AddOrderPage implements OnInit {
   public term: string;
   public filter: any;
   public sameAddressChoose: boolean = false;
+  public urlSegment: string;
 
   constructor(private ordersService: OrdersService,
     private route: ActivatedRoute,
@@ -57,6 +58,10 @@ export class AddOrderPage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    this.urlSegment = this.router.url.split('/')[2];
+    if (this.urlSegment == "preventive") {
+      this.routeToPreventive = true;
+    }
     const privateClients = (await this.clientService.find({ isBusiness: false }, null)).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
@@ -89,13 +94,10 @@ export class AddOrderPage implements OnInit {
         this.sameAddressChoose = true;
       }
     }
-    let routeToPreventive = this.router.url.substring(0, 18);
-    if (routeToPreventive == "/dashboard/prevent") {
-      this.routeToPreventive = true;
-    }
+
   }
 
-  async addOrder() {
+  async saveOrder() {
     try {
       if (this.graphicPresentChoose == false) {
         this.client.graphicLink = "";
@@ -109,7 +111,11 @@ export class AddOrderPage implements OnInit {
           }
           await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
           this.ionToastService.alertMessage("update");
-          this.router.navigate(["/dashboard/orders"]);
+          if (this.urlSegment == "order-complete") {
+            this.router.navigate(["/dashboard/completed-list"]);
+          } else {
+            this.router.navigate(["/dashboard/orders"]);
+          }
         }
       } else {
         if (this.graphicPresentChoose == false) {
@@ -125,7 +131,11 @@ export class AddOrderPage implements OnInit {
         this.ionToastService.alertMessage("add");
         this.order = new Order();
         this.client = new ClientModel();
-        this.router.navigate(["/dashboard/orders"]);
+        if (this.urlSegment == "order-complete") {
+          this.router.navigate(["/dashboard/completed-list"]);
+        } else {
+          this.router.navigate(["/dashboard/orders"]);
+        }
       }
     } catch (error) {
       if (error.status == 400) {
@@ -152,6 +162,7 @@ export class AddOrderPage implements OnInit {
           }
           await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
           this.ionToastService.alertMessage("update");
+          console.log("cjbcibe")
           this.router.navigate(["/dashboard/preventives"]);
         }
       } else {
@@ -229,10 +240,11 @@ export class AddOrderPage implements OnInit {
       this.privateClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...privateClients];
     } else {
 
-      const businessClients = (await this.clientService.find({ isBusiness: true }, this.term, 0, 20)).map((c: any) => {
-        c.fullname = c.name + ' ' + c.surname;
-        return c;
-      })
+      const businessClients = (await this.clientService.find({ isBusiness: true }, this.term, 0, 20))
+        .map((c: any) => {
+          c.fullname = c.name + ' ' + c.surname;
+          return c;
+        })
 
       this.businessClients = [{ id: 'new', fullname: '*NUOVO CLIENTE*' }, ...businessClients];
     }
@@ -245,18 +257,20 @@ export class AddOrderPage implements OnInit {
 
     if (typeOfClient == "private") {
 
-      privateClients = (await this.clientService.find({ isBusiness: true }, this.term, this.privateClients.length)).map((c: any) => {
-        c.fullname = c.name + ' ' + c.surname;
-        return c;
-      })
+      privateClients = (await this.clientService.find({ isBusiness: true }, this.term,
+        this.privateClients.length)).map((c: any) => {
+          c.fullname = c.name + ' ' + c.surname;
+          return c;
+        })
       this.privateClients.push(...privateClients);
 
     } else {
 
-      businessClients = (await this.clientService.find({ isBusiness: true }, this.term, this.businessClients.length)).map((c: any) => {
-        c.fullname = c.name + ' ' + c.surname;
-        return c;
-      })
+      businessClients = (await this.clientService.find({ isBusiness: true }, this.term,
+        this.businessClients.length)).map((c: any) => {
+          c.fullname = c.name + ' ' + c.surname;
+          return c;
+        })
       this.businessClients.push(...businessClients);
     }
     event.component.endInfiniteScroll();

@@ -53,6 +53,62 @@ table.default {
   }
 }
 
+table.complete {
+  width: calc(100% - 2em);
+  margin: 1em;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.5em;
+  }
+
+  thead {
+    border-radius: 1em;
+    overflow: hidden;
+    th {
+      background: green;
+      color: var(--ion-color-primary-contrast);
+    }
+  }
+
+  tbody {
+    tr:nth-child(odd) {
+      td {
+        background: var(--ion-color-light);
+      }
+    }
+  }
+}
+
+table.preventive {
+  width: calc(100% - 2em);
+  margin: 1em;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.5em;
+  }
+
+  thead {
+    border-radius: 1em;
+    overflow: hidden;
+    th {
+      background: black;
+      color: var(--ion-color-primary-contrast);
+    }
+  }
+
+  tbody {
+    tr:nth-child(odd) {
+      td {
+        background: var(--ion-color-light);
+      }
+    }
+  }
+}
+
 .section {
   ion-card-content {
     ion-button {

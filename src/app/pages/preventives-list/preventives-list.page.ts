@@ -124,7 +124,7 @@ export class PreventivesListPage implements OnInit {
         this.router.navigate([`/dashboard/orders_/${order.id}`]);
         break;
       case "goToChangePreventive":
-        this.router.navigate([`/dashboard/orders/${order.id}`]);
+        this.router.navigate([`/dashboard/preventive/${order.id}`]);
         break;
       case "deletePreventive":
         this.deleteOrder(order.id);

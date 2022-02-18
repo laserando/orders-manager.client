@@ -43,7 +43,7 @@
               <ion-icon name="refresh-outline"></ion-icon>
             </ion-button>
             <div class="table-wrapper">
-              <table class="default">
+              <table class="preventive">
                 <thead>
                   <tr>
                     <th>N°</th>
@@ -108,7 +108,7 @@
                     <td>
                       <div>
                         <ion-select class="manage" (ionChange)="select($event,preventive)" placeholder="⚙">
-                          <ion-select-option *ngIf="role == 'amministrazione' && !preventive.isArchived "
+                          <ion-select-option *ngIf="!preventive.isArchived "
                             value="goToChangePreventive">
                             🖊 Modifica
                           </ion-select-option>
