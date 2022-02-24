@@ -56,14 +56,14 @@
                     <th>GESTISCI</th>
                   </tr>
                 </thead>
-                <tbody *ngIf="!archives.length">
+                <tbody *ngIf="!orders.length">
                   <tr class="ion-text-center">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: center;">Nessun Preventivo</td>
+                    <td style="text-align: center;">Nessun Ordine Completato</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -71,43 +71,43 @@
                     <td></td>
                   </tr>
                 <tbody>
-                  <tr *ngFor="let archive of archives,let i = index">
+                  <tr *ngFor="let order of orders,let i = index">
                     <td style="color: green;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
-                      {{archive.id}}
+                      {{order.id}}
                     </td>
-                    <td> {{archive.client?.name}} </td>
-                    <td> {{archive.client?.surname}} </td>
-                    <td> {{archive.typesOfProcessing?.name}} </td>
-                    <td> {{archive.typesOfMaterial?.name}} </td>
-                    <td> {{archive.itemSize}} </td>
+                    <td> {{order.client?.name}} </td>
+                    <td> {{order.client?.surname}} </td>
+                    <td> {{order.typesOfProcessing?.name}} </td>
+                    <td> {{order.typesOfMaterial?.name}} </td>
+                    <td> {{order.itemSize}} </td>
                     <td>
-                      <a href="{{archive.client?.graphicLink}}" target="_blank" *ngIf="archive.client?.graphicLink">
+                      <a href="{{order.client?.graphicLink}}" target="_blank" *ngIf="order.client?.graphicLink">
                         SI <br>(clicca qui)
                       </a>
-                      <div *ngIf="!archive.client?.graphicLink" style="text-align: center;">
+                      <div *ngIf="!order.client?.graphicLink" style="text-align: center;">
                         NO
                       </div>
                     </td>
-                    <td> {{archive.deliveryDate | date:'dd/MM/YYYY'}}</td>
+                    <td> {{order.deliveryDate | date:'dd/MM/YYYY'}}</td>
                     <td>
-                      ORA IN : <strong>{{archive.role?.name}}</strong>
+                      ORA IN : <strong>{{order.role?.name}}</strong>
                     </td>
                     <td>
                       <ion-select class="tags-select" multiple placeholder="Selezione Multipla" name="tags"
-                        [compareWith]="compareWith" [(ngModel)]="archive.tags" (ngModelChange)="updateTags(archive)">
+                        [compareWith]="compareWith" [(ngModel)]="order.tags" (ngModelChange)="updateTags(order)">
                         <ion-select-option [value]="tag" *ngFor="let tag of tags">
                           {{tag?.name}}
                         </ion-select-option>
                       </ion-select>
-                      <div *ngIf="archive.tags.length" class="tags-div">
-                        <p *ngFor="let tag of archive.tags , let i= index ">
+                      <div *ngIf="order.tags.length" class="tags-div">
+                        <p *ngFor="let tag of order.tags , let i= index ">
                           {{tag.name}}
                         </p>
                       </div>
                     </td>
                     <td>
                       <div>
-                        <ion-select class="manage" (ionChange)="select($event,archive)" placeholder="⚙">
+                        <ion-select class="manage" (ionChange)="select($event,order)" placeholder="⚙">
                           <ion-select-option value="goToChangeOrder">
                             🖊 Modifica
                           </ion-select-option>
@@ -117,7 +117,7 @@
                           <ion-select-option value="storeOrder">
                             📦 Archivia
                           </ion-select-option>
-                          <ion-select-option value="removeCompletion">
+                          <ion-select-option value="removeCompletion" *ngIf="order.isCompleted">
                             ⛔ Rimuovi "Completato"
                           </ion-select-option>
                           <ion-select-option value="changeInPreventive">
@@ -127,15 +127,15 @@
                       </div>
                       <div class="button-bottom">
                         <div>
-                          <ion-button [size]="'small'" [disabled]="notesService.notesCount(archive) == 0"
-                            (click)="openModal(archive)">
+                          <ion-button [size]="'small'" [disabled]="notesService.notesCount(order) == 0"
+                            (click)="openModal(order)">
                             <ion-icon slot="icon-only" [name]="'mail-outline'">
                             </ion-icon>
-                            <span>{{notesService.notesCount(archive)}}</span>
+                            <span>{{notesService.notesCount(order)}}</span>
                           </ion-button>
                         </div>
                         <div>
-                          <ion-button [size]="'small'" (click)="seePreview(archive)">
+                          <ion-button [size]="'small'" (click)="seePreview(order)">
                             <ion-icon slot="icon-only" [name]="'tv-outline'">
                             </ion-icon>
                           </ion-button>

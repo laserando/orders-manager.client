@@ -162,7 +162,6 @@ export class AddOrderPage implements OnInit {
           }
           await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
           this.ionToastService.alertMessage("update");
-          console.log("cjbcibe")
           this.router.navigate(["/dashboard/preventives"]);
         }
       } else {

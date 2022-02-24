@@ -22,8 +22,8 @@ export class CompletedListPage implements OnInit {
 
   public clients: (ClientModel & { fullname?: string })[] = [];
   public client: ClientModel;
-  public archives: Order[] = [];
-  public filter: any = { isCompleted: true };
+  public orders: Order[] = [];
+  public filter: any = { isCompleted: true, isArchived: false };
   public tags: TagModel[] = [];
   public inCompletedPage: boolean = true;
   public term: string;
@@ -49,12 +49,12 @@ export class CompletedListPage implements OnInit {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })];
-    this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async getNextPage() {
-    const orders = await this.orderService.find(this.filter, this.term, this.archives.length);
-    this.archives.push(...orders);
+    const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
+    this.orders.push(...orders);
   }
 
   async onFilterChange(filter) {
@@ -99,17 +99,17 @@ export class CompletedListPage implements OnInit {
         delete this.filter.isCompleted
       }
     }
-    this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async cleanClient(event) {
     if (event == 'clean') {
       delete this.filter.client;
       this.client = null;
-      this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     } else {
       this.filter.client = event.value.id;
-      this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     }
   }
 
@@ -140,11 +140,11 @@ export class CompletedListPage implements OnInit {
   }
 
   async search() {
-    this.archives = await this.orderService.find(this.filter, this.term, 0, 20);
+    this.orders = await this.orderService.find(this.filter, this.term, 0, 20);
   }
 
   async updateList() {
-    this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async openModal(order: Order) {
@@ -153,7 +153,7 @@ export class CompletedListPage implements OnInit {
       componentProps: { order: order, storageForNote: true }
     })
     await modal.present();
-    this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
   select(event, order) {
@@ -180,7 +180,7 @@ export class CompletedListPage implements OnInit {
     if (confirm("sei sicuro di voler TOGLIERE il COMPLETAMENTO dell'ordine?")) {
       order.isCompleted = false;
       await this.ordersService.updateOrder(order, order.id, order.client);
-      this.archives = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+      this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
     }
   }
 
@@ -189,7 +189,7 @@ export class CompletedListPage implements OnInit {
       order.isArchived = true;
       await this.ordersService.updateOrder(order, order.id, order.client);
     }
-    this.archives = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+    this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
   }
 
   seePreview(order) {
@@ -200,7 +200,7 @@ export class CompletedListPage implements OnInit {
     if (confirm("Sei sicuro di voler spostare l'ordine nella lista preventivi?")) {
       order.isPreventive = true;
       await this.orderService.updateOrder(order, order.id, order.client);
-      this.archives = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+      this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     }
   }
 
@@ -216,7 +216,7 @@ export class CompletedListPage implements OnInit {
       await this.orderService.deleteOrder(index);
       this.ionToastService.alertMessage("delete");
     }
-    this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async restoreOrder(order: Order) {
@@ -224,12 +224,12 @@ export class CompletedListPage implements OnInit {
       order.isArchived = false;
       await this.ordersService.updateOrder(order, order.id, order.client);
     }
-    this.archives = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+    this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
   }
 
   async updateTags(order) {
     await this.orderService.updateOrder(order, order.id, order.client);
-    this.archives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
 }

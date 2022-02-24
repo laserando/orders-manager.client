@@ -49,9 +49,9 @@ export class OrdersListPage implements OnInit {
   async ngOnInit() {
     this.role = this.authService.getParseOfUserObject();
     if (this.authService.getUser().role.id == 1) {
-      this.filter = { isArchived: false, isPreventive: false };
+      this.filter = { isArchived: false, isPreventive: false, isCompleted: false };
     } else if (this.authService.getUser().role.id != 1) {
-      this.filter = { role: this.authService.getUser().role.id, isArchived: false,isPreventive: false };
+      this.filter = { role: this.authService.getUser().role.id, isArchived: false, isPreventive: false, isCompleted: false };
     }
   }
 
@@ -172,7 +172,6 @@ export class OrdersListPage implements OnInit {
 
   async onFilterChange(filter) {
     if (filter.tags && filter.tags.length) {
-      console.log(filter.tags)
       this.filter.tags_contains = filter.tags;
     } else {
       delete this.filter.tags_contains;
@@ -258,7 +257,7 @@ export class OrdersListPage implements OnInit {
     }
   }
 
-  seePreview(order){
+  seePreview(order) {
     this.router.navigate([`/dashboard/preview/${order.id}`]);
   }
 
