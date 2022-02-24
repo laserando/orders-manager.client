@@ -136,7 +136,7 @@
                           <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
                             ❌ Elimina
                           </ion-select-option>
-                          <ion-select-option *ngIf="role != 'amministrazione'" value="completeOrder">
+                          <ion-select-option value="completeOrder">
                             ✅ Completa
                           </ion-select-option>
                           <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">
