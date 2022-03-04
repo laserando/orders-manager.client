@@ -88,11 +88,10 @@
                       <a href="{{order.client?.graphicLink}}" target="_blank" *ngIf="order.client?.graphicLink">
                         SI <br>(clicca qui)
                       </a>
-                      <div *ngIf="!order.client?.graphicLink && (role=='amministrazione' || 'grafica') "
-                        style="text-align: center;">
+                      <div *ngIf="!order.client?.graphicLink" style="text-align: center;">
                         NO
                       </div>
-                      <div *ngIf="role == 'grafica' ">
+                      <div *ngIf="(role == 'grafica' || role =='grafica_2') ">
                         <ion-button size="small" (click)="addGraphic(order.client)"> Aggiungere / Cambiare Link Grafica
                         </ion-button>
                       </div>

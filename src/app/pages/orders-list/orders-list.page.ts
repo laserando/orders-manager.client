@@ -53,7 +53,7 @@ export class OrdersListPage implements OnInit {
     } else if (this.authService.getUser().role.id != 1) {
       this.filter = { role: this.authService.getUser().role.id, isArchived: false, isPreventive: false, isCompleted: false };
     }
-  }
+  }  
 
   async ionViewWillEnter() {
     this.clients = [...(await this.clientService.find()).map((c: any) => {
