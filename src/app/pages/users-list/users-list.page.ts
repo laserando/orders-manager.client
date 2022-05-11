@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { User } from 'src/app/models/user.model';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { UsersService } from 'src/app/services/users.service';
@@ -11,11 +12,12 @@ import { UsersService } from 'src/app/services/users.service';
 export class UsersListPage implements OnInit {
 
   public users: User[] = [];
-  public filter:any;
-  public term:string;
+  public filter: any;
+  public term: string;
 
   constructor(private userService: UsersService,
-    private ionToastService: IonToastService) { }
+    private ionToastService: IonToastService,
+    private alertCtrl: AlertController) { }
 
   ngOnInit() {
   }
@@ -25,11 +27,23 @@ export class UsersListPage implements OnInit {
   }
 
   async deleteUser(id) {
-    if (confirm("sei sicuro di voler eliminare il seguente utente?")) {
-      await this.userService.deleteUser(id);
-      this.users = await this.userService.find(this.filter, null, 0, 20);
-      this.ionToastService.alertMessage("delete");
-    }
+    this.alertCtrl.create({
+      header: 'Elimina Utente',
+      subHeader: '',
+      message: "Sei sicuro di voler eliminare il seguente utente ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            await this.userService.deleteUser(id);
+            this.users = await this.userService.find(this.filter, null, 0, 20);
+            this.ionToastService.alertMessage("delete");
+          }
+        },
+        {
+          text: 'Annulla'
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async search() {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { ClientModel } from 'src/app/models/client.model';
 import { ClientService } from 'src/app/services/client.service';
 import { IonToastService } from 'src/app/services/ion-toast.service';
@@ -19,7 +20,8 @@ export class AddClientPage implements OnInit {
   constructor(private clientService: ClientService,
     private ionToastService: IonToastService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private alertCtrl: AlertController) { }
 
   async ionViewWillEnter() {
     if (this.route.snapshot.params.id) {
@@ -39,15 +41,28 @@ export class AddClientPage implements OnInit {
   async saveCustomer() {
     try {
       if (this.route.snapshot.params.id) {
-        confirm("SEI SICURO DI VOLER AGGIORNARE IL CLIENTE?")
-        if (this.isBusinessClient) {
-          this.client.isBusiness = true;
-        } else {
-          this.client.isBusiness = false;
-        }
-        await this.clientService.updateCustomer(this.client);
-        this.ionToastService.alertMessage("update");
-        this.router.navigate(["/dashboard/clients-list"]);
+        this.alertCtrl.create({
+          header: 'Aggiorna Cliente',
+          subHeader: '',
+          message: "Sei sicuro di voler aggiornare il cliente ?",
+          buttons: [
+            {
+              text: 'OK', handler: async (res) => {
+                if (this.isBusinessClient) {
+                  this.client.isBusiness = true;
+                } else {
+                  this.client.isBusiness = false;
+                }
+                await this.clientService.updateCustomer(this.client);
+                this.ionToastService.alertMessage("update");
+                this.router.navigate(["/dashboard/clients-list"]);
+              }
+            },
+            {
+              text: 'Annulla'
+            }
+          ]
+        }).then(res => res.present());
       } else {
         if (this.isBusinessClient) {
           this.client.isBusiness = true;

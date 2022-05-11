@@ -3,6 +3,7 @@ import { TypeOfProcessingModel } from 'src/app/models/type-of-processing.model';
 import { TypeOfProcessingService } from 'src/app/services/type-of-processing.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonToastService } from 'src/app/services/ion-toast.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-add-type-of-processing',
@@ -11,29 +12,42 @@ import { IonToastService } from 'src/app/services/ion-toast.service';
 })
 export class AddTypeOfProcessingPage implements OnInit {
 
-  public typeOfProcessing : TypeOfProcessingModel = new TypeOfProcessingModel()
+  public typeOfProcessing: TypeOfProcessingModel = new TypeOfProcessingModel()
 
-  constructor(private typeOfProcessingService:TypeOfProcessingService,
+  constructor(private typeOfProcessingService: TypeOfProcessingService,
     private route: ActivatedRoute,
     private router: Router,
-    private ionToastService: IonToastService ) { }
+    private ionToastService: IonToastService,
+    private alertCtrl: AlertController) { }
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
-    if(this.route.snapshot.params.id){
+    if (this.route.snapshot.params.id) {
       this.typeOfProcessing = await this.typeOfProcessingService.findById(this.route.snapshot.params.id)
     }
   }
 
-  async createTypeOfProcessing(){
+  async createTypeOfProcessing() {
     if (this.route.snapshot.params.id) {
-      await this.typeOfProcessingService.updateProcessing( this.route.snapshot.params.id, this.typeOfProcessing);
-      if (confirm("sei sicuro di voler aggiornare il typeOfProcessinge?")) {
-        this.ionToastService.alertMessage("update");
-        this.router.navigate(["/dashboard/types-of-processing"]);
-      }
+      this.alertCtrl.create({
+        header: 'Aggiorna Processo',
+        subHeader: '',
+        message: "Sei sicuro di voler aggiornare il tipo di processo ?",
+        buttons: [
+          {
+            text: 'OK', handler: async (res) => {
+              await this.typeOfProcessingService.updateProcessing(this.route.snapshot.params.id, this.typeOfProcessing);
+              this.ionToastService.alertMessage("update");
+              this.router.navigate(["/dashboard/types-of-processing"]);
+            }
+          },
+          {
+            text: 'Annulla'
+          }
+        ]
+      }).then(res => res.present());
     } else {
       await this.typeOfProcessingService.addProcessing(this.typeOfProcessing);
       this.ionToastService.alertMessage("add");

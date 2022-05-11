@@ -5,6 +5,7 @@ import { TypeOfMaterialModel } from "./type-of-material.model";
 import { LogModel } from "./log.model";
 import { NoteModel } from "./note.model";
 import { ClientModel } from "./client.model";
+import { StorageOrderUpdate } from "./storage-order-update.model";
 
 export class Order {
 
@@ -24,10 +25,12 @@ export class Order {
     public isArchived: boolean = false;
     public isPreventive: boolean = false;
     public notes: NoteModel[] = [];
+    public storageOrderUpdates: StorageOrderUpdate[] = []
 
     constructor(clientIndications?: string, typeOfWork?: string, typesOfProcessing?: TypeOfProcessingModel,
         typesOfMaterial?: TypeOfMaterialModel, itemSize?: string, deliveryDate?: string, role?: Role, id?: number, tags?: TagModel[], logs?: LogModel[],
-        isCompleted?: boolean, created_at?: string, isArchived?: boolean,isPreventive?: boolean, notes?: NoteModel[], client?: ClientModel) {
+        isCompleted?: boolean, created_at?: string, isArchived?: boolean, isPreventive?: boolean, notes?: NoteModel[]
+        , client?: ClientModel, storageOrderUpdates?: StorageOrderUpdate[]) {
         this.client = client;
         this.typeOfWork = typeOfWork;
         this.typesOfProcessing = typesOfProcessing;
@@ -44,5 +47,6 @@ export class Order {
         this.isArchived = isArchived;
         this.isPreventive = isPreventive;
         this.notes = notes || [];
+        this.storageOrderUpdates = storageOrderUpdates || [];
     }
 }
