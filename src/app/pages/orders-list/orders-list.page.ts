@@ -15,8 +15,7 @@ import { ClientModel } from 'src/app/models/client.model';
 import { Router } from '@angular/router';
 import { NoteService } from 'src/app/services/note.service';
 import { StorageModifyModalComponent } from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
-import { storageOrderUpdateService } from 'src/app/services/storage-order-update.service';
-import { async } from '@angular/core/testing';
+import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
 
 @Component({
   selector: 'app-orders-list',
@@ -48,7 +47,7 @@ export class OrdersListPage implements OnInit {
     private router: Router,
     public notesService: NoteService,
     public menu: MenuController,
-    public storageModifyService: storageOrderUpdateService,
+    public storageModifyService: StorageOrderUpdateService,
     private alertCtrl: AlertController) { }
 
   async ngOnInit() {

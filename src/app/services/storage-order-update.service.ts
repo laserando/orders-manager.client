@@ -7,7 +7,7 @@ import { Global } from './global';
 @Injectable({
   providedIn: 'root'
 })
-export class storageOrderUpdateService {
+export class StorageOrderUpdateService {
 
   public URL: string = `${Global.ENDPOINT.BASE}/storage-order-updates`
 

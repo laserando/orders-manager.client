@@ -14,7 +14,7 @@ import { RolesService } from 'src/app/services/roles.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClientModel } from 'src/app/models/client.model';
 import { ClientService } from 'src/app/services/client.service';
-import { storageOrderUpdateService } from 'src/app/services/storage-order-update.service';
+import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
 import { StorageOrderUpdate } from 'src/app/models/storage-order-update.model';
 import { AlertController } from '@ionic/angular';
 
@@ -56,7 +56,7 @@ export class AddOrderPage implements OnInit {
     private rolesService: RolesService,
     public authService: AuthService,
     private clientService: ClientService,
-    private storageOrderUpdateService: storageOrderUpdateService,
+    private storageOrderUpdateService: StorageOrderUpdateService,
     private alertCtrl: AlertController
   ) { }
 

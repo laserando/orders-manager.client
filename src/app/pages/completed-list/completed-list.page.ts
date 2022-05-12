@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, MenuController, ModalController } from '@ionic/angular';
 import { StorageModalComponent } from 'src/app/components/modal/storage-modal.component';
+import { StorageModifyModalComponent } from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
 import { ClientModel } from 'src/app/models/client.model';
 import { Order } from 'src/app/models/order.model';
 import { TagModel } from 'src/app/models/tag.model';
@@ -11,6 +12,7 @@ import { IonToastService } from 'src/app/services/ion-toast.service';
 import { NoteService } from 'src/app/services/note.service';
 import { OrdersService } from 'src/app/services/orders.service';
 import { RolesService } from 'src/app/services/roles.service';
+import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
 import { TagService } from 'src/app/services/tag.service';
 
 @Component({
@@ -37,7 +39,8 @@ export class CompletedListPage implements OnInit {
     private modalCtrl: ModalController,
     private router: Router,
     public notesService: NoteService,
-    public menu: MenuController) { }
+    public menu: MenuController,
+    public storageModifyService:StorageOrderUpdateService) { }
 
   ngOnInit() {
   }
@@ -298,6 +301,15 @@ export class CompletedListPage implements OnInit {
 
   async updateTags(order) {
     await this.orderService.updateOrder(order, order.id, order.client);
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+  }
+
+  async seeStorageModify(order) {
+    const modal = await this.modalCtrl.create({
+      component: StorageModifyModalComponent,
+      componentProps: { order: order }
+    })
+    await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
