@@ -4,7 +4,6 @@ import { User } from '../models/user.model';
 import qs from 'qs';
 import { Global } from './global';
 
-
 @Injectable({
   providedIn: 'root'
 })

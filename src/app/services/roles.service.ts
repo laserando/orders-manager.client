@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Role } from '../models/role.model';
 import { Global } from './global';
 
-
 @Injectable({
   providedIn: 'root'
 })

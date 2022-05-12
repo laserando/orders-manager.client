@@ -53,15 +53,15 @@ export class OrdersListPage implements OnInit {
     } else if (this.authService.getUser().role.id != 1) {
       this.filter = { role: this.authService.getUser().role.id, isArchived: false, isPreventive: false, isCompleted: false };
     }
-  }  
+  }
 
   async ionViewWillEnter() {
     this.clients = [...(await this.clientService.find()).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })];
-    this.tags = await this.tagsService.find()
-    this.roles = await this.rolesService.find()
+    this.tags = await this.tagsService.find();
+    this.roles = await this.rolesService.find();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
