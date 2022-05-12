@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { ClientModel } from 'src/app/models/client.model';
 import { ClientService } from 'src/app/services/client.service';
 
@@ -15,23 +16,36 @@ export class ClientsListPage implements OnInit {
   public client: ClientModel;
   public clientsInSelectable: ClientModel[] = [];
 
-  constructor(private clientService: ClientService) { }
+  constructor(private clientService: ClientService,
+    private alertCtrl:AlertController) { }
 
   async ngOnInit() {
     this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
   }
 
-  async ionViewWillEnter(){
-    if(this.clientService.checkClient()){
+  async ionViewWillEnter() {
+    if (this.clientService.checkClient()) {
       this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
     }
   }
 
   async deleteCustomer(id) {
-    if (confirm("SEI SICURO DI VOLER ELIMINARE IL CLIENTE")) {
-      await this.clientService.deleteCustomer(id);
-      this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
-    }
+    this.alertCtrl.create({
+      header: 'Elimina Cliente',
+      subHeader: '',
+      message: "Sei sicuro di voler eliminare il cliente ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            await this.clientService.deleteCustomer(id);
+            this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
+          }
+        },
+        {
+          text: 'Annulla'
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async search() {

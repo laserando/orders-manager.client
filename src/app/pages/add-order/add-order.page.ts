@@ -14,6 +14,9 @@ import { RolesService } from 'src/app/services/roles.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClientModel } from 'src/app/models/client.model';
 import { ClientService } from 'src/app/services/client.service';
+import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
+import { StorageOrderUpdate } from 'src/app/models/storage-order-update.model';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-add-order',
@@ -23,6 +26,7 @@ import { ClientService } from 'src/app/services/client.service';
 
 export class AddOrderPage implements OnInit {
 
+  public storageOrderUpdate: StorageOrderUpdate = new StorageOrderUpdate();
   public order: Order = new Order();
   public client: ClientModel = new ClientModel();
   public roles: Role[] = [];
@@ -41,7 +45,8 @@ export class AddOrderPage implements OnInit {
   public sameAddressChoose: boolean = false;
   public urlSegment: string;
 
-  constructor(private ordersService: OrdersService,
+  constructor(
+    private ordersService: OrdersService,
     private route: ActivatedRoute,
     private router: Router,
     private ionToastService: IonToastService,
@@ -50,7 +55,9 @@ export class AddOrderPage implements OnInit {
     private typeOfProcessingService: TypeOfProcessingService,
     private rolesService: RolesService,
     public authService: AuthService,
-    private clientService: ClientService
+    private clientService: ClientService,
+    private storageOrderUpdateService: StorageOrderUpdateService,
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
@@ -97,26 +104,64 @@ export class AddOrderPage implements OnInit {
 
   }
 
+  addStorageModify() {
+    this.alertCtrl.create({
+      header: 'Messaggio Modifica',
+      subHeader: '',
+      message: 'puoi lasciare una nota sullo storico delle modifiche effettuate',
+      inputs: [
+        { type: 'text', name: 'note', placeholder: 'scrivi un messaggio...' }
+      ],
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            this.storageOrderUpdate.byRole = this.order.role;
+            this.storageOrderUpdate.order = this.order;
+            this.storageOrderUpdate.textNote = res.note;
+            await this.storageOrderUpdateService.add(this.storageOrderUpdate);
+            await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
+            this.ionToastService.alertMessage("update");
+            if (this.urlSegment == "order-complete") {
+              this.router.navigate(["/dashboard/completed-list"]);
+            } else {
+              this.router.navigate(["/dashboard/orders"]);
+            }
+          }
+        },
+        {
+          text: 'Cancel'
+        }
+      ]
+    }).then(res => res.present());
+    this.storageOrderUpdate = new StorageOrderUpdate();
+  }
+
   async saveOrder() {
     try {
       if (this.graphicPresentChoose == false) {
         this.client.graphicLink = "";
       }
       if (this.route.snapshot.params.id) {
-        if (confirm("sei sicuro di voler aggiornare l'ordine?")) {
-          if (this.isBusinessClient) {
-            this.client.isBusiness = true;
-          } else {
-            this.client.isBusiness = false;
-          }
-          await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
-          this.ionToastService.alertMessage("update");
-          if (this.urlSegment == "order-complete") {
-            this.router.navigate(["/dashboard/completed-list"]);
-          } else {
-            this.router.navigate(["/dashboard/orders"]);
-          }
-        }
+        this.alertCtrl.create({
+          header: 'Aggiorna Ordine',
+          subHeader: '',
+          message: "Sei sicuro di voler aggiornare l'ordine ?",
+          buttons: [
+            {
+              text: 'OK', handler: async (res) => {
+                if (this.isBusinessClient) {
+                  this.client.isBusiness = true;
+                } else {
+                  this.client.isBusiness = false;
+                }
+                this.addStorageModify();
+              }
+            },
+            {
+              text: 'Annulla'
+            }
+          ]
+        }).then(res => res.present());
       } else {
         if (this.graphicPresentChoose == false) {
           this.client.graphicLink = "";
@@ -154,16 +199,28 @@ export class AddOrderPage implements OnInit {
         this.client.graphicLink = "";
       }
       if (this.route.snapshot.params.id) {
-        if (confirm("sei sicuro di voler aggiornare l'ordine?")) {
-          if (this.isBusinessClient) {
-            this.client.isBusiness = true;
-          } else {
-            this.client.isBusiness = false;
-          }
-          await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
-          this.ionToastService.alertMessage("update");
-          this.router.navigate(["/dashboard/preventives"]);
-        }
+        this.alertCtrl.create({
+          header: 'Aggiorna Preventivo',
+          subHeader: '',
+          message: "Sei sicuro di voler aggiornare il preventivo ?",
+          buttons: [
+            {
+              text: 'OK', handler: async (res) => {
+                if (this.isBusinessClient) {
+                  this.client.isBusiness = true;
+                } else {
+                  this.client.isBusiness = false;
+                }
+                await this.ordersService.updateOrder(this.order, this.route.snapshot.params.id, this.client);
+                this.ionToastService.alertMessage("update");
+                this.router.navigate(["/dashboard/preventives"]);
+              }
+            },
+            {
+              text: 'Annulla'
+            }
+          ]
+        }).then(res => res.present());
       } else {
         if (this.graphicPresentChoose == false) {
           this.client.graphicLink = "";
@@ -194,7 +251,6 @@ export class AddOrderPage implements OnInit {
     if (Array.isArray(compareValue)) {
       return (compareValue || []).map(cv => cv.id).indexOf(currentValue.id) > -1;
     }
-
     return compareValue.id == currentValue.id;
   }
 
@@ -278,5 +334,4 @@ export class AddOrderPage implements OnInit {
       event.component.disableInfiniteScroll();
     }
   }
-
 }

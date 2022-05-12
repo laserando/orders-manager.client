@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>STORICO MODIFICHE</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        Close
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <div *ngFor="let storage of order.storageOrderUpdates" class="note-div">
+        Mofica Da: <strong> {{storage.byRole?.role?.name}} </strong> <br>
+        Nota : <br> <span> "{{storage?.textNote}}" </span> <br>
+        Svolta Il : <span>{{storage?.created_at | date: 'dd/MM/yyyy'}}</span>
+        Alle <span>{{storage?.created_at | date: 'HH:mm'}}</span>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -128,8 +128,7 @@
                     <td>
                       <div>
                         <ion-select class="manage" (ionChange)="select($event,order)" placeholder="⚙">
-                          <ion-select-option *ngIf="role == 'amministrazione' && !order.isArchived "
-                            value="goToChangeOrder">
+                          <ion-select-option *ngIf="!order.isArchived" value="goToChangeOrder">
                             🖊 Modifica
                           </ion-select-option>
                           <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
@@ -166,6 +165,14 @@
                           <ion-button [size]="'small'" (click)="seePreview(order)">
                             <ion-icon slot="icon-only" [name]="'tv-outline'">
                             </ion-icon>
+                          </ion-button>
+                        </div>
+                        <div class="storage-modify">
+                          <ion-button [size]="'small'" [disabled]="storageModifyService.storageModifyCount(order) == 0"
+                            (click)="seeStorageModify(order)">
+                            <ion-icon name="receipt-outline">
+                            </ion-icon>
+                            <span>{{storageModifyService.storageModifyCount(order)}}</span>
                           </ion-button>
                         </div>
                       </div>

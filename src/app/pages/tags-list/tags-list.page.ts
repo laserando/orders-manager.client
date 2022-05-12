@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { TagModel } from 'src/app/models/tag.model';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { TagService } from 'src/app/services/tag.service';
@@ -15,7 +16,8 @@ export class TagsListPage implements OnInit {
   public filter: any;
 
   constructor(private tagService: TagService,
-    private ionToastService: IonToastService) { }
+    private ionToastService: IonToastService,
+    private alertCtrl:AlertController) { }
 
   ngOnInit() {
   }
@@ -25,11 +27,23 @@ export class TagsListPage implements OnInit {
   }
 
   async deleteTag(id) {
-    if (confirm("sei sicuro di voler eliminare il #TAG?")) {
-      await this.tagService.deleteTag(id);
-      this.tags = await this.tagService.find(this.filter, null, 0, 20);
-      this.ionToastService.alertMessage("delete");
-    }
+    this.alertCtrl.create({
+      header: 'Elimina Tag',
+      subHeader: '',
+      message: "Sei sicuro di voler eliminare il tag ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            await this.tagService.deleteTag(id);
+            this.tags = await this.tagService.find(this.filter, null, 0, 20);
+            this.ionToastService.alertMessage("delete");
+          }
+        },
+        {
+          text: 'Annulla'
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async search() {

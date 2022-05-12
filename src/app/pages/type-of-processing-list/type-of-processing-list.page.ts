@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { TypeOfProcessingModel } from 'src/app/models/type-of-processing.model';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { TypeOfProcessingService } from 'src/app/services/type-of-processing.service';
@@ -15,7 +16,8 @@ export class TypeOfProcessingListPage implements OnInit {
   public term: string;
 
   constructor(private typeOfProcessingService: TypeOfProcessingService,
-    private ionToastService: IonToastService) { }
+    private ionToastService: IonToastService,
+    private alertCtrl: AlertController) { }
 
   ngOnInit() {
   }
@@ -25,15 +27,27 @@ export class TypeOfProcessingListPage implements OnInit {
   }
 
   async deleteTypeOfProcessing(id) {
-    if (confirm("sei sicuro di voler eliminare la seguente tipologia di lavorazione?")) {
-      await this.typeOfProcessingService.deleteProcessing(id);
-      this.typesOfProcessing = await this.typeOfProcessingService.find(this.filter, null, 0, 20);
-      this.ionToastService.alertMessage("delete");
-    }
+    this.alertCtrl.create({
+      header: 'Elimina Processo',
+      subHeader: '',
+      message: "Sei sicuro di voler eliminare la seguente tipologia di lavorazione ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            await this.typeOfProcessingService.deleteProcessing(id);
+            this.typesOfProcessing = await this.typeOfProcessingService.find(this.filter, null, 0, 20);
+            this.ionToastService.alertMessage("delete");
+          }
+        },
+        {
+          text: 'Annulla'
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async search() {
-    this.typesOfProcessing= await this.typeOfProcessingService.find(null, this.term);
+    this.typesOfProcessing = await this.typeOfProcessingService.find(null, this.term);
   }
 
   async getNextPage() {

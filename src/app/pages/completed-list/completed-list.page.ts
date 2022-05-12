@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MenuController, ModalController } from '@ionic/angular';
+import { AlertController, MenuController, ModalController } from '@ionic/angular';
 import { StorageModalComponent } from 'src/app/components/modal/storage-modal.component';
+import { StorageModifyModalComponent } from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
 import { ClientModel } from 'src/app/models/client.model';
 import { Order } from 'src/app/models/order.model';
 import { TagModel } from 'src/app/models/tag.model';
@@ -11,6 +12,7 @@ import { IonToastService } from 'src/app/services/ion-toast.service';
 import { NoteService } from 'src/app/services/note.service';
 import { OrdersService } from 'src/app/services/orders.service';
 import { RolesService } from 'src/app/services/roles.service';
+import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
 import { TagService } from 'src/app/services/tag.service';
 
 @Component({
@@ -31,14 +33,14 @@ export class CompletedListPage implements OnInit {
   constructor(private clientService: ClientService,
     private orderService: OrdersService,
     private ionToastService: IonToastService,
-    private authService: AuthService,
     private ordersService: OrdersService,
-    private rolesService: RolesService,
+    private alertCtrl: AlertController,
     private tagsService: TagService,
     private modalCtrl: ModalController,
     private router: Router,
     public notesService: NoteService,
-    public menu: MenuController) { }
+    public menu: MenuController,
+    public storageModifyService:StorageOrderUpdateService) { }
 
   ngOnInit() {
   }
@@ -177,19 +179,47 @@ export class CompletedListPage implements OnInit {
   }
 
   async removeCompletion(order: Order) {
-    if (confirm("sei sicuro di voler TOGLIERE il COMPLETAMENTO dell'ordine?")) {
-      order.isCompleted = false;
-      await this.ordersService.updateOrder(order, order.id, order.client);
-      this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
-    }
+    this.alertCtrl.create({
+      header: "Rimuovi Completamento dall'Ordine",
+      subHeader: '',
+      message: "Sei sicuro di voler rimuovere il completamento dell'ordine ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            order.isCompleted = false;
+            await this.ordersService.updateOrder(order, order.id, order.client);
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        },
+        {
+          text: 'Annulla', handler: async (res) => {
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async storeOrder(order: Order) {
-    if (confirm("SEI SICURO DI VOLER ARCHIVIARE L'ORDINE?")) {
-      order.isArchived = true;
-      await this.ordersService.updateOrder(order, order.id, order.client);
-    }
-    this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+    this.alertCtrl.create({
+      header: 'Archivia Ordine',
+      subHeader: '',
+      message: "Sei sicuro di voler archiviare l'ordine ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            order.isArchived = true;
+            await this.ordersService.updateOrder(order, order.id, order.client);
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        },
+        {
+          text: 'Annulla', handler: async (res) => {
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+          }
+        }
+      ]
+    }).then(res => res.present());
   }
 
   seePreview(order) {
@@ -197,11 +227,25 @@ export class CompletedListPage implements OnInit {
   }
 
   async changeInPreventive(order) {
-    if (confirm("Sei sicuro di voler spostare l'ordine nella lista preventivi?")) {
-      order.isPreventive = true;
-      await this.orderService.updateOrder(order, order.id, order.client);
-      this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    }
+    this.alertCtrl.create({
+      header: 'Sposta Ordine in Preventivi',
+      subHeader: '',
+      message: "Sei sicuro di voler spostare l'ordine nella lista preventivi ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            order.isPreventive = true;
+            await this.orderService.updateOrder(order, order.id, order.client);
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        },
+        {
+          text: 'Annulla', handler: async (res) => {
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+          }
+        }
+      ]
+    }).then(res => res.present());
   }
 
   compareWith(currentValue: any, compareValue: any) {
@@ -212,23 +256,60 @@ export class CompletedListPage implements OnInit {
   }
 
   async deleteOrder(index) {
-    if (confirm("sei sicuro di voler eliminare l'ordine?")) {
-      await this.orderService.deleteOrder(index);
-      this.ionToastService.alertMessage("delete");
-    }
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.alertCtrl.create({
+      header: 'Elimina Ordine',
+      subHeader: '',
+      message: "Sei sicuro di voler eliminare l'ordine ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            await this.orderService.deleteOrder(index);
+            this.ionToastService.alertMessage("delete");
+            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        },
+        {
+          text: 'Annulla', handler: async (res) => {
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+          }
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async restoreOrder(order: Order) {
-    if (confirm("SEI SICURO DI VOLER RIPRISTINARE L'ORDINE?")) {
-      order.isArchived = false;
-      await this.ordersService.updateOrder(order, order.id, order.client);
-    }
-    this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+    this.alertCtrl.create({
+      header: 'Ripristina Ordine',
+      subHeader: '',
+      message: "Sei sicuro di voler ripristinare l'ordine ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            order.isArchived = false;
+            await this.ordersService.updateOrder(order, order.id, order.client);
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        },
+        {
+          text: 'Annulla', handler: async (res) => {
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async updateTags(order) {
     await this.orderService.updateOrder(order, order.id, order.client);
+    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+  }
+
+  async seeStorageModify(order) {
+    const modal = await this.modalCtrl.create({
+      component: StorageModifyModalComponent,
+      componentProps: { order: order }
+    })
+    await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 

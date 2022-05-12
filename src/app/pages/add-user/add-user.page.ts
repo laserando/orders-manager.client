@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { Role } from 'src/app/models/role.model';
 import { RolesService } from 'src/app/services/roles.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-add-user',
@@ -20,7 +21,8 @@ export class AddUserPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private ionToastService: IonToastService,
-    private rolesService:RolesService) { }
+    private rolesService: RolesService,
+    private alertCtrl: AlertController) { }
 
   ngOnInit() {
   }
@@ -28,7 +30,7 @@ export class AddUserPage implements OnInit {
   async ionViewWillEnter() {
 
     this.roles = await this.rolesService.find()
-    
+
     if (this.route.snapshot.params.id) {
       this.user = await this.userService.findById(this.route.snapshot.params.id)
     }
@@ -36,11 +38,24 @@ export class AddUserPage implements OnInit {
 
   async addOrUpdateUser() {
     if (this.route.snapshot.params.id) {
-      await this.userService.updateUser(this.route.snapshot.params.id, this.user);
-      if (confirm("sei sicuro di voler aggiornare l'utente?")) {
-        this.ionToastService.alertMessage("update");
-        this.router.navigate(["/dashboard/users"]);
-      }
+
+      this.alertCtrl.create({
+        header: 'Aggiorna Utente',
+        subHeader: '',
+        message: "Sei sicuro di voler aggiornare l'utente ?",
+        buttons: [
+          {
+            text: 'OK', handler: async (res) => {
+              await this.userService.updateUser(this.route.snapshot.params.id, this.user);
+              this.ionToastService.alertMessage("update");
+              this.router.navigate(["/dashboard/users"]);
+            }
+          },
+          {
+            text: 'Annulla'
+          }
+        ]
+      }).then(res => res.present());
     } else {
       await this.userService.addUser(this.user);
       this.ionToastService.alertMessage("add");

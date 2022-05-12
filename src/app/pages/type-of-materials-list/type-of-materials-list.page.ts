@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { TypeOfMaterialModel } from 'src/app/models/type-of-material.model';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { TypeOfMaterialService } from 'src/app/services/type-of-material.service';
@@ -15,7 +16,8 @@ export class TypeOfMaterialsListPage implements OnInit {
   public term: string;
 
   constructor(private typeOfMaterialService: TypeOfMaterialService,
-    private ionToastService: IonToastService) { }
+    private ionToastService: IonToastService,
+    private alertCtrl: AlertController) { }
 
   ngOnInit() {
   }
@@ -25,11 +27,23 @@ export class TypeOfMaterialsListPage implements OnInit {
   }
 
   async deleteMaterial(id) {
-    if (confirm("sei sicuro di voler eliminare il seguente materiale?")) {
-      await this.typeOfMaterialService.deleteMaterial(id);
-      this.materials = await this.typeOfMaterialService.find(this.filter, null, 0, 20);
-      this.ionToastService.alertMessage("delete");
-    }
+    this.alertCtrl.create({
+      header: 'Elimina Materiale',
+      subHeader: '',
+      message: "Sei sicuro di voler eliminare il seguente materiale ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            await this.typeOfMaterialService.deleteMaterial(id);
+            this.materials = await this.typeOfMaterialService.find(this.filter, null, 0, 20);
+            this.ionToastService.alertMessage("delete");
+          }
+        },
+        {
+          text: 'Annulla'
+        }
+      ]
+    }).then(res => res.present());
   }
 
   async search() {

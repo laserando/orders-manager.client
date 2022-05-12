@@ -140,6 +140,14 @@
                             </ion-icon>
                           </ion-button>
                         </div>
+                        <div class="storage-modify">
+                          <ion-button [size]="'small'" [disabled]="storageModifyService.storageModifyCount(order) == 0"
+                            (click)="seeStorageModify(order)">
+                            <ion-icon name="receipt-outline">
+                            </ion-icon>
+                            <span>{{storageModifyService.storageModifyCount(order)}}</span>
+                          </ion-button>
+                        </div>
                       </div>
                     </td>
                   </tr>

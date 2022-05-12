@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MenuController, ModalController } from '@ionic/angular';
+import { AlertController, MenuController, ModalController } from '@ionic/angular';
 import { ClientModel } from 'src/app/models/client.model';
 import { LogModel } from 'src/app/models/log.model';
 import { Order } from 'src/app/models/order.model';
@@ -37,15 +37,14 @@ export class PreventivesListPage implements OnInit {
   constructor(
     private orderService: OrdersService,
     private ionToastService: IonToastService,
-    private authService: AuthService,
     private ordersService: OrdersService,
     private rolesService: RolesService,
     private tagsService: TagService,
-    private modalCtrl: ModalController,
     private clientService: ClientService,
     private router: Router,
     public notesService: NoteService,
-    public menu: MenuController
+    public menu: MenuController,
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
@@ -62,10 +61,25 @@ export class PreventivesListPage implements OnInit {
   }
 
   async deleteOrder(index) {
-    if (confirm("sei sicuro di voler eliminare l'ordine?")) {
-      await this.orderService.deleteOrder(index);
-      this.ionToastService.alertMessage("delete");
-    }
+    this.alertCtrl.create({
+      header: 'Elimina Preventivo',
+      subHeader: '',
+      message: "Sei sicuro di voler eliminare il preventivo ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            await this.orderService.deleteOrder(index);
+            this.ionToastService.alertMessage("delete");
+            this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        },
+        {
+          text: 'Annulla', handler: async (res) => {
+            this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        }
+      ]
+    }).then(res => res.present());
     this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
@@ -136,11 +150,25 @@ export class PreventivesListPage implements OnInit {
   }
 
   async changeInOrder(order) {
-    if (confirm("Sei sicuro di voler spostare l'ordine nella lista preventivi?")) {
-      order.isPreventive = false;
-      await this.orderService.updateOrder(order, order.id, order.client);
-      this.preventives = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    }
+    this.alertCtrl.create({
+      header: 'Sposta Preventivo in Ordini',
+      subHeader: '',
+      message: "Sei sicuro di voler spostare il preventivo nella lista degli ordini ?",
+      buttons: [
+        {
+          text: 'OK', handler: async (res) => {
+            order.isPreventive = false;
+            await this.orderService.updateOrder(order, order.id, order.client);
+            this.preventives = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        },
+        {
+          text: 'Annulla', handler: async (res) => {
+            this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+          }
+        }
+      ]
+    }).then(res => res.present());
   }
 
   compareWith(currentValue: any, compareValue: any) {
