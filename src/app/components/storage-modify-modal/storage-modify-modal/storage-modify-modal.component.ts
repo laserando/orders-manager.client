@@ -10,10 +10,10 @@ import { RolesService } from 'src/app/services/roles.service';
 })
 export class StorageModifyModalComponent implements OnInit {
 
-  @Input() order: Order;
+  @Input() order: any;
 
   constructor(private modalCtrl: ModalController,
-    private rolesService:RolesService) { }
+    private rolesService: RolesService) { }
 
   async ngOnInit() {
     for (let storage of this.order.storageOrderUpdates as any[]) {

@@ -30,6 +30,7 @@
     "@ionic-native/core": "^5.34.0",
     "@ionic/angular": "^5.5.2",
     "cordova-plugin-calendar": "^5.1.5",
+    "http-server": "^14.1.1",
     "ionic-selectable": "^4.9.0",
     "qs": "^6.7.0",
     "rxjs": "~6.6.0",

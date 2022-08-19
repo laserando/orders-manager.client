@@ -24,7 +24,8 @@ export class OrdersService {
   find(where: any = null, q: string = null, start: number = 0, limit: number = 20, sort: string = null) {
     const query: any = {
       _start: start || 0,
-      _limit: limit || 20
+      _limit: limit || 20,
+
     }
 
     if (q) query._q = q;

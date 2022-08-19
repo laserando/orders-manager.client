@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { StorageModalComponent } from './modal/storage-modal.component';
 import { StorageModifyModalComponent } from './storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
 
-const declarations = [FilterComponent,StorageModalComponent,StorageModifyModalComponent]
+const declarations = [FilterComponent, StorageModalComponent, StorageModifyModalComponent]
 
 @NgModule({
   declarations: declarations,

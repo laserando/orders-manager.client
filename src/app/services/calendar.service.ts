@@ -9,26 +9,26 @@ import { OrdersService } from './orders.service';
 
 export class CalendarService {
 
-  constructor(private ordersService:OrdersService){}
+  constructor(private ordersService: OrdersService) { }
 
-  public orders:Order[] = [];
-  public from:Date;
-  public to:Date;
+  public orders: Order[] = [];
+  public from: Date;
+  public to: Date;
 
-  async currentData(calendarComponent){
+  async currentData(calendarComponent) {
     this.from = calendarComponent.currentData.currentDate;
     this.to = new Date(this.from.getFullYear(), this.from.getMonth() + 1, 1);
-    this.orders =  await this.ordersService.find(this.getFilters())
+    this.orders = await this.ordersService.find(this.getFilters())
     return this.orders
-    }
-  
-    private getFilters() {
-      return {
-        isArchived: false,
-        deliveryDate_gte: this.from,
-        deliveryDate_lte: this.to
-      };
-    }
+  }
+
+  private getFilters() {
+    return {
+      isArchived: false,
+      deliveryDate_gte: this.from,
+      deliveryDate_lte: this.to
+    };
+  }
 
 
 

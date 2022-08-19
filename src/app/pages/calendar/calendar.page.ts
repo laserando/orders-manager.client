@@ -3,7 +3,7 @@ import { FullCalendarComponent, CalendarOptions, Action } from '@fullcalendar/an
 import { Order } from 'src/app/models/order.model';
 import { OrdersService } from 'src/app/services/orders.service';
 import { CalendarService } from 'src/app/services/calendar.service';
-
+import { Global } from '../../services/global';
 
 @Component({
   selector: 'app-calendar',
@@ -19,6 +19,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
   public from: Date;
   public to: Date;
   public filter: any;
+  // public url: string = `${Global.ENDPOINT.TEST}/dashboard/preview/`
 
   constructor(private ordersService: OrdersService,
     private calendarService: CalendarService) { }
@@ -30,14 +31,19 @@ export class CalendarPage implements OnInit, AfterViewInit {
     this.to = new Date(today.getFullYear(), today.getMonth() + 1, 1);
     this.filter = { isArchived: false, deliveryDate_gte: this.from, deliveryDate_lte: this.to };
     this.orders = await this.ordersService.find(this.filter);
+    console.log(this.orders.map(order => order))
 
     this.calendarOptions = {
       initialView: 'dayGridMonth',
       height: '100%',
       events:
         this.orders.map(res => {
+
           let id = res.id.toString();
-          return { title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate };
+          return {
+            title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate
+            /*,url: this.url + id*/
+          };
         })
     };
   }
@@ -52,7 +58,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
       events:
         this.orders.map(res => {
           let id = res.id.toString();
-          return { title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate };
+          return { title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate  /*,url: this.url + id*/ };
         })
     };
 
@@ -73,7 +79,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
         this.orders = await this.ordersService.find(this.filter);
         this.ionViewWillEnter();
       }
-    }, 500)    
+    }, 500)
   }
 }
 

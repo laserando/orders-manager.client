@@ -51,13 +51,16 @@ export class OrdersListPage implements OnInit {
     private alertCtrl: AlertController) { }
 
   async ngOnInit() {
+
     this.role = this.authService.getParseOfUserObject();
     if (this.authService.getUser().role.id == 1) {
       this.filter = { isArchived: false, isPreventive: false, isCompleted: false };
     } else if (this.authService.getUser().role.id != 1) {
       this.filter = { role: this.authService.getUser().role.id, isArchived: false, isPreventive: false, isCompleted: false };
     }
+
   }
+
 
   async ionViewWillEnter() {
     this.clients = [...(await this.clientService.find()).map((c: any) => {
@@ -67,6 +70,7 @@ export class OrdersListPage implements OnInit {
     this.tags = await this.tagsService.find();
     this.roles = await this.rolesService.find();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+
   }
 
   async deleteOrder(index) {
@@ -93,8 +97,19 @@ export class OrdersListPage implements OnInit {
   }
 
   async search() {
-    this.orders = await this.orderService.find(this.filter, this.term, 0, 20);
-  }
+    console.log(this.term);
+    this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    console.log(this.orders);
+
+    const checked = this.orders.filter(order => order.client.surname.toLowerCase() === this.term.toLowerCase() || order.client.name.toLowerCase() === this.term.toLowerCase() || order.typesOfProcessing.name === this.term.toLowerCase());
+
+    if (checked.length === 0) {
+      this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    } else {
+      this.orders = [...checked];
+    }
+  };
+
 
   async searchByClient(event) {
     this.term = event.text
@@ -103,7 +118,7 @@ export class OrdersListPage implements OnInit {
       c.fullname = c.name + ' ' + c.surname;
       return c;
     })
-    this.clients = [...clients]
+    this.clients = [...clients];
 
   }
 

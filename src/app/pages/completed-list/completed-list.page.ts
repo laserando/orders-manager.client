@@ -40,12 +40,13 @@ export class CompletedListPage implements OnInit {
     private router: Router,
     public notesService: NoteService,
     public menu: MenuController,
-    public storageModifyService:StorageOrderUpdateService) { }
+    public storageModifyService: StorageOrderUpdateService) { }
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
+
     this.tags = await this.tagsService.find();
     this.clients = [...(await this.clientService.find()).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
@@ -142,8 +143,17 @@ export class CompletedListPage implements OnInit {
   }
 
   async search() {
-    this.orders = await this.orderService.find(this.filter, this.term, 0, 20);
-  }
+    console.log(this.term);
+    this.orders = await this.orderService.find(this.filter, null, 0, 20);
+
+    const checked = this.orders.filter(order => order.client.surname.toLowerCase() === this.term.toLowerCase() || order.client.name.toLowerCase() === this.term.toLowerCase());
+
+    if (checked.length === 0) {
+      this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    } else {
+      this.orders = [...checked];
+    }
+  };
 
   async updateList() {
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
@@ -235,6 +245,7 @@ export class CompletedListPage implements OnInit {
         {
           text: 'OK', handler: async (res) => {
             order.isPreventive = true;
+            order.isCompleted = false;
             await this.orderService.updateOrder(order, order.id, order.client);
             this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }

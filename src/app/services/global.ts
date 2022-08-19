@@ -1,6 +1,6 @@
 export class Global {
     static ENDPOINT = {
-        BASE: 'https://laserando-api.oddastudio.com'
-        //BASE: 'http://localhost:1337'
+        BASE: 'https://laserando-api.oddastudio.com',
+        // TEST: 'http://localhost:8100'
     }
 }

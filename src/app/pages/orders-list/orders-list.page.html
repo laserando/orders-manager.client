@@ -9,38 +9,68 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="8">
-        <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()">
+      <ion-col size="12">
+        <ion-searchbar
+          animated
+          [debounce]="500"
+          [(ngModel)]="term"
+          (ngModelChange)="search()"
+        >
         </ion-searchbar>
       </ion-col>
       <ion-col>
         <ion-item class="selectable">
           <ion-label>Cerca per cliente</ion-label>
-          <ionic-selectable [searchPlaceholder]="'inserisci nome e cognome'" name="privateClients" [(ngModel)]="client"
-            [items]="clients" itemValueField="id" itemTextField="fullname" [canSearch]="true"
-            (onChange)="cleanClient($event)" (onSearch)="searchByClient($event)" [hasInfiniteScroll]="true"
-            (onInfiniteScroll)="getMoreClients($event)">
+          <ionic-selectable
+            [searchPlaceholder]="'inserisci nome e cognome'"
+            name="privateClients"
+            [(ngModel)]="client"
+            [items]="clients"
+            itemValueField="id"
+            itemTextField="fullname"
+            [canSearch]="true"
+            (onChange)="cleanClient($event)"
+            (onSearch)="searchByClient($event)"
+            [hasInfiniteScroll]="true"
+            (onInfiniteScroll)="getMoreClients($event)"
+          >
           </ionic-selectable>
-          <ion-button [fill]="'clear'" size="small" (click)="cleanClient('clean')">
+          <ion-button
+            [fill]="'clear'"
+            size="small"
+            (click)="cleanClient('clean')"
+          >
             <ion-icon name="refresh-outline"></ion-icon>
           </ion-button>
         </ion-item>
-
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <filter (filterChange)="onFilterChange($event)" *ngIf="role == 'amministrazione'"></filter>
+        <filter
+          (filterChange)="onFilterChange($event)"
+          *ngIf="role === 'amministrazione'"
+        ></filter>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="12">
         <ion-card class="section">
           <ion-card-content>
-            <ion-button shape="round" size="small" *ngIf="role== 'amministrazione'" routerLink="/dashboard/order">
+            <ion-button
+              shape="round"
+              size="small"
+              *ngIf="role=== 'amministrazione'"
+              routerLink="/dashboard/order"
+            >
               <ion-icon name="add-outline"></ion-icon>
             </ion-button>
-            <ion-button shape="round" size="small" style="float: right;" (click)="updateList()">
+            <ion-button
+              shape="round"
+              size="small"
+              style="float: right"
+              (click)="updateList()"
+            >
               <ion-icon name="refresh-outline"></ion-icon>
             </ion-button>
             <div class="table-wrapper">
@@ -56,63 +86,96 @@
                     <th>Grafica presente</th>
                     <th>Data consegna</th>
                     <th>Assegnato a</th>
-                    <th *ngIf="role == 'amministrazione'">#TAG stato ordine</th>
+                    <th *ngIf="role === 'amministrazione'">
+                      #TAG stato ordine
+                    </th>
                     <th>GESTISCI</th>
                   </tr>
                 </thead>
-                <tbody *ngIf="!orders.length">
+                <tbody *ngIf="!orders.length ">
                   <tr class="ion-text-center">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: center;">Nessun Ordine</td>
+                    <td style="text-align: center">Nessun Ordine</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td *ngIf="role == 'amministrazione'"></td>
+                    <td *ngIf="role === 'amministrazione'"></td>
                   </tr>
+                </tbody>
+
                 <tbody>
                   <tr *ngFor="let order of orders,let i = index">
-                    <td id="number">
-                      {{order.id}}
-                    </td>
-                    <td> {{order.client?.name}} </td>
-                    <td> {{order.client?.surname}} </td>
-                    <td> {{order.typesOfProcessing?.name}} </td>
-                    <td> {{order.typesOfMaterial?.name}} </td>
-                    <td> {{order.itemSize}} </td>
+                    <td id="number">{{order.id}}</td>
+                    <td>{{order.client?.name}}</td>
+                    <td>{{order.client?.surname}}</td>
+                    <td>{{order.typesOfProcessing?.name}}</td>
+                    <td>{{order.typesOfMaterial?.name}}</td>
+                    <td>{{order.itemSize}}</td>
                     <td>
-                      <a href="{{order.client?.graphicLink}}" target="_blank" *ngIf="order.client?.graphicLink">
-                        SI <br>(clicca qui)
+                      <a
+                        href="{{order.client?.graphicLink}}"
+                        target="_blank"
+                        *ngIf="order.client?.graphicLink"
+                      >
+                        SI <br />(clicca qui)
                       </a>
-                      <div *ngIf="!order.client?.graphicLink" style="text-align: center;">
+                      <div
+                        *ngIf="!order.client?.graphicLink"
+                        style="text-align: center"
+                      >
                         NO
                       </div>
-                      <div *ngIf="(role == 'grafica' || role =='grafica_2') ">
-                        <ion-button size="small" (click)="addGraphic(order.client)"> Aggiungere / Cambiare Link Grafica
+                      <div *ngIf="(role === 'grafica' || role ==='grafica_2') ">
+                        <ion-button
+                          size="small"
+                          (click)="addGraphic(order.client)"
+                        >
+                          Aggiungere / Cambiare Link Grafica
                         </ion-button>
                       </div>
                     </td>
-                    <td> {{order.deliveryDate | date:'dd/MM/YYYY'}}</td>
+                    <td>{{order.deliveryDate | date:'dd/MM/YYYY'}}</td>
                     <td *ngIf="!order.isArchived">
-                      ORA IN : <strong>{{order.role.name}}</strong><br>
+                      ORA IN : <strong>{{order.role.name}}</strong><br />
                       ASSEGNA A:
-                      <ion-select placeholder="inserisci assegnazione ruolo" name="" id="" [(ngModel)]="order.role"
-                        [interface]="'popover'" (ngModelChange)="changeState(order)">
-                        <ion-select-option value="{{role.id}}" *ngFor="let role of roles"> {{role.name}}
+                      <ion-select
+                        placeholder="inserisci assegnazione ruolo"
+                        name=""
+                        id=""
+                        [(ngModel)]="order.role"
+                        [interface]="'popover'"
+                        (ngModelChange)="changeState(order)"
+                      >
+                        <ion-select-option
+                          value="{{role.id}}"
+                          *ngFor="let role of roles"
+                        >
+                          {{role.name}}
                         </ion-select-option>
                       </ion-select>
                     </td>
                     <td *ngIf="order.isArchived">
                       ORA IN : <strong>{{order.role?.name}}</strong>
                     </td>
-                    <td *ngIf="role == 'amministrazione' && !order.isArchived">
-                      <ion-select class="tags-select" multiple placeholder="Selezione Multipla" name="tags"
-                        [compareWith]="compareWith" [(ngModel)]="order.tags" (ngModelChange)="updateTags(order)">
-                        <ion-select-option [value]="tag" *ngFor="let tag of tags">
+                    <td *ngIf="role === 'amministrazione' && !order.isArchived">
+                      <ion-select
+                        class="tags-select"
+                        multiple
+                        placeholder="Selezione Multipla"
+                        name="tags"
+                        [compareWith]="compareWith"
+                        [(ngModel)]="order.tags"
+                        (ngModelChange)="updateTags(order)"
+                      >
+                        <ion-select-option
+                          [value]="tag"
+                          *ngFor="let tag of tags"
+                        >
                           {{tag?.name}}
                         </ion-select-option>
                       </ion-select>
@@ -122,29 +185,50 @@
                         </p>
                       </div>
                     </td>
-                    <td *ngIf="role== 'amministrazione' && order.isArchived" style="color: blueviolet;">
+                    <td
+                      *ngIf="role=== 'amministrazione' && order.isArchived"
+                      style="color: blueviolet"
+                    >
                       #ARCHIVIATO
                     </td>
                     <td>
                       <div>
-                        <ion-select class="manage" (ionChange)="select($event,order)" placeholder="⚙">
-                          <ion-select-option *ngIf="!order.isArchived" value="goToChangeOrder">
+                        <ion-select
+                          class="manage"
+                          (ionChange)="select($event,order)"
+                          placeholder="⚙"
+                        >
+                          <ion-select-option
+                            *ngIf="!order.isArchived"
+                            value="goToChangeOrder"
+                          >
                             🖊 Modifica
                           </ion-select-option>
-                          <ion-select-option *ngIf="role== 'amministrazione'" value="deleteOrder">
+                          <ion-select-option
+                            *ngIf="role=== 'amministrazione'"
+                            value="deleteOrder"
+                          >
                             ❌ Elimina
                           </ion-select-option>
                           <ion-select-option value="completeOrder">
                             ✅ Completa
                           </ion-select-option>
-                          <ion-select-option *ngIf="role== 'amministrazione' && !order.isArchived" value="storeOrder">
+                          <ion-select-option
+                            *ngIf="role=== 'amministrazione' && !order.isArchived"
+                            value="storeOrder"
+                          >
                             📦 Archivia
                           </ion-select-option>
-                          <ion-select-option *ngIf="role== 'amministrazione' && order.isArchived" value="restoreOrder">
+                          <ion-select-option
+                            *ngIf="role=== 'amministrazione' && order.isArchived"
+                            value="restoreOrder"
+                          >
                             🔄 Ripristina
                           </ion-select-option>
-                          <ion-select-option *ngIf="role== 'amministrazione' && order.isCompleted && !order.isArchived"
-                            value="removeCompletion">
+                          <ion-select-option
+                            *ngIf="role=== 'amministrazione' && order.isCompleted && !order.isArchived"
+                            value="removeCompletion"
+                          >
                             ⛔ Rimuovi "Completato"
                           </ion-select-option>
                           <ion-select-option value="changeInPreventive">
@@ -154,25 +238,35 @@
                       </div>
                       <div class="button-bottom">
                         <div>
-                          <ion-button [size]="'small'" [disabled]="notesService.notesCount(order) == 0"
-                            (click)="openModal(order)">
+                          <ion-button
+                            [size]="'small'"
+                            [disabled]="notesService.notesCount(order) === 0"
+                            (click)="openModal(order)"
+                          >
                             <ion-icon slot="icon-only" [name]="'mail-outline'">
                             </ion-icon>
                             <span>{{notesService.notesCount(order)}}</span>
                           </ion-button>
                         </div>
                         <div>
-                          <ion-button [size]="'small'" (click)="seePreview(order)">
+                          <ion-button
+                            [size]="'small'"
+                            (click)="seePreview(order)"
+                          >
                             <ion-icon slot="icon-only" [name]="'tv-outline'">
                             </ion-icon>
                           </ion-button>
                         </div>
                         <div class="storage-modify">
-                          <ion-button [size]="'small'" [disabled]="storageModifyService.storageModifyCount(order) == 0"
-                            (click)="seeStorageModify(order)">
-                            <ion-icon name="receipt-outline">
-                            </ion-icon>
-                            <span>{{storageModifyService.storageModifyCount(order)}}</span>
+                          <ion-button
+                            [size]="'small'"
+                            [disabled]="storageModifyService.storageModifyCount(order) === 0"
+                            (click)="seeStorageModify(order)"
+                          >
+                            <ion-icon name="receipt-outline"> </ion-icon>
+                            <span
+                              >{{storageModifyService.storageModifyCount(order)}}</span
+                            >
                           </ion-button>
                         </div>
                       </div>
@@ -181,7 +275,14 @@
                 </tbody>
               </table>
             </div>
-            <ion-button shape="round" size="small" size="small" (click)="getNextPage()"> vedi altri... </ion-button>
+            <ion-button
+              shape="round"
+              size="small"
+              size="small"
+              (click)="getNextPage()"
+            >
+              vedi altri...
+            </ion-button>
           </ion-card-content>
         </ion-card>
       </ion-col>
