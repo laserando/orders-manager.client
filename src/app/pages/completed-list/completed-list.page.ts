@@ -143,10 +143,11 @@ export class CompletedListPage implements OnInit {
   }
 
   async search() {
-    console.log(this.term);
-    this.orders = await this.orderService.find(this.filter, null, 0, 20);
 
-    const checked = this.orders.filter(order => order.client.surname.toLowerCase() === this.term.toLowerCase() || order.client.name.toLowerCase() === this.term.toLowerCase());
+    this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    console.log(this.orders);
+
+    const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
 
     if (checked.length === 0) {
       this.orders = await this.orderService.find(this.filter, null, 0, 20);
@@ -154,6 +155,8 @@ export class CompletedListPage implements OnInit {
       this.orders = [...checked];
     }
   };
+
+
 
   async updateList() {
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');

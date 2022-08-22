@@ -24,6 +24,7 @@ import { StorageOrderUpdateService } from 'src/app/services/storage-order-update
 })
 export class OrdersListPage implements OnInit {
 
+  public user: any;
   public orders: Order[] = [];
   public role: string;
   public term: string;
@@ -52,6 +53,8 @@ export class OrdersListPage implements OnInit {
 
   async ngOnInit() {
 
+
+
     this.role = this.authService.getParseOfUserObject();
     if (this.authService.getUser().role.id == 1) {
       this.filter = { isArchived: false, isPreventive: false, isCompleted: false };
@@ -63,6 +66,7 @@ export class OrdersListPage implements OnInit {
 
 
   async ionViewWillEnter() {
+
     this.clients = [...(await this.clientService.find()).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
@@ -70,7 +74,7 @@ export class OrdersListPage implements OnInit {
     this.tags = await this.tagsService.find();
     this.roles = await this.rolesService.find();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-
+    console.log(this.orders);
   }
 
   async deleteOrder(index) {
@@ -97,11 +101,11 @@ export class OrdersListPage implements OnInit {
   }
 
   async search() {
-    console.log(this.term);
+
     this.orders = await this.orderService.find(this.filter, null, 0, 20);
     console.log(this.orders);
 
-    const checked = this.orders.filter(order => order.client.surname.toLowerCase() === this.term.toLowerCase() || order.client.name.toLowerCase() === this.term.toLowerCase() || order.typesOfProcessing.name === this.term.toLowerCase());
+    const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
 
     if (checked.length === 0) {
       this.orders = await this.orderService.find(this.filter, null, 0, 20);

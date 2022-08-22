@@ -25,7 +25,7 @@ import { AlertController } from '@ionic/angular';
 })
 
 export class AddOrderPage implements OnInit {
-
+  public today: string;
   public storageOrderUpdate: StorageOrderUpdate = new StorageOrderUpdate();
   public order: Order = new Order();
   public client: ClientModel = new ClientModel();
@@ -62,6 +62,8 @@ export class AddOrderPage implements OnInit {
 
   ngOnInit() {
     this.role = this.authService.getParseOfUserObject();
+    this.today = new Date().toLocaleDateString();
+    console.log(this.today);
   }
 
   async ionViewWillEnter() {

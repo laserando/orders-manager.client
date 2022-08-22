@@ -84,8 +84,21 @@ export class PreventivesListPage implements OnInit {
   }
 
   async search() {
-    this.preventives = await this.orderService.find(this.filter, this.term, 0, 20);
-  }
+
+    this.preventives = await this.orderService.find(this.filter, null, 0, 20);
+
+
+    const checked = this.preventives.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
+
+    if (checked.length === 0) {
+      this.preventives = await this.orderService.find(this.filter, null, 0, 20);
+    } else {
+      this.preventives = [...checked];
+    }
+  };
+
+
+
 
   async searchByClient(event) {
     this.term = event.text
