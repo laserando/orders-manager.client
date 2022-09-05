@@ -91,7 +91,7 @@ const routes: Routes = [
       {
         path: 'user',
         canActivate: [AuthGuardService],
-        loadChildren: () => import('../add-User/add-user.module').then(m => m.AddUserPageModule)
+        loadChildren: () => import('../add-user/add-user.module').then(m => m.AddUserPageModule)
       },
       {
         path: 'users',
@@ -101,7 +101,7 @@ const routes: Routes = [
       {
         path: 'user/:id',
         canActivate: [AuthGuardService],
-        loadChildren: () => import('../add-User/add-user.module').then(m => m.AddUserPageModule)
+        loadChildren: () => import('../add-user/add-user.module').then(m => m.AddUserPageModule)
       },
       {
         path: 'order-timing',
