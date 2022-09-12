@@ -46,8 +46,11 @@ export class CompletedListPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-
-    this.tags = await this.tagsService.find();
+    this.tagsService.getTags().subscribe(
+      tags => {
+        this.tags = tags;
+      }
+    );
     this.clients = [...(await this.clientService.find()).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;

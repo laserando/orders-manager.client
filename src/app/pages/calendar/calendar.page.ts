@@ -19,7 +19,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
   public from: Date;
   public to: Date;
   public filter: any;
-  // public url: string = `${Global.ENDPOINT.TEST}/dashboard/preview/`
+  public url: string = `/dashboard/preview/`;
 
   constructor(private ordersService: OrdersService,
     private calendarService: CalendarService) { }
@@ -42,7 +42,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
           let id = res.id.toString();
           return {
             title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate
-            /*,url: this.url + id*/
+            ,url: this.url + id
           };
         })
     };

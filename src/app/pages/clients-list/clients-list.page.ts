@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { ClientModel } from 'src/app/models/client.model';
-import { ClientService } from 'src/app/services/client.service';
+import {Component, OnInit} from '@angular/core';
+import {AlertController} from '@ionic/angular';
+import {ClientModel} from 'src/app/models/client.model';
+import {ClientService} from 'src/app/services/client.service';
 
 @Component({
   selector: 'app-clients-list',
@@ -17,7 +17,8 @@ export class ClientsListPage implements OnInit {
   public clientsInSelectable: ClientModel[] = [];
 
   constructor(private clientService: ClientService,
-    private alertCtrl:AlertController) { }
+              private alertCtrl: AlertController) {
+  }
 
   async ngOnInit() {
     this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');

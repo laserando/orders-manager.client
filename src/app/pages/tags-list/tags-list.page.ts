@@ -1,29 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { TagModel } from 'src/app/models/tag.model';
-import { IonToastService } from 'src/app/services/ion-toast.service';
-import { TagService } from 'src/app/services/tag.service';
+import {Component, OnInit} from '@angular/core';
+import {AlertController} from '@ionic/angular';
+import {TagModel} from 'src/app/models/tag.model';
+import {IonToastService} from 'src/app/services/ion-toast.service';
+import {TagService} from 'src/app/services/tag.service';
+import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
 
 @Component({
   selector: 'app-tags-list',
   templateUrl: './tags-list.page.html',
   styleUrls: ['./tags-list.page.scss'],
 })
-export class TagsListPage implements OnInit {
+export class TagsListPage extends UnsubscribeAll implements OnInit {
 
   public tags: TagModel[] = []
   public term: string;
   public filter: any;
 
   constructor(private tagService: TagService,
-    private ionToastService: IonToastService,
-    private alertCtrl:AlertController) { }
+              private ionToastService: IonToastService,
+              private alertCtrl: AlertController) {
+    super();
+  }
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
-    this.tags = await this.tagService.find(this.filter, null, 0, 20)
+    this.subscriptions.add(this.tagService.getTags().subscribe(
+      tags => this.tags = tags
+    ));
   }
 
   async deleteTag(id) {
@@ -35,7 +40,6 @@ export class TagsListPage implements OnInit {
         {
           text: 'OK', handler: async (res) => {
             await this.tagService.deleteTag(id);
-            this.tags = await this.tagService.find(this.filter, null, 0, 20);
             this.ionToastService.alertMessage("delete");
           }
         },

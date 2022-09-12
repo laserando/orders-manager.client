@@ -2,15 +2,25 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Role } from '../models/role.model';
 import { Global } from './global';
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService {
+  private roles: BehaviorSubject<Role[]> = new BehaviorSubject<Role[]>([]);
 
   public URL: string = `${Global.ENDPOINT.BASE}/users-permissions/roles`
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.find().then(
+      f => this.roles.next(f)
+    );
+  }
+
+  getRoles() {
+    return this.roles.asObservable();
+  }
 
   find() {
     return this.http.get<{ roles: Role[] }>(this.URL).toPromise()

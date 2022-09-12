@@ -1,30 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, MenuController, ModalController } from '@ionic/angular';
-import { ClientModel } from 'src/app/models/client.model';
-import { LogModel } from 'src/app/models/log.model';
-import { Order } from 'src/app/models/order.model';
-import { Role } from 'src/app/models/role.model';
-import { TagModel } from 'src/app/models/tag.model';
-import { AuthService } from 'src/app/services/auth.service';
-import { ClientService } from 'src/app/services/client.service';
-import { IonToastService } from 'src/app/services/ion-toast.service';
-import { NoteService } from 'src/app/services/note.service';
-import { OrdersService } from 'src/app/services/orders.service';
-import { RolesService } from 'src/app/services/roles.service';
-import { TagService } from 'src/app/services/tag.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {AlertController, MenuController, ModalController} from '@ionic/angular';
+import {ClientModel} from 'src/app/models/client.model';
+import {LogModel} from 'src/app/models/log.model';
+import {Order} from 'src/app/models/order.model';
+import {Role} from 'src/app/models/role.model';
+import {TagModel} from 'src/app/models/tag.model';
+import {AuthService} from 'src/app/services/auth.service';
+import {ClientService} from 'src/app/services/client.service';
+import {IonToastService} from 'src/app/services/ion-toast.service';
+import {NoteService} from 'src/app/services/note.service';
+import {OrdersService} from 'src/app/services/orders.service';
+import {RolesService} from 'src/app/services/roles.service';
+import {TagService} from 'src/app/services/tag.service';
+import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
 
 @Component({
   selector: 'app-preventives-list',
   templateUrl: './preventives-list.page.html',
   styleUrls: ['./preventives-list.page.scss'],
 })
-export class PreventivesListPage implements OnInit {
+export class PreventivesListPage extends UnsubscribeAll implements OnInit {
 
   public preventives: Order[] = [];
   public role: string;
   public term: string;
-  public filter: any = { isPreventive: true };
+  public filter: any = {isPreventive: true};
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
@@ -45,18 +46,29 @@ export class PreventivesListPage implements OnInit {
     public notesService: NoteService,
     public menu: MenuController,
     private alertCtrl: AlertController
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
-    this.clients = [...(await this.clientService.find()).map((c: any) => {
-      c.fullname = c.name + ' ' + c.surname;
-      return c;
-    })];
-    this.tags = await this.tagsService.find()
-    this.roles = await this.rolesService.find()
+
+    const getClients = this.clientService.getClients().subscribe(
+      clients => {
+        this.clients = clients;
+      }
+    )
+    const getTags = this.tagsService.getTags().subscribe(
+      f => this.tags = f
+    );
+    const getRoles = this.rolesService.getRoles().subscribe(
+      roles => this.roles = roles
+    );
+
+    this.addSubscriptions(getClients, getTags, getRoles);
+
     this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
 
@@ -96,8 +108,6 @@ export class PreventivesListPage implements OnInit {
       this.preventives = [...checked];
     }
   };
-
-
 
 
   async searchByClient(event) {
