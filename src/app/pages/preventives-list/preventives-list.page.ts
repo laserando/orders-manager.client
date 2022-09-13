@@ -1,12 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AlertController, MenuController, ModalController} from '@ionic/angular';
+import {AlertController, MenuController} from '@ionic/angular';
 import {ClientModel} from 'src/app/models/client.model';
 import {LogModel} from 'src/app/models/log.model';
 import {Order} from 'src/app/models/order.model';
 import {Role} from 'src/app/models/role.model';
 import {TagModel} from 'src/app/models/tag.model';
-import {AuthService} from 'src/app/services/auth.service';
 import {ClientService} from 'src/app/services/client.service';
 import {IonToastService} from 'src/app/services/ion-toast.service';
 import {NoteService} from 'src/app/services/note.service';
