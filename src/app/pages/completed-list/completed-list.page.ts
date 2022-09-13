@@ -83,7 +83,7 @@ export class CompletedListPage extends UnsubscribeAll implements OnInit {
   async getNextPage() {
     await this.present();
     const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
-    this.orders.push(...orders);
+    this.orders.push(...orders.filter(f => !this.orders.find(old => old.id === f.id)));
     this.loader.dismiss();
   }
 

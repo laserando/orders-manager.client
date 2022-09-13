@@ -160,7 +160,7 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   async getNextPage() {
     await this.present();
     const orders = await this.orderService.find(this.filter, this.term, this.preventives.length);
-    this.preventives.push(...orders);
+    this.preventives.push(...orders.filter(f => !this.preventives.find(old => old.id === f.id)));
     this.loader.dismiss();
   }
 
