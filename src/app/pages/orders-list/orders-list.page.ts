@@ -124,7 +124,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   async search() {
     await this.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    console.log(this.orders);
+    this.loader.dismiss();
 
     const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
 
@@ -133,6 +133,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     } else {
       this.orders = [...checked];
     }
+
   };
 
 

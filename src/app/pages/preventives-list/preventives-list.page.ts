@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, MenuController } from '@ionic/angular';
+import { AlertController, MenuController, LoadingController } from '@ionic/angular';
 import { ClientModel } from 'src/app/models/client.model';
 import { LogModel } from 'src/app/models/log.model';
 import { Order } from 'src/app/models/order.model';
@@ -33,6 +33,7 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   public clients: (ClientModel & { fullname?: string })[] = [];
   public client: ClientModel;
   public inPreventivePage: boolean = true;
+  public loader: HTMLIonLoadingElement;
 
   constructor(
     private orderService: OrdersService,
@@ -44,7 +45,8 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
     private router: Router,
     public notesService: NoteService,
     public menu: MenuController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private loadingController: LoadingController
   ) {
     super();
   }
@@ -67,9 +69,18 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
     );
 
     this.addSubscriptions(getClients, getTags, getRoles);
-
+    await this.present();
     this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.loader.dismiss();
   }
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
+  }
+
 
   async deleteOrder(index) {
     this.alertCtrl.create({
@@ -95,8 +106,9 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   }
 
   async search() {
-
+    await this.present();
     this.preventives = await this.orderService.find(this.filter, null, 0, 20);
+    this.loader.dismiss();
 
 
     const checked = this.preventives.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
@@ -146,8 +158,10 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   }
 
   async getNextPage() {
+    await this.present();
     const orders = await this.orderService.find(this.filter, this.term, this.preventives.length);
     this.preventives.push(...orders);
+    this.loader.dismiss();
   }
 
   async updateList() {
