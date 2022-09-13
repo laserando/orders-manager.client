@@ -1,18 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {AlertController, MenuController} from '@ionic/angular';
-import {ClientModel} from 'src/app/models/client.model';
-import {LogModel} from 'src/app/models/log.model';
-import {Order} from 'src/app/models/order.model';
-import {Role} from 'src/app/models/role.model';
-import {TagModel} from 'src/app/models/tag.model';
-import {ClientService} from 'src/app/services/client.service';
-import {IonToastService} from 'src/app/services/ion-toast.service';
-import {NoteService} from 'src/app/services/note.service';
-import {OrdersService} from 'src/app/services/orders.service';
-import {RolesService} from 'src/app/services/roles.service';
-import {TagService} from 'src/app/services/tag.service';
-import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlertController, MenuController } from '@ionic/angular';
+import { ClientModel } from 'src/app/models/client.model';
+import { LogModel } from 'src/app/models/log.model';
+import { Order } from 'src/app/models/order.model';
+import { Role } from 'src/app/models/role.model';
+import { TagModel } from 'src/app/models/tag.model';
+import { ClientService } from 'src/app/services/client.service';
+import { IonToastService } from 'src/app/services/ion-toast.service';
+import { NoteService } from 'src/app/services/note.service';
+import { OrdersService } from 'src/app/services/orders.service';
+import { RolesService } from 'src/app/services/roles.service';
+import { TagService } from 'src/app/services/tag.service';
+import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
 
 @Component({
   selector: 'app-preventives-list',
@@ -24,7 +24,7 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   public preventives: Order[] = [];
   public role: string;
   public term: string;
-  public filter: any = {isPreventive: true};
+  public filter: any = { isArchived: false, isPreventive: true, isCompleted: false };
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
