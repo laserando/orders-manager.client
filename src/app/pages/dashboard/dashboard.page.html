@@ -1,15 +1,13 @@
 <ion-header class="ion-margin">
   <ion-buttons>
-    <ion-menu-button>
-    </ion-menu-button>
+    <ion-menu-button> </ion-menu-button>
   </ion-buttons>
 </ion-header>
 <ion-content>
   <ion-split-pane contentId="main">
     <ion-menu contentId="main">
       <ion-header>
-        <ion-img [src]="">
-        </ion-img>
+        <ion-img [src]=""> </ion-img>
         <ion-toolbar>
           <ion-title>Menu</ion-title>
         </ion-toolbar>
@@ -20,7 +18,10 @@
             <ion-icon slot="start" name="document-outline"></ion-icon>
             GESTIONE ORDINI
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/preventives'" *ngIf="role==='amministrazione'">
+          <ion-item
+            [routerLink]="'/dashboard/preventives'"
+            *ngIf="role==='amministrazione'"
+          >
             <ion-icon slot="start" name="receipt-outline"></ion-icon>
             GESTIONE PREVENTIVI
           </ion-item>
@@ -28,25 +29,47 @@
             <ion-icon slot="start" name="file-tray-stacked-outline"></ion-icon>
             GESTIONE COMPLETATI
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/users'" *ngIf="role==='amministrazione'">
+          <ion-item
+            [routerLink]="'/dashboard/users'"
+            *ngIf="role==='amministrazione'"
+          >
             <ion-icon slot="start" name="person-outline"></ion-icon>
             GESTIONE UTENTI
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/clients-list'" *ngIf="role==='amministrazione'">
+          <ion-item
+            [routerLink]="'/dashboard/clients-list'"
+            *ngIf="role==='amministrazione'"
+          >
             <ion-icon slot="start" name="person-circle-outline"></ion-icon>
             GESTIONE CLIENTI
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/tags'" *ngIf="role==='amministrazione'">
+          <ion-item
+            [routerLink]="'/dashboard/tags'"
+            *ngIf="role==='amministrazione'"
+          >
             <ion-icon slot="start" name="bookmark-outline"></ion-icon>
             GESTIONE TAGS
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/materials'" *ngIf="role==='amministrazione'">
+          <ion-item
+            [routerLink]="'/dashboard/materials'"
+            *ngIf="role==='amministrazione'"
+          >
             <ion-icon slot="start" name="cube-outline"></ion-icon>
             GESTIONE MATERIALI
           </ion-item>
-          <ion-item [routerLink]="'/dashboard/types-of-processing'" *ngIf="role==='amministrazione'">
+          <ion-item
+            [routerLink]="'/dashboard/types-of-processing'"
+            *ngIf="role==='amministrazione'"
+          >
             <ion-icon slot="start" name="hammer-outline"></ion-icon>
             GESTIONE LAVORAZIONE
+          </ion-item>
+          <ion-item
+            [routerLink]="'/dashboard/roles'"
+            *ngIf="role==='amministrazione'"
+          >
+            <ion-icon slot="start" name="construct-outline"></ion-icon>
+            GESTIONE RUOLI
           </ion-item>
           <ion-item [routerLink]="'/dashboard/order-timing'">
             <ion-icon slot="start" name="stopwatch-outline"></ion-icon>

@@ -1,10 +1,10 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {TagModel} from '../models/tag.model';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { TagModel } from '../models/tag.model';
 import qs from 'qs';
-import {Global} from './global';
-import {BehaviorSubject, Observable} from "rxjs";
-import {Tag} from "@angular/compiler/src/i18n/serializers/xml_helper";
+import { Global } from './global';
+import { BehaviorSubject, Observable } from "rxjs";
+import { Tag } from "@angular/compiler/src/i18n/serializers/xml_helper";
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +52,12 @@ export class TagService {
   }
 
   updateTag(id: number, newDataTag: TagModel) {
-    return this.http.put<TagModel>(this.URL + "/" + id, newDataTag).toPromise()
+    return this.http.put<TagModel>(this.URL + "/" + id, newDataTag).toPromise().then(f => {
+      const tags = this.tags.value;
+      const tag = tags.findIndex(f => f.id === Number(id));
+      tags[tag] = newDataTag;
+      this.tags.next(tags)
+    })
   }
 
   deleteTag(id: number) {

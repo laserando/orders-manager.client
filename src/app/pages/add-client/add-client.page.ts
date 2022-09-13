@@ -53,6 +53,7 @@ export class AddClientPage implements OnInit {
                 } else {
                   this.client.isBusiness = false;
                 }
+                console.log("insave", this.client)
                 await this.clientService.updateCustomer(this.client);
                 this.ionToastService.alertMessage("update");
                 this.router.navigate(["/dashboard/clients-list"]);

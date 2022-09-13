@@ -146,8 +146,24 @@ const routes: Routes = [
         path: 'order-complete/:id',
         canActivate: [AuthGuardService],
         loadChildren: () => import('../add-order/add-order.module').then(m => m.AddOrderPageModule)
+      },/*
+      {
+        path: 'roles',
+        canActivate: [AuthGuardService],
+        loadChildren: () =>
+          import('../role-list/role-list.module').then(m => m.RoleListPageModule)
       },
-
+      {
+        path: 'role',
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('../add-role/add-role.module').then(m => m.AddRolePageModule)
+      },
+      {
+        path: 'role/:id',
+        canActivate: [AuthGuardService],
+        loadChildren: () => import('../add-role/add-role.module').then(m => m.AddRolePageModule)
+      }
+*/
     ]
   }
 ];
