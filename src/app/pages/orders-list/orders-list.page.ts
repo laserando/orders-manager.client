@@ -8,7 +8,7 @@ import {Role} from 'src/app/models/role.model';
 import {RolesService} from 'src/app/services/roles.service';
 import {TagService} from 'src/app/services/tag.service';
 import {TagModel} from 'src/app/models/tag.model';
-import {AlertController, MenuController, ModalController} from '@ionic/angular';
+import {AlertController, LoadingController, MenuController, ModalController} from '@ionic/angular';
 import {StorageModalComponent} from "src/app/components/modal/storage-modal.component";
 import {ClientService} from 'src/app/services/client.service';
 import {ClientModel} from 'src/app/models/client.model';
@@ -37,6 +37,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   public from: string;
   public clients: (ClientModel & { fullname?: string })[] = [];
   public client: ClientModel;
+  public loader: HTMLIonLoadingElement;
 
   constructor(private orderService: OrdersService,
               private ionToastService: IonToastService,
@@ -50,7 +51,8 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
               public notesService: NoteService,
               public menu: MenuController,
               public storageModifyService: StorageOrderUpdateService,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private loadingController: LoadingController) {
     super();
   }
 
@@ -71,7 +73,6 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
 
   }
 
-
   async ionViewWillEnter() {
 
     const getClient = this.clientService.getClients().subscribe(
@@ -90,9 +91,19 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.subscriptions.add(getTags);
     this.subscriptions.add(getRoles);
 
+    await this.present();
     this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC').then((orders) => {
       this.orders = orders;
+      this.loader.dismiss();
     });
+  }
+
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
   }
 
   async deleteOrder(index) {
@@ -119,7 +130,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   }
 
   async search() {
-
+    await this.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20);
     console.log(this.orders);
 
@@ -171,8 +182,10 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   }
 
   async getNextPage() {
+    await this.present();
     const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
     this.orders.push(...orders);
+    this.loader.dismiss();
   }
 
   async completeOrder(order: Order) {
