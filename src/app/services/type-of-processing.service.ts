@@ -9,6 +9,8 @@ import { Global } from './global';
 })
 export class TypeOfProcessingService {
 
+  
+
   public URL: string = `${Global.ENDPOINT.BASE}/type-of-processings`
 
   constructor(private http: HttpClient) { }
