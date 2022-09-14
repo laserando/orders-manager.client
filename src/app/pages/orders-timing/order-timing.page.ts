@@ -84,7 +84,7 @@ export class OrderTimingPage implements OnInit {
     this.timingCalc(this.orders);
   }
 
-  timingCalc(orders) {
+  timingCalc(orders) {  //TODO: need to  improve
     for (let order of orders) {
       const status: any = {};
 
