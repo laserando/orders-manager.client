@@ -26,7 +26,7 @@ export class StorageModifyModalComponent implements OnInit {
     }
   }
 
-  dismissModal() {
+  dismissModal() { 
     this.modalCtrl.dismiss()
   }
 
