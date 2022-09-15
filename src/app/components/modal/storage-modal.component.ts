@@ -12,7 +12,7 @@ import { UnsubscribeAll } from 'src/utils/unsubscribeAll';
 export class StorageModalComponent extends UnsubscribeAll implements OnInit {
   @Input() order: any;
   @Input() storageForNote: boolean;
-  public roles: Role[] = [];
+  private roles: Role[] = [];
   @Input() older: Role[] = [];
   @Input() newer: Role[] = [];
 
@@ -27,7 +27,7 @@ export class StorageModalComponent extends UnsubscribeAll implements OnInit {
     );
 
     console.log(this.roles);
-    console.log(this.order.logs)
+    console.log(this.order)
     if (!this.storageForNote) {
       for (let log of this.order.logs as any[]) {
         this.older.push(this.roles.find(o => o.id === log.oldRole));
