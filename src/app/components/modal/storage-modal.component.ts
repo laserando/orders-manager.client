@@ -24,10 +24,9 @@ export class StorageModalComponent extends UnsubscribeAll implements OnInit {
   async ngOnInit() {
     const getRoles = this.rolesService.getRoles().subscribe(
       f => this.roles = f
+
     );
 
-    console.log(this.roles);
-    console.log(this.order)
     if (!this.storageForNote) {
       for (let log of this.order.logs as any[]) {
         this.older.push(this.roles.find(o => o.id === log.oldRole));
@@ -37,8 +36,8 @@ export class StorageModalComponent extends UnsubscribeAll implements OnInit {
 
     } else {
       for (let note of this.order.notes) {
-        note.noteByRole = await this.rolesService.findById(note.noteByRole)
-        note.noteToRole = await this.rolesService.findById(note.noteToRole)
+        this.older.push(this.roles.find(o => o.id === note.noteByRole));
+        this.newer.push(this.roles.find(o => o.id === note.noteToRole));
       }
 
     }
@@ -49,5 +48,6 @@ export class StorageModalComponent extends UnsubscribeAll implements OnInit {
   dismissModal() {
     this.modalCtrl.dismiss()
   }
+
 
 }

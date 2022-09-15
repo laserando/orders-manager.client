@@ -50,9 +50,9 @@
   <ng-container *ngIf="storageForNote && order.notes.length">
     <ion-card>
       <ion-card-content>
-        <div *ngFor="let note of order.notes" class="note-div">
-          DA: <strong> {{ note.noteByRole?.role?.name }} </strong> A:
-          <strong> {{ note.noteToRole?.role?.name }} </strong> <br />
+        <div *ngFor="let note of order.notes; let i = index" class="note-div">
+          DA: <strong> {{ older[i].name }} </strong> A:
+          <strong> {{ newer[i].name }} </strong> <br />
           NOTA : <br />
           <span> "{{ note.textNote }}" </span>
           <br />
