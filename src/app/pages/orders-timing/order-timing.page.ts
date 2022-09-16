@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, LoadingController } from '@ionic/angular';
 import { StorageModalComponent } from 'src/app/components/modal/storage-modal.component';
 import { LogModel } from 'src/app/models/log.model';
 import { Order } from 'src/app/models/order.model';
@@ -17,12 +17,15 @@ export class OrderTimingPage implements OnInit {
   public logs: LogModel[] = [];
   public term: string;
   public filter: any = { isArchived: false };
-  public states: any[] = []
+  public states: any[] = [];
+  public loader: HTMLIonLoadingElement;
+
 
   constructor(private orderService: OrdersService,
-    private modalCtrl: ModalController) { }
+    private modalCtrl: ModalController, private loadingController: LoadingController) { }
 
   async ionViewWillEnter() {
+    await this.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     for (let order of this.orders) {
       const status: any = {};
@@ -49,15 +52,27 @@ export class OrderTimingPage implements OnInit {
       };
       order.status = status;
     }
+    this.loader.dismiss();
+  }
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
   }
 
   async search() {
+
+    await this.present();
     this.orders = await this.orderService.find(this.filter, this.term);
+    this.loader.dismiss();
   }
 
   async getNextPage() {
+    await this.present();
     const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
     this.orders.push(...orders);
+    this.loader.dismiss();
   }
 
   async openModal(order: Order) {
