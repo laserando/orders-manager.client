@@ -8,9 +8,16 @@
 </ion-header>
 
 <ion-content>
-
-  <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
-  <filter [inTimingPage]="inTimingPage" (filterChange)="onFilterChange($event)"></filter>
+  <ion-searchbar
+    animated
+    [debounce]="500"
+    [(ngModel)]="term"
+    (ngModelChange)="search()"
+  ></ion-searchbar>
+  <filter
+    [inTimingPage]="inTimingPage"
+    (filterChange)="onFilterChange($event)"
+  ></filter>
 
   <ion-card class="section">
     <ion-card-content>
@@ -18,12 +25,14 @@
         <thead>
           <tr>
             <th>N°</th>
+            <th>Tipologia Lavorazione</th>
             <th>Ore in Amministrazione</th>
             <th>Ore in Grafica</th>
             <th>Ore in Produzione</th>
             <th>Ore in Stampa</th>
             <th>Stato</th>
-            <th style="text-align: center;">GESTISCI</th>
+            <th style="text-align: center">GESTISCI</th>
+            <th>Dettagli Ordine</th>
           </tr>
         </thead>
         <tbody *ngIf="!orders.length">
@@ -39,38 +48,50 @@
         </tbody>
         <tbody>
           <tr *ngFor="let order of orders">
-            <td style="color: rgb(189, 42, 42);font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+            <td
+              style="
+                color: rgb(189, 42, 42);
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold',
+                  sans-serif;
+              "
+            >
               {{order.id}}
             </td>
-            <td>
-              {{order.status?.s1 || '0'}} h
-            </td>
-            <td>
-              {{order.status?.s3 || '0'}} h
-            </td>
-            <td>
-              {{order.status?.s4 || '0'}} h
-            </td>
-            <td>
-              {{order.status?.s5 || '0'}} h
-            </td>
-            <td *ngIf="!order.isArchived" style="color: green;">
-              ATTIVO
-            </td>
-            <td *ngIf="order.isArchived" style="color: blueviolet ;">
+            <td>{{order.typeOfWork}}</td>
+            <td>{{order.status?.s1 || '0'}} h</td>
+            <td>{{order.status?.s3 || '0'}} h</td>
+            <td>{{order.status?.s4 || '0'}} h</td>
+            <td>{{order.status?.s5 || '0'}} h</td>
+            <td *ngIf="!order.isArchived" style="color: green">ATTIVO</td>
+            <td *ngIf="order.isArchived" style="color: blueviolet">
               ARCHIVIATO
             </td>
-            <td style="text-align: center;">
-              <ion-button shape="round" size="small" size="icon-only" (click)="openModal(order)">
+            <td style="text-align: center">
+              <ion-button
+                shape="round"
+                size="small"
+                size="icon-only"
+                (click)="openModal(order)"
+              >
                 <ion-icon name="stopwatch-outline"></ion-icon>
+              </ion-button>
+            </td>
+            <td>
+              <ion-button
+                size="small"
+                size="icon-only"
+                (click)="seePreview(order)"
+              >
+                <ion-icon name="eye-outline"></ion-icon>
               </ion-button>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <ion-button shape="round" size="small" (click)="getNextPage()">vedi altri...</ion-button>
+      <ion-button shape="round" size="small" (click)="getNextPage()"
+        >vedi altri...</ion-button
+      >
     </ion-card-content>
   </ion-card>
-
 </ion-content>

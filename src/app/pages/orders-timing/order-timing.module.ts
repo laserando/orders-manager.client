@@ -15,7 +15,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
     ComponentsModule,
     OrderTimingPageRoutingModule
   ],
-  declarations: [OrderTimingPage, StorageModalComponent],
+  declarations: [OrderTimingPage],
   entryComponents: [StorageModalComponent]
 })
 export class OrderTimingPageModule { }

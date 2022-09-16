@@ -4,13 +4,14 @@ import { Order } from 'src/app/models/order.model';
 import { OrdersService } from 'src/app/services/orders.service';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { Global } from '../../services/global';
+import { UnsubscribeAll } from 'src/utils/unsubscribeAll';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.page.html',
   styleUrls: ['./calendar.page.scss'],
 })
-export class CalendarPage implements OnInit, AfterViewInit {
+export class CalendarPage extends UnsubscribeAll implements OnInit, AfterViewInit {
 
 
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
@@ -22,7 +23,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
   public url: string = `/dashboard/preview/`;
 
   constructor(private ordersService: OrdersService,
-    private calendarService: CalendarService) { }
+    private calendarService: CalendarService) { super(); }
 
 
   async ngOnInit() {
@@ -42,7 +43,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
           let id = res.id.toString();
           return {
             title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate
-            ,url: this.url + id
+            , url: this.url + id
           };
         })
     };
@@ -58,7 +59,7 @@ export class CalendarPage implements OnInit, AfterViewInit {
       events:
         this.orders.map(res => {
           let id = res.id.toString();
-          return { title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate  /*,url: this.url + id*/ };
+          return { title: "CONSEGNA ORDINE N° :" + id, date: res.deliveryDate, url: this.url + id };
         })
     };
 

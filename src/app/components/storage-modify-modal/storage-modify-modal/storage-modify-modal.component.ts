@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Order } from 'src/app/models/order.model';
+import { Role } from 'src/app/models/role.model';
 import { RolesService } from 'src/app/services/roles.service';
 
 @Component({
@@ -10,14 +11,18 @@ import { RolesService } from 'src/app/services/roles.service';
 })
 export class StorageModifyModalComponent implements OnInit {
 
-  @Input() order: any;
-
+  public order: any;
+  private roles: Role[] = []
   constructor(private modalCtrl: ModalController,
     private rolesService: RolesService) { }
+  @Input() StorageOrderUpdater: Role[] = [];
 
   async ngOnInit() {
+    const getRoles = this.rolesService.getRoles().subscribe(
+      f => this.roles = f
+    );
     for (let storage of this.order.storageOrderUpdates as any[]) {
-      storage.byRole = await this.rolesService.findById(storage.byRole);
+      this.StorageOrderUpdater.push(this.roles.find(o => o.id === storage.byRole));
     }
   }
 
