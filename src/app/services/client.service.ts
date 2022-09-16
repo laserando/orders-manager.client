@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import qs from 'qs'
 import {ClientModel} from '../models/client.model';
 import {Global} from './global';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,9 @@ import {BehaviorSubject, Observable} from "rxjs";
 export class ClientService {
 
   private clients: BehaviorSubject<ClientModel[]> = new BehaviorSubject<ClientModel[]>([]);
+  private clientUpdated: Subject<ClientModel> = new Subject<ClientModel>();
+  private clientAdded: Subject<ClientModel> = new Subject<ClientModel>();
   public URL: string = `${Global.ENDPOINT.BASE}/clients`
-  public newClient: ClientModel[] = [];
 
   constructor(private http: HttpClient) {
     this.init();
@@ -30,6 +31,14 @@ export class ClientService {
 
   getClients(): Observable<ClientModel[]> {
     return this.clients.asObservable();
+  }
+
+  getClientUpdated(): Observable<ClientModel> {
+    return this.clientUpdated.asObservable();
+  }
+
+  getClientAdded(): Observable<ClientModel> {
+    return this.clientAdded.asObservable();
   }
 
   find(where: any = null, q: string = null, start: number = 0, limit: number = 20, sort: string = null) {
@@ -51,32 +60,21 @@ export class ClientService {
   }
 
   addCustomer(client: ClientModel) {
-    this.newClient.push(client);
     return this.http.post<ClientModel>(this.URL, client).toPromise().then(f => {
-      this.init();
+      this.clientAdded.next(f);
       return f;
     });
   }
 
-  checkClient() {
-    if (this.newClient.length > 0) {
-      this.newClient = [];
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   updateCustomer(newClient: ClientModel) {
     return this.http.put<ClientModel>(this.URL + "/" + newClient.id, newClient).toPromise().then(f => {
-      this.init();
+      this.clientUpdated.next(newClient);
       return f;
     });
   }
 
   deleteCustomer(clientId) {
     return this.http.delete<ClientModel>(this.URL + "/" + clientId).toPromise().then(f => {
-      this.init();
       return f;
     });
   }

@@ -99,29 +99,7 @@
                 >
                 </ion-input>
               </ion-item>
-              <ion-item>
-                <ion-label>Grafica presente :</ion-label>
-                <ion-toggle
-                  name="graphicPresentChoose"
-                  [(ngModel)]="graphicPresentChoose"
-                  [disabled]="!!client.id"
-                >
-                </ion-toggle>
-              </ion-item>
-              <ion-item *ngIf="graphicPresentChoose">
-                <ion-label style="color: dodgerblue"
-                  >*Link file grafica* :</ion-label
-                >
-                <ion-input
-                  placeholder="*inserisci link file Grafica*"
-                  type="url"
-                  [(ngModel)]="client.graphicLink"
-                  name="graphicLink"
-                  required
-                  [readonly]="client.id"
-                >
-                </ion-input>
-              </ion-item>
+
               <ion-item>
                 <ion-label>*Indirizzo Fatturazione* :</ion-label>
                 <ion-input
@@ -218,29 +196,6 @@
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>Grafica presente :</ion-label>
-                <ion-toggle
-                  name="graphicPresentChoose"
-                  [(ngModel)]="graphicPresentChoose"
-                  [disabled]="!!client.id"
-                >
-                </ion-toggle>
-              </ion-item>
-              <ion-item *ngIf="graphicPresentChoose">
-                <ion-label style="color: dodgerblue"
-                  >*Link file grafica* :</ion-label
-                >
-                <ion-input
-                  placeholder="*inserisci link file Grafica*"
-                  type="url"
-                  [(ngModel)]="client.graphicLink"
-                  name="graphicLink"
-                  required
-                  [readonly]="client.id"
-                >
-                </ion-input>
-              </ion-item>
-              <ion-item>
                 <ion-label>*Ragione Sociale* :</ion-label>
                 <ion-input
                   placeholder="*inserisci ragione sociale"
@@ -294,9 +249,9 @@
                 </ion-input>
               </ion-item>
               <ion-item>
-                <ion-label>*SDI* :</ion-label>
+                <ion-label>*SDI o PEC* :</ion-label>
                 <ion-input
-                  placeholder="*inserisci SDI*"
+                  placeholder="*inserisci SDI o PEC*"
                   name="sdi"
                   [(ngModel)]="client.sdi"
                   required
@@ -385,6 +340,29 @@
                   name="itemSize"
                   [(ngModel)]="order.itemSize"
                   required
+                >
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Grafica presente :</ion-label>
+                <ion-toggle
+                  name="graphicPresentChoose"
+                  [(ngModel)]="graphicPresentChoose"
+                  [disabled]="!!client.id"
+                >
+                </ion-toggle>
+              </ion-item>
+              <ion-item *ngIf="graphicPresentChoose">
+                <ion-label style="color: dodgerblue"
+                >*Link file grafica* :</ion-label
+                >
+                <ion-input
+                  placeholder="*inserisci link file Grafica*"
+                  type="url"
+                  [(ngModel)]="client.graphicLink"
+                  name="graphicLink"
+                  required
+                  [readonly]="client.id"
                 >
                 </ion-input>
               </ion-item>

@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { Order } from 'src/app/models/order.model';
-import { OrdersService } from 'src/app/services/orders.service';
-import { IonToastService } from 'src/app/services/ion-toast.service';
-import { AuthService } from 'src/app/services/auth.service';
-import { LogModel } from 'src/app/models/log.model';
-import { Role } from 'src/app/models/role.model';
-import { RolesService } from 'src/app/services/roles.service';
-import { TagService } from 'src/app/services/tag.service';
-import { TagModel } from 'src/app/models/tag.model';
-import { AlertController, LoadingController, MenuController, ModalController } from '@ionic/angular';
-import { StorageModalComponent } from "src/app/components/modal/storage-modal.component";
-import { ClientService } from 'src/app/services/client.service';
-import { ClientModel } from 'src/app/models/client.model';
-import { Router } from '@angular/router';
-import { NoteService } from 'src/app/services/note.service';
-import { StorageModifyModalComponent } from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
-import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
-import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
+import {Component, OnInit} from '@angular/core';
+import {Order} from 'src/app/models/order.model';
+import {OrdersService} from 'src/app/services/orders.service';
+import {IonToastService} from 'src/app/services/ion-toast.service';
+import {AuthService} from 'src/app/services/auth.service';
+import {LogModel} from 'src/app/models/log.model';
+import {Role} from 'src/app/models/role.model';
+import {RolesService} from 'src/app/services/roles.service';
+import {TagService} from 'src/app/services/tag.service';
+import {TagModel} from 'src/app/models/tag.model';
+import {AlertController, LoadingController, MenuController, ModalController} from '@ionic/angular';
+import {StorageModalComponent} from "src/app/components/modal/storage-modal.component";
+import {ClientService} from 'src/app/services/client.service';
+import {ClientModel} from 'src/app/models/client.model';
+import {Router} from '@angular/router';
+import {NoteService} from 'src/app/services/note.service';
+import {StorageModifyModalComponent} from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
+import {StorageOrderUpdateService} from 'src/app/services/storage-order-update.service';
+import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
 
 @Component({
   selector: 'app-orders-list',
@@ -29,7 +29,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   public orders: Order[] = [];
   public role: string;
   public term: string;
-  public filter: any = { isArchived: false, isPreventive: false, isCompleted: false };
+  public filter: any = {isArchived: false, isPreventive: false, isCompleted: false};
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
@@ -40,19 +40,19 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   public loader: HTMLIonLoadingElement;
 
   constructor(private orderService: OrdersService,
-    private ionToastService: IonToastService,
-    private authService: AuthService,
-    private ordersService: OrdersService,
-    private rolesService: RolesService,
-    private tagsService: TagService,
-    private modalCtrl: ModalController,
-    private clientService: ClientService,
-    private router: Router,
-    public notesService: NoteService,
-    public menu: MenuController,
-    public storageModifyService: StorageOrderUpdateService,
-    private alertCtrl: AlertController,
-    private loadingController: LoadingController) {
+              private ionToastService: IonToastService,
+              private authService: AuthService,
+              private ordersService: OrdersService,
+              private rolesService: RolesService,
+              private tagsService: TagService,
+              private modalCtrl: ModalController,
+              private clientService: ClientService,
+              private router: Router,
+              public notesService: NoteService,
+              public menu: MenuController,
+              public storageModifyService: StorageOrderUpdateService,
+              private alertCtrl: AlertController,
+              private loadingController: LoadingController) {
     super();
   }
 
@@ -61,7 +61,8 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.role = this.authService.getParseOfUserObject();
     if (this.authService.getUser().role.id != 1) {
       this.filter.role = this.authService.getUser().role.id;
-    };
+    }
+    ;
 
   }
 
@@ -123,16 +124,26 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
 
   async search() {
     await this.present();
-    this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    this.orders = await this.orderService.find(this.filter, null, 0, 1000);
     this.loader.dismiss();
 
-    const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
-
-    if (checked.length === 0) {
-      this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    } else {
-      this.orders = [...checked];
+    const filterOrders = (order: Order, terms: string) => {
+      terms = terms.trim().replace(/ /g, "");
+      if (order.clientIndications?.toLowerCase().includes(terms.toLowerCase())) {
+        return true;
+      }
+      if ((order.client.name + order.client.surname + order.typeOfWork + order.typesOfMaterial).toLowerCase().includes(terms.toLowerCase())) {
+        return true;
+      }
     }
+    const checked = this.orders.filter((order) => filterOrders(order, this.term));
+
+    //
+    // if (checked.length === 0) {
+    //   this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    // } else {
+    this.orders = [...checked];
+    // }
 
   };
 
@@ -164,6 +175,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   }
 
   async cleanClient(event) {
+    this.present();
     if (event == 'clean') {
       delete this.filter.client;
       this.client = null;
@@ -172,6 +184,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
       this.filter.client = event.value.id;
       this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     }
+    this.loader.dismiss();
   }
 
   async getNextPage() {
@@ -233,7 +246,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
       subHeader: '',
       message: 'puoi scrivere qui il link della grafica',
       inputs: [
-        { type: 'text', name: 'graphicLink', placeholder: 'scrivi link grafica...' }
+        {type: 'text', name: 'graphicLink', placeholder: 'scrivi link grafica...'}
       ],
       buttons: [
         {
@@ -367,7 +380,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   async openModal(order: Order) {
     const modal = await this.modalCtrl.create({
       component: StorageModalComponent,
-      componentProps: { order: order, storageForNote: true }
+      componentProps: {order: order, storageForNote: true}
     })
     await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
@@ -447,7 +460,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   async seeStorageModify(order) {
     const modal = await this.modalCtrl.create({
       component: StorageModifyModalComponent,
-      componentProps: { order: order }
+      componentProps: {order: order}
     })
     await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
