@@ -17,6 +17,7 @@ import {NoteService} from 'src/app/services/note.service';
 import {StorageModifyModalComponent} from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
 import {StorageOrderUpdateService} from 'src/app/services/storage-order-update.service';
 import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
+import {filterOrder} from "../../../utils/order-utils";
 
 @Component({
   selector: 'app-orders-list',
@@ -124,28 +125,9 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
 
   async search() {
     await this.present();
-    this.orders = await this.orderService.find(this.filter, null, 0, 1000);
-    this.loader.dismiss();
-
-    const filterOrders = (order: Order, terms: string) => {
-      terms = terms.trim().replace(/ /g, "");
-      if (order.clientIndications?.toLowerCase().includes(terms.toLowerCase())) {
-        return true;
-      }
-      if ((order.client.name + order.client.surname + order.typeOfWork + order.typesOfMaterial).toLowerCase().includes(terms.toLowerCase())) {
-        return true;
-      }
-    }
-    const checked = this.orders.filter((order) => filterOrders(order, this.term));
-
-    //
-    // if (checked.length === 0) {
-    //   this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    // } else {
-    this.orders = [...checked];
-    // }
-
-  };
+    this.orders = await filterOrder.bind(this)();
+    this.loader.dismiss().then();
+  }
 
 
   async searchByClient(event) {

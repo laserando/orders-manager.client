@@ -15,6 +15,7 @@ import { RolesService } from 'src/app/services/roles.service';
 import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
 import { TagService } from 'src/app/services/tag.service';
 import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
+import {filterOrder} from "../../../utils/order-utils";
 @Component({
   selector: 'app-completed-list',
   templateUrl: './completed-list.page.html',
@@ -171,16 +172,8 @@ export class CompletedListPage extends UnsubscribeAll implements OnInit {
 
   async search() {
     await this.present();
-    this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    this.loader.dismiss();
-
-    const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
-
-    if (checked.length === 0) {
-      this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    } else {
-      this.orders = [...checked];
-    }
+    this.orders = await filterOrder.bind(this)();
+    this.loader.dismiss().then();
   };
 
 

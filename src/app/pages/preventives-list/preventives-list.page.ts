@@ -13,6 +13,7 @@ import { OrdersService } from 'src/app/services/orders.service';
 import { RolesService } from 'src/app/services/roles.service';
 import { TagService } from 'src/app/services/tag.service';
 import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
+import {filterOrder} from "../../../utils/order-utils";
 
 @Component({
   selector: 'app-preventives-list',
@@ -107,17 +108,8 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
 
   async search() {
     await this.present();
-    this.preventives = await this.orderService.find(this.filter, null, 0, 20);
-    this.loader.dismiss();
-
-
-    const checked = this.preventives.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
-
-    if (checked.length === 0) {
-      this.preventives = await this.orderService.find(this.filter, null, 0, 20);
-    } else {
-      this.preventives = [...checked];
-    }
+    this.preventives = await filterOrder.bind(this)();
+    this.loader.dismiss().then();
   };
 
 
