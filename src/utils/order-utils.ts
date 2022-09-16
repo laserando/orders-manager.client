@@ -8,7 +8,7 @@ export async function filterOrder() {
     if (order.clientIndications?.toLowerCase().includes(terms.toLowerCase())) {
       return true;
     }
-    if ((order.client.name + order.client.surname +( order.typesOfProcessing?.name || "") + (order.typesOfMaterial?.name || "")).toLowerCase().includes(terms.toLowerCase())) {
+    if ((order.client?.name + order.client?.surname +( order.typesOfProcessing?.name || "") + (order.typesOfMaterial?.name || "")).toLowerCase().includes(terms.toLowerCase())) {
       return true;
     }
   }

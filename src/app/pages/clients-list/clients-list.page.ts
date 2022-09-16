@@ -11,7 +11,7 @@ import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
 })
 export class ClientsListPage extends UnsubscribeAll implements OnInit {
 
-  public clients: ClientModel[] = [];
+  public clients: ClientModel[];
   public filter: any = {};
   public term: string;
   public client: ClientModel;
