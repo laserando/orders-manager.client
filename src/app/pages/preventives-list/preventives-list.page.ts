@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, MenuController, LoadingController } from '@ionic/angular';
-import { ClientModel } from 'src/app/models/client.model';
-import { LogModel } from 'src/app/models/log.model';
-import { Order } from 'src/app/models/order.model';
-import { Role } from 'src/app/models/role.model';
-import { TagModel } from 'src/app/models/tag.model';
-import { ClientService } from 'src/app/services/client.service';
-import { IonToastService } from 'src/app/services/ion-toast.service';
-import { NoteService } from 'src/app/services/note.service';
-import { OrdersService } from 'src/app/services/orders.service';
-import { RolesService } from 'src/app/services/roles.service';
-import { TagService } from 'src/app/services/tag.service';
-import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
-import {filterOrder} from "../../../utils/order-utils";
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {AlertController, MenuController, LoadingController} from '@ionic/angular';
+import {ClientModel} from 'src/app/models/client.model';
+import {LogModel} from 'src/app/models/log.model';
+import {Order} from 'src/app/models/order.model';
+import {Role} from 'src/app/models/role.model';
+import {TagModel} from 'src/app/models/tag.model';
+import {ClientService} from 'src/app/services/client.service';
+import {IonToastService} from 'src/app/services/ion-toast.service';
+import {NoteService} from 'src/app/services/note.service';
+import {OrdersService} from 'src/app/services/orders.service';
+import {RolesService} from 'src/app/services/roles.service';
+import {TagService} from 'src/app/services/tag.service';
+import {UnsubscribeAll} from '../../../utils/unsubscribeAll';
+import {filterOrder} from '../../../utils/order-utils';
+import {SharedFilters} from '../../components/filter/filter.component';
 
 @Component({
   selector: 'app-preventives-list',
@@ -25,7 +26,48 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   public preventives: Order[] = [];
   public role: string;
   public term: string;
-  public filter: any = { isArchived: false, isPreventive: true, isCompleted: false };
+
+  private get filters(): any {
+    return [
+      {
+        _or: [
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'client.name_contains': this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'client.surname_contains': this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            clientIndications_contains: this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'typesOfMaterial.name_contains': this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'typesOfProcessing.name_contains': this.term
+          }
+        ]
+      },
+      this.fullFilters
+    ];
+  }
+
+  fullFilters: SharedFilters = {
+    isArchived: false,
+    isPreventive: true,
+    isCompleted: false,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    tags_contains: [],
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    deliveryDate_gte: undefined,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    deliveryDate_lte: undefined
+  };
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
@@ -33,7 +75,7 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   public from: string;
   public clients: (ClientModel & { fullname?: string })[] = [];
   public client: ClientModel;
-  public inPreventivePage: boolean = true;
+  public inPreventivePage = true;
   public loader: HTMLIonLoadingElement;
 
   constructor(
@@ -44,24 +86,22 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
     private tagsService: TagService,
     private clientService: ClientService,
     private router: Router,
-    public notesService: NoteService,
-    public menu: MenuController,
     private alertCtrl: AlertController,
     private loadingController: LoadingController
   ) {
     super();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
   }
 
   async ionViewWillEnter() {
-
     const getClients = this.clientService.getClients().subscribe(
       clients => {
         this.clients = clients;
       }
-    )
+    );
     const getTags = this.tagsService.getTags().subscribe(
       f => this.tags = f
     );
@@ -71,8 +111,9 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
 
     this.addSubscriptions(getClients, getTags, getRoles);
     await this.present();
-    this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
     this.loader.dismiss();
+
   }
 
   async present() {
@@ -87,39 +128,37 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Elimina Preventivo',
       subHeader: '',
-      message: "Sei sicuro di voler eliminare il preventivo ?",
+      message: 'Sei sicuro di voler eliminare il preventivo ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             await this.orderService.deleteOrder(index);
-            this.ionToastService.alertMessage("delete");
-            this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.ionToastService.alertMessage('delete');
+            this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
     }).then(res => res.present());
-    this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async search() {
-    await this.present();
-    this.preventives = await filterOrder.bind(this)();
-    this.loader.dismiss().then();
+    this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   };
 
 
   async searchByClient(event) {
-    this.term = event.text
+    this.term = event.text;
     const clients = (await this.clientService.find(null, this.term, 0, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
-    })
-    this.clients = [...clients]
+    });
+    this.clients = [...clients];
 
   }
 
@@ -128,7 +167,7 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
     const clients = (await this.clientService.find(null, this.term, this.clients.length, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
-    })
+    });
     this.clients.push(...clients);
 
     event.component.endInfiniteScroll();
@@ -139,40 +178,40 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
   }
 
   async cleanClient(event) {
-    if (event == 'clean') {
-      delete this.filter.client;
-      this.client = null;
-      this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    } else {
-      this.filter.client = event.value.id;
-      this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    }
+    // if (event === 'clean') {
+    //   delete this.filter.client;
+    //   this.client = null;
+    //   this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    // } else {
+    //   this.filter.client = event.value.id;
+    //   this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    // }
   }
 
   async getNextPage() {
     await this.present();
-    const orders = await this.orderService.find(this.filter, this.term, this.preventives.length);
+    const orders = await this.orderService.find(this.filters, this.term, this.preventives.length);
     this.preventives.push(...orders.filter(f => !this.preventives.find(old => old.id === f.id)));
     this.loader.dismiss();
   }
 
   async updateList() {
-    this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
   select(event, order) {
     switch (event.detail.value) {
-      case "seeTags":
+      case 'seeTags':
         this.router.navigate([`/dashboard/orders_/${order.id}`]);
         break;
-      case "goToChangePreventive":
+      case 'goToChangePreventive':
         this.router.navigate([`/dashboard/preventive/${order.id}`]);
         break;
-      case "deletePreventive":
+      case 'deletePreventive':
         this.deleteOrder(order.id);
         break;
-      case "changeInOrder":
-        this.changeInOrder(order)
+      case 'changeInOrder':
+        this.changeInOrder(order);
         break;
     }
   }
@@ -181,18 +220,18 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Sposta Preventivo in Ordini',
       subHeader: '',
-      message: "Sei sicuro di voler spostare il preventivo nella lista degli ordini ?",
+      message: 'Sei sicuro di voler spostare il preventivo nella lista degli ordini ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             order.isPreventive = false;
             await this.orderService.updateOrder(order, order.id, order.client);
-            this.preventives = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.preventives = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -203,31 +242,16 @@ export class PreventivesListPage extends UnsubscribeAll implements OnInit {
     if (Array.isArray(compareValue)) {
       return (compareValue || []).map(cv => cv.id).indexOf(currentValue.id) > -1;
     }
-    return compareValue.id == currentValue.id;
+    return compareValue.id === currentValue.id;
   }
 
   async updateTags(order) {
     await this.orderService.updateOrder(order, order.id, order.client);
-    this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async onFilterChange(filter) {
-    if (filter.tags && filter.tags.length) {
-      this.filter.tags_contains = filter.tags;
-    } else {
-      delete this.filter.tags_contains;
-    }
-    if (filter.deliveryDate.from) {
-      this.filter.deliveryDate_gte = filter.deliveryDate.from;
-    } else {
-      delete this.filter.deliveryDate_gte;
-    }
-    if (filter.deliveryDate.to) {
-      this.filter.deliveryDate_lte = filter.deliveryDate.to;
-    } else {
-      delete this.filter.deliveryDate_lte;
-    }
-    this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.preventives = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
   seePreview(order) {

@@ -49,7 +49,8 @@
       <ion-col>
         <filter
           [inCompletedPage]="inCompletedPage"
-          (filterChange)="onFilterChange($event)"
+          [(filters)]="fullFilters"
+          (filtersChange)="onFilterChange($event)"
         ></filter>
       </ion-col>
     </ion-row>

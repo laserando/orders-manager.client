@@ -1,6 +1,11 @@
-import {OnDestroy} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 
+@Component({
+  selector: '<app-none></app-none>',
+  template: ''
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class UnsubscribeAll implements OnDestroy {
   subscriptions: Subscription = new Subscription();
 

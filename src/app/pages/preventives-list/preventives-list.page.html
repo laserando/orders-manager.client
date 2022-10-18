@@ -48,8 +48,9 @@
     <ion-row>
       <ion-col>
         <filter
+          [(filters)]="fullFilters"
           [inPreventivePage]="inPreventivePage"
-          (filterChange)="onFilterChange($event)"
+          (filtersChange)="onFilterChange($event)"
         ></filter>
       </ion-col>
     </ion-row>

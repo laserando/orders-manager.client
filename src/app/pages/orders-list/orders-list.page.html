@@ -14,41 +14,16 @@
           animated
           [debounce]="750"
           [(ngModel)]="term"
-          (ngModelChange)="search()"
+          (ngModelChange)="search($event)"
         >
         </ion-searchbar>
-      </ion-col>
-      <ion-col>
-        <ion-item class="selectable" *ngIf="false">
-          <ion-label>Cerca per cliente</ion-label>
-          <ionic-selectable
-            [searchPlaceholder]="'inserisci nome e cognome'"
-            name="privateClients"
-            [(ngModel)]="client"
-            [items]="clients"
-            itemValueField="id"
-            itemTextField="fullname"
-            [canSearch]="true"
-            (onChange)="cleanClient($event)"
-            (onSearch)="searchByClient($event)"
-            [hasInfiniteScroll]="true"
-            (onInfiniteScroll)="getMoreClients($event)"
-          >
-          </ionic-selectable>
-          <ion-button
-            [fill]="'clear'"
-            size="small"
-            (click)="cleanClient('clean')"
-          >
-            <ion-icon name="refresh-outline"></ion-icon>
-          </ion-button>
-        </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <filter
-          (filterChange)="onFilterChange($event)"
+          [(filters)]="fullFilters"
+          (filtersChange)="onFilterChange($event)"
           *ngIf="role === 'amministrazione'"
         ></filter>
       </ion-col>

@@ -9,15 +9,18 @@ import {RolesService} from 'src/app/services/roles.service';
 import {TagService} from 'src/app/services/tag.service';
 import {TagModel} from 'src/app/models/tag.model';
 import {AlertController, LoadingController, MenuController, ModalController} from '@ionic/angular';
-import {StorageModalComponent} from "src/app/components/modal/storage-modal.component";
+import {StorageModalComponent} from 'src/app/components/modal/storage-modal.component';
 import {ClientService} from 'src/app/services/client.service';
 import {ClientModel} from 'src/app/models/client.model';
 import {Router} from '@angular/router';
 import {NoteService} from 'src/app/services/note.service';
-import {StorageModifyModalComponent} from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
+import {
+  StorageModifyModalComponent
+} from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
 import {StorageOrderUpdateService} from 'src/app/services/storage-order-update.service';
-import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
-import {filterOrder} from "../../../utils/order-utils";
+import {UnsubscribeAll} from '../../../utils/unsubscribeAll';
+import {filterOrdersFn} from '../../../utils/order-utils';
+import {SharedFilters} from '../../components/filter/filter.component';
 
 @Component({
   selector: 'app-orders-list',
@@ -29,8 +32,50 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   public user: any;
   public orders: Order[] = [];
   public role: string;
-  public term: string;
-  public filter: any = {isArchived: false, isPreventive: false, isCompleted: false};
+  public term = '';
+
+  private get filters(): any {
+    return [
+      {
+        _or: [
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'client.name_contains': this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'client.surname_contains': this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            clientIndications_contains: this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'typesOfMaterial.name_contains': this.term
+          },
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'typesOfProcessing.name_contains': this.term
+          }
+        ]
+      },
+      this.fullFilters
+    ];
+  }
+
+  fullFilters: SharedFilters =  {
+    isArchived: false,
+    isPreventive: false,
+    isCompleted: false,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    tags_contains: [],
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    deliveryDate_gte: undefined,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    deliveryDate_lte: undefined
+  };
+
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
@@ -39,7 +84,6 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   public clients: (ClientModel & { fullname?: string })[] = [];
   public client: ClientModel;
   public loader: HTMLIonLoadingElement;
-
   constructor(private orderService: OrdersService,
               private ionToastService: IonToastService,
               private authService: AuthService,
@@ -57,18 +101,17 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     super();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
 
-    this.role = this.authService.getParseOfUserObject();
-    if (this.authService.getUser().role.id != 1) {
-      this.filter.role = this.authService.getUser().role.id;
-    }
-    ;
 
   }
 
   async ionViewWillEnter() {
-
+    this.role = this.authService.getParseOfUserObject();
+    if (this.authService.getUser().role.id !== 1) {
+      this.filters.role = this.authService.getUser().role.id;
+    }
+    ;
     const getClient = this.clientService.getClients().subscribe(
       clients => this.clients = clients
     );
@@ -86,10 +129,11 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.subscriptions.add(getRoles);
 
     await this.present();
-    this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC').then((orders) => {
+    this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC').then((orders) => {
       this.orders = orders;
       this.loader.dismiss();
     });
+
   }
 
 
@@ -100,22 +144,23 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.loader.present().then();
   }
 
-  async deleteOrder(index) {
+  async deleteOrder(orderId: number) {
     this.alertCtrl.create({
       header: 'Elimina Ordine',
       subHeader: '',
-      message: "Sei sicuro di volere eliminare l'ordine ?",
+      message: 'Sei sicuro di volere eliminare l\'ordine ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
-            await this.orderService.deleteOrder(index);
-            this.ionToastService.alertMessage("delete");
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            await this.orderService.deleteOrder(orderId);
+            this.ionToastService.alertMessage('delete');
+            const index = this.orders.findIndex(f => f.id === orderId);
+            this.orders.splice(index, 1);
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            // this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -124,54 +169,22 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   }
 
   async search() {
-    await this.present();
-    this.orders = await filterOrder.bind(this)();
-    this.loader.dismiss().then();
+    this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
-
-  async searchByClient(event) {
-    this.term = event.text
-
-    const clients = (await this.clientService.find(null, this.term, 0, 20, 'surname:ASC')).map((c: any) => {
-      c.fullname = c.name + ' ' + c.surname;
-      return c;
-    })
-    this.clients = [...clients];
-
-  }
-
-  async getMoreClients(event) {
-
-    const clients = (await this.clientService.find(null, this.term, this.clients.length, 20, 'surname:ASC')).map((c: any) => {
-      c.fullname = c.name + ' ' + c.surname;
-      return c;
-    })
-    this.clients.push(...clients);
-
-    event.component.endInfiniteScroll();
-
-    if (!clients.length) {
-      event.component.disableInfiniteScroll();
-    }
-  }
-
-  async cleanClient(event) {
-    this.present();
-    if (event == 'clean') {
-      delete this.filter.client;
-      this.client = null;
-      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    } else {
-      this.filter.client = event.value.id;
-      this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    }
-    this.loader.dismiss();
+  async error() {
+    const loader = await this.loadingController.create({
+      keyboardClose: true,
+      spinner: 'null' as any,
+      duration: 1000,
+      message: `C'è stato un errore nel caricamento dei dati, riprova`
+    });
+    loader.present().then();
   }
 
   async getNextPage() {
     await this.present();
-    const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
+    const orders = await this.orderService.find(this.filters, this.term, this.orders.length);
     this.orders.push(...orders.filter(f => !this.orders.find(old => old.id === f.id)));
     this.loader.dismiss();
   }
@@ -180,20 +193,20 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Completa Ordine',
       subHeader: '',
-      message: "Sei sicuro di voler completare l'ordine?",
+      message: 'Sei sicuro di voler completare l\'ordine?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             order.isCompleted = true;
             order.role.id = 1;
-            order.role.name = "amministrazione";
+            order.role.name = 'amministrazione';
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            // this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -204,18 +217,18 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Rimuovi Completamento',
       subHeader: '',
-      message: "Sei sicuro di voler rimuovere il completamento dell'ordine ?",
+      message: 'Sei sicuro di voler rimuovere il completamento dell\'ordine ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             order.isCompleted = false;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            // this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -237,12 +250,12 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
               client.graphicLink = res.graphicLink;
               await this.clientService.updateCustomer(client);
             }
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            // this.orders = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -253,17 +266,17 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Cambio Assegnazione',
       subHeader: '',
-      message: "Sei sicuro di voler cambiare l'assegnazione ?",
+      message: 'Sei sicuro di voler cambiare l\'assegnazione ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             await this.orderService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -274,18 +287,18 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Archivia Ordine',
       subHeader: '',
-      message: "Sei sicuro di voler archiviare l'ordine ?",
+      message: 'Sei sicuro di voler archiviare l\'ordine ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             order.isArchived = true;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -296,107 +309,67 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Ripristina Ordine',
       subHeader: '',
-      message: "Sei sicuro di voler ripristinare l'ordine ?",
+      message: 'Sei sicuro di voler ripristinare l\'ordine ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             order.isArchived = false;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
     }).then(res => res.present());
   }
 
-  async onFilterChange(filter) {
-    if (filter.tags && filter.tags.length) {
-      this.filter.tags_contains = filter.tags;
-    } else {
-      delete this.filter.tags_contains;
-    }
-    if (filter.roles && filter.roles.length) {
-      this.filter.role_in = filter.roles;
-    } else {
-      delete this.filter.role_in;
-    }
-    if (filter.deliveryDate.from) {
-      this.filter.deliveryDate_gte = filter.deliveryDate.from;
-    } else {
-      delete this.filter.deliveryDate_gte;
-    }
-    if (filter.deliveryDate.to) {
-      this.filter.deliveryDate_lte = filter.deliveryDate.to;
-    } else {
-      delete this.filter.deliveryDate_lte;
-    }
-    if (filter.isArchived && filter.isArchived.length) {
-      if (filter.isArchived.find(ia => ia == 'isArchived') && filter.isArchived.find(ia => ia == 'notArchived')) {
-        delete this.filter.isArchived;
-      } else {
-        if (filter.isArchived.find(ia => ia == 'isArchived')) {
-          this.filter.isArchived = true;
-        }
-        if (filter.isArchived.find(ia => ia == 'notArchived')) {
-          this.filter.isArchived = false;
-        }
-      }
-    } else {
-      this.filter.isArchived = false;
-    }
-    if (filter.isArchived) {
-      if (filter.isArchived.find(ia => ia == 'complete')) {
-        this.filter.isCompleted = true;
-      } else {
-        delete this.filter.isCompleted
-      }
-    }
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+  async onFilterChange(inputFilters) {
+    this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = this.orders.filter(f => filterOrdersFn(f, this.term));
   }
 
   async openModal(order: Order) {
     const modal = await this.modalCtrl.create({
       component: StorageModalComponent,
-      componentProps: {order: order, storageForNote: true}
-    })
+      componentProps: {order, storageForNote: true}
+    });
     await modal.present();
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async updateList() {
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
   select(event, order) {
     switch (event.detail.value) {
-      case "seeTags":
+      case 'seeTags':
         this.router.navigate([`/dashboard/orders_/${order.id}`]);
         break;
-      case "goToChangeOrder":
+      case 'goToChangeOrder':
         this.router.navigate([`/dashboard/orders/${order.id}`]);
         break;
-      case "deleteOrder":
+      case 'deleteOrder':
         this.deleteOrder(order.id);
         break;
-      case "completeOrder":
+      case 'completeOrder':
         this.completeOrder(order);
         break;
-      case "storeOrder":
+      case 'storeOrder':
         this.storeOrder(order);
         break;
-      case "restoreOrder":
+      case 'restoreOrder':
         this.restoreOrder(order);
         break;
-      case "removeCompletion":
+      case 'removeCompletion':
         this.removeCompletion(order);
         break;
-      case "changeInPreventive":
-        this.changeInPreventive(order)
+      case 'changeInPreventive':
+        this.changeInPreventive(order);
         break;
     }
   }
@@ -409,18 +382,18 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.alertCtrl.create({
       header: 'Sposta Ordine in Preventivi',
       subHeader: '',
-      message: "Sei sicuro di voler spostare l'ordine nella lista preventivi ?",
+      message: 'Sei sicuro di voler spostare l\'ordine nella lista preventivi ?',
       buttons: [
         {
           text: 'OK', handler: async (res) => {
             order.isPreventive = true;
             await this.orderService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.orders = await this.ordersService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+            this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -431,21 +404,21 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     if (Array.isArray(compareValue)) {
       return (compareValue || []).map(cv => cv.id).indexOf(currentValue.id) > -1;
     }
-    return compareValue.id == currentValue.id;
+    return compareValue.id === currentValue.id;
   }
 
   async updateTags(order) {
     await this.orderService.updateOrder(order, order.id, order.client);
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
   async seeStorageModify(order) {
     const modal = await this.modalCtrl.create({
       component: StorageModifyModalComponent,
-      componentProps: {order: order}
-    })
+      componentProps: {order}
+    });
     await modal.present();
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find(this.filters, null, 0, 20, 'deliveryDate:ASC');
   }
 
 }
