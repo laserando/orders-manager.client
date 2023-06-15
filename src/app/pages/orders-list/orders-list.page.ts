@@ -1,24 +1,25 @@
-import {Component, OnInit} from '@angular/core';
-import {Order} from 'src/app/models/order.model';
-import {OrdersService} from 'src/app/services/orders.service';
-import {IonToastService} from 'src/app/services/ion-toast.service';
-import {AuthService} from 'src/app/services/auth.service';
-import {LogModel} from 'src/app/models/log.model';
-import {Role} from 'src/app/models/role.model';
-import {RolesService} from 'src/app/services/roles.service';
-import {TagService} from 'src/app/services/tag.service';
-import {TagModel} from 'src/app/models/tag.model';
-import {AlertController, LoadingController, MenuController, ModalController} from '@ionic/angular';
-import {StorageModalComponent} from "src/app/components/modal/storage-modal.component";
-import {ClientService} from 'src/app/services/client.service';
-import {ClientModel} from 'src/app/models/client.model';
-import {Router} from '@angular/router';
-import {NoteService} from 'src/app/services/note.service';
-import {StorageModifyModalComponent} from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
-import {StorageOrderUpdateService} from 'src/app/services/storage-order-update.service';
-import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
-import {filterOrder} from "../../../utils/order-utils";
-
+import { Component, OnInit } from '@angular/core';
+import { Order } from 'src/app/models/order.model';
+import { OrdersService } from 'src/app/services/orders.service';
+import { IonToastService } from 'src/app/services/ion-toast.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { LogModel } from 'src/app/models/log.model';
+import { Role } from 'src/app/models/role.model';
+import { RolesService } from 'src/app/services/roles.service';
+import { TagService } from 'src/app/services/tag.service';
+import { TagModel } from 'src/app/models/tag.model';
+import { AlertController, LoadingController, MenuController, ModalController } from '@ionic/angular';
+import { StorageModalComponent } from "src/app/components/modal/storage-modal.component";
+import { ClientService } from 'src/app/services/client.service';
+import { ClientModel } from 'src/app/models/client.model';
+import { Router } from '@angular/router';
+import { NoteService } from 'src/app/services/note.service';
+import { StorageModifyModalComponent } from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
+import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
+import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
+import { filterOrder } from "../../../utils/order-utils";
+import * as XLSX from "xlsx";
+import { DateTime } from "luxon";
 @Component({
   selector: 'app-orders-list',
   templateUrl: './orders-list.page.html',
@@ -30,30 +31,32 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   public orders: Order[] = [];
   public role: string;
   public term: string;
-  public filter: any = {isArchived: false, isPreventive: false, isCompleted: false};
+  public filter: any = { isArchived: false, isPreventive: false, isCompleted: false };
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
   public to: string;
   public from: string;
-  public clients: (ClientModel & { fullname?: string })[] = [];
+  public clients: (ClientModel & { fullname?: string; })[] = [];
   public client: ClientModel;
   public loader: HTMLIonLoadingElement;
 
+  xlsxFilter: any = {};
+
   constructor(private orderService: OrdersService,
-              private ionToastService: IonToastService,
-              private authService: AuthService,
-              private ordersService: OrdersService,
-              private rolesService: RolesService,
-              private tagsService: TagService,
-              private modalCtrl: ModalController,
-              private clientService: ClientService,
-              private router: Router,
-              public notesService: NoteService,
-              public menu: MenuController,
-              public storageModifyService: StorageOrderUpdateService,
-              private alertCtrl: AlertController,
-              private loadingController: LoadingController) {
+    private ionToastService: IonToastService,
+    private authService: AuthService,
+    private ordersService: OrdersService,
+    private rolesService: RolesService,
+    private tagsService: TagService,
+    private modalCtrl: ModalController,
+    private clientService: ClientService,
+    private router: Router,
+    public notesService: NoteService,
+    public menu: MenuController,
+    public storageModifyService: StorageOrderUpdateService,
+    private alertCtrl: AlertController,
+    private loadingController: LoadingController) {
     super();
   }
 
@@ -131,12 +134,12 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
 
 
   async searchByClient(event) {
-    this.term = event.text
+    this.term = event.text;
 
     const clients = (await this.clientService.find(null, this.term, 0, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
-    })
+    });
     this.clients = [...clients];
 
   }
@@ -146,7 +149,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     const clients = (await this.clientService.find(null, this.term, this.clients.length, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
-    })
+    });
     this.clients.push(...clients);
 
     event.component.endInfiniteScroll();
@@ -171,7 +174,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
 
   async getNextPage() {
     await this.present();
-    const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
+    const orders = await this.orderService.find(this.filter, this.term, this.orders.length, 20, 'deliveryDate:ASC');
     this.orders.push(...orders.filter(f => !this.orders.find(old => old.id === f.id)));
     this.loader.dismiss();
   }
@@ -210,7 +213,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
           text: 'OK', handler: async (res) => {
             order.isCompleted = false;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -228,7 +231,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
       subHeader: '',
       message: 'puoi scrivere qui il link della grafica',
       inputs: [
-        {type: 'text', name: 'graphicLink', placeholder: 'scrivi link grafica...'}
+        { type: 'text', name: 'graphicLink', placeholder: 'scrivi link grafica...' }
       ],
       buttons: [
         {
@@ -237,12 +240,12 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
               client.graphicLink = res.graphicLink;
               await this.clientService.updateCustomer(client);
             }
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -258,7 +261,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
         {
           text: 'OK', handler: async (res) => {
             await this.orderService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -280,7 +283,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
           text: 'OK', handler: async (res) => {
             order.isArchived = true;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -302,7 +305,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
           text: 'OK', handler: async (res) => {
             order.isArchived = false;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -312,6 +315,52 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
         }
       ]
     }).then(res => res.present());
+  }
+
+  private mapFilter(filter) {
+    const _filter: any = {};
+    if (filter.tags && filter.tags.length) {
+      _filter.tags_contains = filter.tags;
+    } else {
+      delete _filter.tags_contains;
+    }
+    if (filter.roles && filter.roles.length) {
+      _filter.role_in = filter.roles;
+    } else {
+      delete _filter.role_in;
+    }
+    if (filter.deliveryDate?.from) {
+      _filter.deliveryDate_gte = filter.deliveryDate.from;
+    } else {
+      delete _filter.deliveryDate_gte;
+    }
+    if (filter.deliveryDate?.to) {
+      _filter.deliveryDate_lte = filter.deliveryDate.to;
+    } else {
+      delete _filter.deliveryDate_lte;
+    }
+    if (filter.isArchived && filter.isArchived.length) {
+      if (filter.isArchived.find(ia => ia == 'isArchived') && filter.isArchived.find(ia => ia == 'notArchived')) {
+        delete _filter.isArchived;
+      } else {
+        if (filter.isArchived.find(ia => ia == 'isArchived')) {
+          _filter.isArchived = true;
+        }
+        if (filter.isArchived.find(ia => ia == 'notArchived')) {
+          _filter.isArchived = false;
+        }
+      }
+    } else {
+      _filter.isArchived = false;
+    }
+    if (filter.isArchived) {
+      if (filter.isArchived.find(ia => ia == 'complete')) {
+        _filter.isCompleted = true;
+      } else {
+        delete _filter.isCompleted;
+      }
+    }
+    return _filter;
   }
 
   async onFilterChange(filter) {
@@ -353,7 +402,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
       if (filter.isArchived.find(ia => ia == 'complete')) {
         this.filter.isCompleted = true;
       } else {
-        delete this.filter.isCompleted
+        delete this.filter.isCompleted;
       }
     }
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
@@ -362,8 +411,8 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   async openModal(order: Order) {
     const modal = await this.modalCtrl.create({
       component: StorageModalComponent,
-      componentProps: {order: order, storageForNote: true}
-    })
+      componentProps: { order: order, storageForNote: true }
+    });
     await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
@@ -396,7 +445,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
         this.removeCompletion(order);
         break;
       case "changeInPreventive":
-        this.changeInPreventive(order)
+        this.changeInPreventive(order);
         break;
     }
   }
@@ -442,10 +491,77 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
   async seeStorageModify(order) {
     const modal = await this.modalCtrl.create({
       component: StorageModifyModalComponent,
-      componentProps: {order: order}
-    })
+      componentProps: { order: order }
+    });
     await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+  }
+
+  async downloadXLSX() {
+    const loader = await this.loadingController.create({ message: "Downloading..." });
+    loader.present();
+    try {
+      const orders = [];
+      let nextPage = true;
+      const paging = 500;
+      while (nextPage) {
+        const result = await this.orderService.find(this.mapFilter(this.xlsxFilter), undefined, orders.length, paging, 'deliveryDate:ASC');
+        if ((result.length === 0 || result.length < paging)) {
+          nextPage = false;
+        }
+        orders.push(...result);
+      }
+
+      const table = document.createElement('table');
+      const header = document.createElement('thead');
+      header.innerHTML = `<tr>
+      <th>N°</th>
+      <th>Nome</th>
+      <th>Cognome</th>
+      <th>Tipologia lavorazione</th>
+      <th>Tipologia materiale</th>
+      <th>Dimensioni articolo</th>
+      <th>Grafica presente</th>
+      <th>Data consegna</th>
+      <th>Assegnato a</th>
+      <th>#TAG stato ordine</th>
+    </tr>`;
+      table.append(header);
+      const body = document.createElement('tbody');
+      for (let order of orders) {
+        const row = `<tr>
+      <td id="number">${order.id}</td>
+      <td>${order.client?.name}</td>
+      <td>${order.client?.surname}</td>
+      <td>${order.typesOfProcessing?.name}</td>
+      <td>${order.typesOfMaterial?.name}</td>
+      <td>${order.itemSize}</td>
+      <td>${order.client?.graphicLink || 'NO'}</td>
+      <td>${order.deliveryDate}</td>
+      <td>${order.role.name}</td>
+      <td>${order.tags?.map(t => t.name).join(', ')}</td>
+    </tr>`;
+
+        body.innerHTML += row;
+      }
+      table.append(body);
+      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
+
+      /* generate workbook and add the worksheet */
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+      // const mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
+      const userInp = XLSX.writeFileXLSX(wb, 'lista-ordini.xlsx');
+      const a = document.createElement('a');
+      a.href = userInp;
+      a.download = 'lista-ordini.xlsx';
+      a.click();
+      loader.dismiss();
+    } catch (err) {
+      console.error(err);
+      loader.dismiss();
+    }
   }
 
 }
