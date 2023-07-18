@@ -101,7 +101,7 @@ export class OrdersListPage implements OnInit {
 
   }
 
-  async search() {
+  async search(force: boolean) {
 
     // this.orders = await this.orderService.find(this.filter, null, 0, 20);
     // console.log(this.orders);
@@ -120,7 +120,7 @@ export class OrdersListPage implements OnInit {
       client._or.push({ 'client.surname_contains': work });
     }
 
-    this.orders = await this.orderService.find({ ...this.filter, ...client }, null, 0, this.orders.length + 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find({ ...this.filter, ...client }, null, 0, force ? 20 : this.orders.length + 20, 'deliveryDate:ASC');
 
   };
 
@@ -347,7 +347,8 @@ export class OrdersListPage implements OnInit {
         delete this.filter.isCompleted;
       }
     }
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    // this.orders = this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    await this.search(true);
   }
 
   async openModal(order: Order) {
