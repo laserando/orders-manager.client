@@ -98,10 +98,12 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
     this.subscriptions.add(getRoles);
 
     await this.present();
-    this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC').then((orders) => {
-      this.orders = orders;
-      this.loader.dismiss();
-    });
+    // this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC').then((orders) => {
+    //   this.orders = orders;
+    //   this.loader.dismiss();
+    // });
+    await this.search();
+    this.loader.dismiss();
   }
 
 
@@ -135,33 +137,33 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
 
   }
 
-  // async search(force: boolean) {
+  async search(force?: boolean) {
 
-  //   // this.orders = await this.orderService.find(this.filter, null, 0, 20);
-  //   // console.log(this.orders);
+    // this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    // console.log(this.orders);
 
-  //   // const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
+    // const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
 
-  //   // if (checked.length === 0) {
-  //   //   this.orders = await this.orderService.find(this.filter, null, 0, 20);
-  //   // } else {
-  //   //   this.orders = [...checked];
-  //   // }
+    // if (checked.length === 0) {
+    //   this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    // } else {
+    //   this.orders = [...checked];
+    // }
 
-  //   const client = { _or: [] };
-  //   for (let work of (this.term || '').split(' ')) {
-  //     client._or.push({ 'client.name_contains': work });
-  //     client._or.push({ 'client.surname_contains': work });
-  //   }
+    const client = { _or: [] };
+    for (let work of (this.term || '').split(' ')) {
+      client._or.push({ 'client.name_contains': work });
+      client._or.push({ 'client.surname_contains': work });
+    }
 
-  //   this.orders = await this.orderService.find({ ...this.filter, ...client }, null, 0, force ? 20 : this.orders.length + 20, 'deliveryDate:ASC');
+    this.orders = await this.orderService.find({ ...this.filter, ...client }, null, 0, force ? 20 : this.orders.length + 20, 'deliveryDate:ASC');
 
-  // };
-  async search() {
-    await this.present();
-    this.orders = await filterOrder.bind(this)();
-    this.loader.dismiss().then();
-  }
+  };
+  // async search() {
+  //   await this.present();
+  //   this.orders = await filterOrder.bind(this)();
+  //   this.loader.dismiss().then();
+  // }
 
 
   async searchByClient(event) {
@@ -436,7 +438,7 @@ export class OrdersListPage extends UnsubscribeAll implements OnInit {
         delete this.filter.isCompleted;
       }
     }
-    // this.orders = this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    // this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     await this.search(true);
   }
 
