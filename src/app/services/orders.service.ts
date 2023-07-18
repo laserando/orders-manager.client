@@ -15,7 +15,7 @@ import { Global } from './global';
 export class OrdersService {
 
   public URL: string = `${Global.ENDPOINT.BASE}/orders`;
-
+  
   constructor(private http: HttpClient,
     private logService: LogService,
     private noteService: NoteService,

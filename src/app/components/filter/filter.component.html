@@ -1,8 +1,13 @@
 <ion-grid>
   <ion-row>
-    <ion-col size="6" *ngIf="!inCompletedPage && !inArchivedPage">
-      <ion-select [placeholder]="'archiviato / attivo '"
-        style="border: 1px solid black;" multiple [(ngModel)]="filter.isArchived" (ngModelChange)="onFilterChange()">
+    <ion-col size="6" *ngIf="!inCompletedPage && !inPreventivePage">
+      <ion-select
+        [placeholder]="'archiviato / attivo '"
+        style="border: 1px solid black"
+        multiple
+        [(ngModel)]="filter.isArchived"
+        (ngModelChange)="onFilterChange()"
+      >
         <ion-select-option value="isArchived">
           VEDI ARCHIVIO
         </ion-select-option>
@@ -11,32 +16,58 @@
         </ion-select-option>
       </ion-select>
     </ion-col>
-    <ion-col size="6" *ngIf="!inTimingPage && !inPreventivePage && !inArchivedPage">
-      <ion-select placeholder="ruolo" style="border: 1px solid black;" multiple name="" id="" [(ngModel)]="filter.roles"
-        (ngModelChange)="onFilterChange()">
-        <ion-select-option [value]="role.id" *ngFor="let role of roles"> {{role.name}} </ion-select-option>
+    <ion-col size="6" *ngIf="!inTimingPage && !inPreventivePage">
+      <ion-select
+        placeholder="ruolo"
+        style="border: 1px solid black"
+        multiple
+        name=""
+        id=""
+        [(ngModel)]="filter.roles"
+        (ngModelChange)="onFilterChange()"
+      >
+        <ion-select-option [value]="role.id" *ngFor="let role of roles">
+          {{ role.name }}
+        </ion-select-option>
       </ion-select>
     </ion-col>
 
     <ion-col size="6" *ngIf="!inTimingPage">
       <ion-item>
         <strong> DA :</strong>
-        <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;"
-          [(ngModel)]="filter.deliveryDate.from" (ngModelChange)="onFilterChange()">
+        <ion-input
+          type="date"
+          placeholder="inserisci giorno"
+          style="width: 40px"
+          [(ngModel)]="filter.deliveryDate.from"
+          (ngModelChange)="onFilterChange()"
+        >
         </ion-input>
         <strong> A :</strong>
-        <ion-input type="date" placeholder="inserisci giorno" style="width: 40px;" [(ngModel)]="filter.deliveryDate.to"
-          (ngModelChange)="onFilterChange()"></ion-input>
+        <ion-input
+          type="date"
+          placeholder="inserisci giorno"
+          style="width: 40px"
+          [(ngModel)]="filter.deliveryDate.to"
+          (ngModelChange)="onFilterChange()"
+        ></ion-input>
         <ion-button [fill]="'clear'" size="small" (click)="reset()">
           <ion-icon name="refresh-outline"></ion-icon>
         </ion-button>
       </ion-item>
     </ion-col>
-    <ion-col size="6" *ngIf="!inTimingPage && !inArchivedPage">
-      <ion-select placeholder="tags" style="border: 1px solid black;" multiple name="" id="" [(ngModel)]="filter.tags"
-        (ngModelChange)="onFilterChange()">
+    <ion-col size="6" *ngIf="!inTimingPage">
+      <ion-select
+        placeholder="tags"
+        style="border: 1px solid black"
+        multiple
+        name=""
+        id=""
+        [(ngModel)]="filter.tags"
+        (ngModelChange)="onFilterChange()"
+      >
         <ion-select-option [value]="tag.id" *ngFor="let tag of tags">
-          {{tag.name}}
+          {{ tag.name }}
         </ion-select-option>
       </ion-select>
     </ion-col>

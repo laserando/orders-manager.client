@@ -8,7 +8,7 @@ import { Role } from 'src/app/models/role.model';
 import { RolesService } from 'src/app/services/roles.service';
 import { TagService } from 'src/app/services/tag.service';
 import { TagModel } from 'src/app/models/tag.model';
-import { AlertController, MenuController, ModalController } from '@ionic/angular';
+import { AlertController, LoadingController, MenuController, ModalController } from '@ionic/angular';
 import { StorageModalComponent } from "src/app/components/modal/storage-modal.component";
 import { ClientService } from 'src/app/services/client.service';
 import { ClientModel } from 'src/app/models/client.model';
@@ -16,19 +16,22 @@ import { Router } from '@angular/router';
 import { NoteService } from 'src/app/services/note.service';
 import { StorageModifyModalComponent } from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
 import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
-
+import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
+import { filterOrder } from "../../../utils/order-utils";
+import * as XLSX from "xlsx";
+import { DateTime } from "luxon";
 @Component({
   selector: 'app-orders-list',
   templateUrl: './orders-list.page.html',
   styleUrls: ['./orders-list.page.scss'],
 })
-export class OrdersListPage implements OnInit {
+export class OrdersListPage extends UnsubscribeAll implements OnInit {
 
   public user: any;
   public orders: Order[] = [];
   public role: string;
   public term: string;
-  public filter: any;
+  public filter: any = { isArchived: false, isPreventive: false, isCompleted: false };
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
@@ -36,6 +39,9 @@ export class OrdersListPage implements OnInit {
   public from: string;
   public clients: (ClientModel & { fullname?: string; })[] = [];
   public client: ClientModel;
+  public loader: HTMLIonLoadingElement;
+
+  xlsxFilter: any = {};
 
   constructor(private orderService: OrdersService,
     private ionToastService: IonToastService,
@@ -49,33 +55,61 @@ export class OrdersListPage implements OnInit {
     public notesService: NoteService,
     public menu: MenuController,
     public storageModifyService: StorageOrderUpdateService,
-    private alertCtrl: AlertController) { }
+    private alertCtrl: AlertController,
+    private loadingController: LoadingController) {
+    super();
+  }
 
-  async ngOnInit() {
-
-
+  ngOnInit() {
 
     this.role = this.authService.getParseOfUserObject();
-    if (this.authService.getUser().role.id == 1) {
-      this.filter = { isArchived: false, isPreventive: false, isCompleted: false };
-    } else if (this.authService.getUser().role.id != 1) {
-      this.filter = { role: this.authService.getUser().role.id, isArchived: false, isPreventive: false, isCompleted: false };
+    if (this.authService.getUser().role.id != 1) {
+      this.filter.role = this.authService.getUser().role.id;
     }
+    ;
 
   }
 
-
   async ionViewWillEnter() {
 
-    this.clients = [...(await this.clientService.find()).map((c: any) => {
-      c.fullname = c.name + ' ' + c.surname;
-      return c;
-    })];
-    this.tags = await this.tagsService.find();
-    this.roles = await this.rolesService.find();
-    // this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
-    await this.search();
-    console.log(this.orders);
+    // this.clients = [...(await this.clientService.find()).map((c: any) => {
+    //   c.fullname = c.name + ' ' + c.surname;
+    //   return c;
+    // })];
+    // this.tags = await this.tagsService.find();
+    // this.roles = await this.rolesService.find();
+    // // this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    // await this.search();
+    // console.log(this.orders);
+    const getClient = this.clientService.getClients().subscribe(
+      clients => this.clients = clients
+    );
+    const getTags = this.tagsService.getTags().subscribe(
+      f => {
+        this.tags = f;
+      }
+    );
+    const getRoles = this.rolesService.getRoles().subscribe(
+      f => this.roles = f
+    );
+
+    this.subscriptions.add(getClient);
+    this.subscriptions.add(getTags);
+    this.subscriptions.add(getRoles);
+
+    await this.present();
+    this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC').then((orders) => {
+      this.orders = orders;
+      this.loader.dismiss();
+    });
+  }
+
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
   }
 
   async deleteOrder(index) {
@@ -101,28 +135,33 @@ export class OrdersListPage implements OnInit {
 
   }
 
-  async search(force: boolean) {
+  // async search(force: boolean) {
 
-    // this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    // console.log(this.orders);
+  //   // this.orders = await this.orderService.find(this.filter, null, 0, 20);
+  //   // console.log(this.orders);
 
-    // const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
+  //   // const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
 
-    // if (checked.length === 0) {
-    //   this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    // } else {
-    //   this.orders = [...checked];
-    // }
+  //   // if (checked.length === 0) {
+  //   //   this.orders = await this.orderService.find(this.filter, null, 0, 20);
+  //   // } else {
+  //   //   this.orders = [...checked];
+  //   // }
 
-    const client = { _or: [] };
-    for (let work of (this.term || '').split(' ')) {
-      client._or.push({ 'client.name_contains': work });
-      client._or.push({ 'client.surname_contains': work });
-    }
+  //   const client = { _or: [] };
+  //   for (let work of (this.term || '').split(' ')) {
+  //     client._or.push({ 'client.name_contains': work });
+  //     client._or.push({ 'client.surname_contains': work });
+  //   }
 
-    this.orders = await this.orderService.find({ ...this.filter, ...client }, null, 0, force ? 20 : this.orders.length + 20, 'deliveryDate:ASC');
+  //   this.orders = await this.orderService.find({ ...this.filter, ...client }, null, 0, force ? 20 : this.orders.length + 20, 'deliveryDate:ASC');
 
-  };
+  // };
+  async search() {
+    await this.present();
+    this.orders = await filterOrder.bind(this)();
+    this.loader.dismiss().then();
+  }
 
 
   async searchByClient(event) {
@@ -152,6 +191,7 @@ export class OrdersListPage implements OnInit {
   }
 
   async cleanClient(event) {
+    this.present();
     if (event == 'clean') {
       delete this.filter.client;
       this.client = null;
@@ -160,11 +200,14 @@ export class OrdersListPage implements OnInit {
       this.filter.client = event.value.id;
       this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
     }
+    this.loader.dismiss();
   }
 
   async getNextPage() {
-    const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
-    this.orders.push(...orders);
+    await this.present();
+    const orders = await this.orderService.find(this.filter, this.term, this.orders.length, 20, 'deliveryDate:ASC');
+    this.orders.push(...orders.filter(f => !this.orders.find(old => old.id === f.id)));
+    this.loader.dismiss();
   }
 
   async completeOrder(order: Order) {
@@ -305,6 +348,52 @@ export class OrdersListPage implements OnInit {
     }).then(res => res.present());
   }
 
+  private mapFilter(filter) {
+    const _filter: any = {};
+    if (filter.tags && filter.tags.length) {
+      _filter.tags_contains = filter.tags;
+    } else {
+      delete _filter.tags_contains;
+    }
+    if (filter.roles && filter.roles.length) {
+      _filter.role_in = filter.roles;
+    } else {
+      delete _filter.role_in;
+    }
+    if (filter.deliveryDate?.from) {
+      _filter.deliveryDate_gte = filter.deliveryDate.from;
+    } else {
+      delete _filter.deliveryDate_gte;
+    }
+    if (filter.deliveryDate?.to) {
+      _filter.deliveryDate_lte = filter.deliveryDate.to;
+    } else {
+      delete _filter.deliveryDate_lte;
+    }
+    if (filter.isArchived && filter.isArchived.length) {
+      if (filter.isArchived.find(ia => ia == 'isArchived') && filter.isArchived.find(ia => ia == 'notArchived')) {
+        delete _filter.isArchived;
+      } else {
+        if (filter.isArchived.find(ia => ia == 'isArchived')) {
+          _filter.isArchived = true;
+        }
+        if (filter.isArchived.find(ia => ia == 'notArchived')) {
+          _filter.isArchived = false;
+        }
+      }
+    } else {
+      _filter.isArchived = false;
+    }
+    if (filter.isArchived) {
+      if (filter.isArchived.find(ia => ia == 'complete')) {
+        _filter.isCompleted = true;
+      } else {
+        delete _filter.isCompleted;
+      }
+    }
+    return _filter;
+  }
+
   async onFilterChange(filter) {
     if (filter.tags && filter.tags.length) {
       this.filter.tags_contains = filter.tags;
@@ -438,6 +527,73 @@ export class OrdersListPage implements OnInit {
     });
     await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+  }
+
+  async downloadXLSX() {
+    const loader = await this.loadingController.create({ message: "Downloading..." });
+    loader.present();
+    try {
+      const orders = [];
+      let nextPage = true;
+      const paging = 500;
+      while (nextPage) {
+        const result = await this.orderService.find(this.mapFilter(this.xlsxFilter), undefined, orders.length, paging, 'deliveryDate:ASC');
+        if ((result.length === 0 || result.length < paging)) {
+          nextPage = false;
+        }
+        orders.push(...result);
+      }
+
+      const table = document.createElement('table');
+      const header = document.createElement('thead');
+      header.innerHTML = `<tr>
+      <th>N°</th>
+      <th>Nome</th>
+      <th>Cognome</th>
+      <th>Tipologia lavorazione</th>
+      <th>Tipologia materiale</th>
+      <th>Dimensioni articolo</th>
+      <th>Grafica presente</th>
+      <th>Data consegna</th>
+      <th>Assegnato a</th>
+      <th>#TAG stato ordine</th>
+    </tr>`;
+      table.append(header);
+      const body = document.createElement('tbody');
+      for (let order of orders) {
+        const row = `<tr>
+      <td id="number">${order.id}</td>
+      <td>${order.client?.name}</td>
+      <td>${order.client?.surname}</td>
+      <td>${order.typesOfProcessing?.name}</td>
+      <td>${order.typesOfMaterial?.name}</td>
+      <td>${order.itemSize}</td>
+      <td>${order.client?.graphicLink || 'NO'}</td>
+      <td>${order.deliveryDate}</td>
+      <td>${order.role.name}</td>
+      <td>${order.tags?.map(t => t.name).join(', ')}</td>
+    </tr>`;
+
+        body.innerHTML += row;
+      }
+      table.append(body);
+      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(table);
+
+      /* generate workbook and add the worksheet */
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+      // const mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
+      const userInp = XLSX.writeFileXLSX(wb, 'lista-ordini.xlsx');
+      const a = document.createElement('a');
+      a.href = userInp;
+      a.download = 'lista-ordini.xlsx';
+      a.click();
+      loader.dismiss();
+    } catch (err) {
+      console.error(err);
+      loader.dismiss();
+    }
   }
 
 }

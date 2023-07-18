@@ -1,30 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, MenuController, ModalController } from '@ionic/angular';
+import { AlertController, MenuController, LoadingController } from '@ionic/angular';
 import { ClientModel } from 'src/app/models/client.model';
 import { LogModel } from 'src/app/models/log.model';
 import { Order } from 'src/app/models/order.model';
 import { Role } from 'src/app/models/role.model';
 import { TagModel } from 'src/app/models/tag.model';
-import { AuthService } from 'src/app/services/auth.service';
 import { ClientService } from 'src/app/services/client.service';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { NoteService } from 'src/app/services/note.service';
 import { OrdersService } from 'src/app/services/orders.service';
 import { RolesService } from 'src/app/services/roles.service';
 import { TagService } from 'src/app/services/tag.service';
+import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
+import {filterOrder} from "../../../utils/order-utils";
 
 @Component({
   selector: 'app-preventives-list',
   templateUrl: './preventives-list.page.html',
   styleUrls: ['./preventives-list.page.scss'],
 })
-export class PreventivesListPage implements OnInit {
+export class PreventivesListPage extends UnsubscribeAll implements OnInit {
 
   public preventives: Order[] = [];
   public role: string;
   public term: string;
-  public filter: any = { isPreventive: true };
+  public filter: any = { isArchived: false, isPreventive: true, isCompleted: false };
   public logs: LogModel[] = [];
   public roles: Role[] = [];
   public tags: TagModel[] = [];
@@ -33,6 +34,7 @@ export class PreventivesListPage implements OnInit {
   public clients: (ClientModel & { fullname?: string })[] = [];
   public client: ClientModel;
   public inPreventivePage: boolean = true;
+  public loader: HTMLIonLoadingElement;
 
   constructor(
     private orderService: OrdersService,
@@ -44,21 +46,42 @@ export class PreventivesListPage implements OnInit {
     private router: Router,
     public notesService: NoteService,
     public menu: MenuController,
-    private alertCtrl: AlertController
-  ) { }
+    private alertCtrl: AlertController,
+    private loadingController: LoadingController
+  ) {
+    super();
+  }
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
-    this.clients = [...(await this.clientService.find()).map((c: any) => {
-      c.fullname = c.name + ' ' + c.surname;
-      return c;
-    })];
-    this.tags = await this.tagsService.find()
-    this.roles = await this.rolesService.find()
+
+    const getClients = this.clientService.getClients().subscribe(
+      clients => {
+        this.clients = clients;
+      }
+    )
+    const getTags = this.tagsService.getTags().subscribe(
+      f => this.tags = f
+    );
+    const getRoles = this.rolesService.getRoles().subscribe(
+      roles => this.roles = roles
+    );
+
+    this.addSubscriptions(getClients, getTags, getRoles);
+    await this.present();
     this.preventives = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.loader.dismiss();
   }
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
+  }
+
 
   async deleteOrder(index) {
     this.alertCtrl.create({
@@ -84,20 +107,10 @@ export class PreventivesListPage implements OnInit {
   }
 
   async search() {
-
-    this.preventives = await this.orderService.find(this.filter, null, 0, 20);
-
-
-    const checked = this.preventives.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
-
-    if (checked.length === 0) {
-      this.preventives = await this.orderService.find(this.filter, null, 0, 20);
-    } else {
-      this.preventives = [...checked];
-    }
+    await this.present();
+    this.preventives = await filterOrder.bind(this)();
+    this.loader.dismiss().then();
   };
-
-
 
 
   async searchByClient(event) {
@@ -137,8 +150,10 @@ export class PreventivesListPage implements OnInit {
   }
 
   async getNextPage() {
+    await this.present();
     const orders = await this.orderService.find(this.filter, this.term, this.preventives.length);
-    this.preventives.push(...orders);
+    this.preventives.push(...orders.filter(f => !this.preventives.find(old => old.id === f.id)));
+    this.loader.dismiss();
   }
 
   async updateList() {

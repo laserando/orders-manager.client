@@ -28,13 +28,15 @@
     "@fullcalendar/interaction": "^5.8.0",
     "@ionic-native/calendar": "^5.33.1",
     "@ionic-native/core": "^5.34.0",
-    "@ionic/angular": "^5.5.2",
+    "@ionic/angular": "^6.7.5",
     "cordova-plugin-calendar": "^5.1.5",
     "http-server": "^14.1.1",
     "ionic-selectable": "^4.9.0",
+    "luxon": "^3.3.0",
     "qs": "^6.7.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

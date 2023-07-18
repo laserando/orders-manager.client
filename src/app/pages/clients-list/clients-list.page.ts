@@ -1,32 +1,54 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { ClientModel } from 'src/app/models/client.model';
-import { ClientService } from 'src/app/services/client.service';
+import {Component, OnInit} from '@angular/core';
+import {AlertController, LoadingController} from '@ionic/angular';
+import {ClientModel} from 'src/app/models/client.model';
+import {ClientService} from 'src/app/services/client.service';
+import {UnsubscribeAll} from "../../../utils/unsubscribeAll";
 
 @Component({
   selector: 'app-clients-list',
   templateUrl: './clients-list.page.html',
   styleUrls: ['./clients-list.page.scss'],
 })
-export class ClientsListPage implements OnInit {
+export class ClientsListPage extends UnsubscribeAll implements OnInit {
 
-  public clients: ClientModel[] = [];
+  public clients: ClientModel[];
   public filter: any = {};
   public term: string;
   public client: ClientModel;
   public clientsInSelectable: ClientModel[] = [];
+  public loader: HTMLIonLoadingElement;
+
 
   constructor(private clientService: ClientService,
-    private alertCtrl:AlertController) { }
+              private alertCtrl: AlertController, private loadingController: LoadingController) {
+    super();
+  }
 
   async ngOnInit() {
+    await this.present();
     this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
+    this.loader.dismiss();
+    const clientUpdated = this.clientService.getClientUpdated().subscribe(
+      f => {
+        const clientIndex = this.clients.findIndex(ff => ff.id === f.id);
+        this.clients[clientIndex] = f;
+      }
+    );
+    const clientAdded = this.clientService.getClientAdded().subscribe(
+      f => this.clients.unshift(f)
+    );
+    this.addSubscriptions(clientUpdated, clientAdded);
+  }
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
   }
 
   async ionViewWillEnter() {
-    if (this.clientService.checkClient()) {
-      this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
-    }
+    this.clients = await this.clientService.find(this.filter, null, 0, 20, 'surname:ASC');
   }
 
   async deleteCustomer(id) {
@@ -49,12 +71,16 @@ export class ClientsListPage implements OnInit {
   }
 
   async search() {
+    await this.present();
     this.clients = await this.clientService.find(this.filter, this.term, 0, 20, 'surname:ASC');
+    this.loader.dismiss();
   }
 
   async getNextPage() {
+    await this.present();
     const clients = await this.clientService.find(this.filter, this.term, this.clients.length, 20, 'surname:ASC');
     this.clients.push(...clients);
+    this.loader.dismiss();
   }
 
   async onFilterChange(filter) {

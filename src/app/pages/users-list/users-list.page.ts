@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { User } from 'src/app/models/user.model';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { UsersService } from 'src/app/services/users.service';
@@ -14,16 +14,26 @@ export class UsersListPage implements OnInit {
   public users: User[] = [];
   public filter: any;
   public term: string;
+  public loader: HTMLIonLoadingElement;
 
   constructor(private userService: UsersService,
     private ionToastService: IonToastService,
-    private alertCtrl: AlertController) { }
+    private alertCtrl: AlertController, private loadingController: LoadingController) { }
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
-    this.users = await this.userService.find(this.filter, null, 0, 20)
+    await this.present();
+    this.users = await this.userService.find(this.filter, null, 0, 20);
+    this.loader.dismiss();
+  }
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
   }
 
   async deleteUser(id) {
@@ -47,12 +57,16 @@ export class UsersListPage implements OnInit {
   }
 
   async search() {
+    await this.present();
     this.users = await this.userService.find(null, this.term);
+    this.loader.dismiss();
   }
 
   async getNextPage() {
+    await this.present();
     const users = await this.userService.find(this.filter, this.term, this.users.length);
     this.users.push(...users);
+    this.loader.dismiss();
   }
 
 }

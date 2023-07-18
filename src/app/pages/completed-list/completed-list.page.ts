@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, MenuController, ModalController } from '@ionic/angular';
+import { AlertController, MenuController, ModalController, LoadingController } from '@ionic/angular';
 import { StorageModalComponent } from 'src/app/components/modal/storage-modal.component';
 import { StorageModifyModalComponent } from 'src/app/components/storage-modify-modal/storage-modify-modal/storage-modify-modal.component';
 import { ClientModel } from 'src/app/models/client.model';
@@ -14,21 +14,23 @@ import { OrdersService } from 'src/app/services/orders.service';
 import { RolesService } from 'src/app/services/roles.service';
 import { StorageOrderUpdateService } from 'src/app/services/storage-order-update.service';
 import { TagService } from 'src/app/services/tag.service';
-
+import { UnsubscribeAll } from "../../../utils/unsubscribeAll";
+import {filterOrder} from "../../../utils/order-utils";
 @Component({
   selector: 'app-completed-list',
   templateUrl: './completed-list.page.html',
   styleUrls: ['./completed-list.page.scss'],
 })
-export class CompletedListPage implements OnInit {
+export class CompletedListPage extends UnsubscribeAll implements OnInit {
 
   public clients: (ClientModel & { fullname?: string })[] = [];
   public client: ClientModel;
   public orders: Order[] = [];
-  public filter: any = { isCompleted: true, isArchived: false };
+  public filter: any = { isCompleted: true, isPreventive: false, isArchived: false };
   public tags: TagModel[] = [];
   public inCompletedPage: boolean = true;
   public term: string;
+  public loader: HTMLIonLoadingElement;
 
   constructor(private clientService: ClientService,
     private orderService: OrdersService,
@@ -40,24 +42,50 @@ export class CompletedListPage implements OnInit {
     private router: Router,
     public notesService: NoteService,
     public menu: MenuController,
-    public storageModifyService: StorageOrderUpdateService) { }
+    public storageModifyService: StorageOrderUpdateService,
+    private loadingController: LoadingController) {
+    super();
+  }
+
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
+    this.tagsService.getTags().subscribe(
+      tags => {
+        this.tags = tags;
+      }
+    );
+    // this.clients = [...(await this.clientService.find()).map((c: any) => {
+    //   c.fullname = c.name + ' ' + c.surname;
+    //   return c;
+    // })];
+    const getClient = this.clientService.getClients().subscribe(
+      clients => this.clients = clients
+    );
 
-    this.tags = await this.tagsService.find();
-    this.clients = [...(await this.clientService.find()).map((c: any) => {
-      c.fullname = c.name + ' ' + c.surname;
-      return c;
-    })];
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    this.subscriptions.add(getClient);
+
+    await this.present();
+    this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC').then((orders) => {
+      this.orders = orders;
+      this.loader.dismiss();
+    });
+  }
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
   }
 
   async getNextPage() {
+    await this.present();
     const orders = await this.orderService.find(this.filter, this.term, this.orders.length);
-    this.orders.push(...orders);
+    this.orders.push(...orders.filter(f => !this.orders.find(old => old.id === f.id)));
+    this.loader.dismiss();
   }
 
   async onFilterChange(filter) {
@@ -143,17 +171,9 @@ export class CompletedListPage implements OnInit {
   }
 
   async search() {
-
-    this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    console.log(this.orders);
-
-    const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
-
-    if (checked.length === 0) {
-      this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    } else {
-      this.orders = [...checked];
-    }
+    await this.present();
+    this.orders = await filterOrder.bind(this)();
+    this.loader.dismiss().then();
   };
 
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { TypeOfMaterialModel } from 'src/app/models/type-of-material.model';
 import { IonToastService } from 'src/app/services/ion-toast.service';
 import { TypeOfMaterialService } from 'src/app/services/type-of-material.service';
@@ -14,16 +14,27 @@ export class TypeOfMaterialsListPage implements OnInit {
   public materials: TypeOfMaterialModel[] = [];
   public filter: any;
   public term: string;
+  public loader: HTMLIonLoadingElement;
 
   constructor(private typeOfMaterialService: TypeOfMaterialService,
     private ionToastService: IonToastService,
-    private alertCtrl: AlertController) { }
+    private alertCtrl: AlertController, private loadingController: LoadingController) { }
 
   ngOnInit() {
   }
 
   async ionViewWillEnter() {
-    this.materials = await this.typeOfMaterialService.find(this.filter, null, 0, 20)
+
+    await this.present();
+    this.materials = await this.typeOfMaterialService.find(this.filter, null, 0, 20);
+    this.loader.dismiss();
+  }
+
+  async present() {
+    this.loader = await this.loadingController.create({
+      message: 'Loading...'
+    });
+    this.loader.present().then();
   }
 
   async deleteMaterial(id) {
@@ -47,12 +58,16 @@ export class TypeOfMaterialsListPage implements OnInit {
   }
 
   async search() {
+    this.loader.present();
     this.materials = await this.typeOfMaterialService.find(null, this.term, 0, 20);
+    this.loader.dismiss();
   }
 
   async getNextPage() {
+    await this.present();
     const materials = await this.typeOfMaterialService.find(this.filter, this.term, this.materials.length);
     this.materials.push(...materials)
+    this.loader.dismiss();
   }
 
 }

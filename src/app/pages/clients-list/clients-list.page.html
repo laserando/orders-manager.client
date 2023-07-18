@@ -10,10 +10,10 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="8">
+      <ion-col>
         <ion-searchbar animated [debounce]="500" [(ngModel)]="term" (ngModelChange)="search()"></ion-searchbar>
       </ion-col>
-      <ion-col>
+      <ion-col *ngIf="false">
         <ion-item class="selectable">
           <ion-label>Cerca per nome e cognome</ion-label>
           <ionic-selectable [searchPlaceholder]="'inserisci nome e cognome'" name="privateClients" [(ngModel)]="client"
@@ -42,6 +42,15 @@
       </ion-col>
     </ion-row>
     <ion-row>
+      <ion-card *ngIf="clients?.length === 0">
+        <ion-card-header>
+          Attenzione
+        </ion-card-header>
+        <ion-card-content>
+          Nessun cliente trovato
+        </ion-card-content>
+
+      </ion-card>
       <ion-col size="6" *ngFor="let client of clients">
         <ion-card>
           <ion-card-content>
