@@ -34,7 +34,7 @@ export class OrdersListPage implements OnInit {
   public tags: TagModel[] = [];
   public to: string;
   public from: string;
-  public clients: (ClientModel & { fullname?: string })[] = [];
+  public clients: (ClientModel & { fullname?: string; })[] = [];
   public client: ClientModel;
 
   constructor(private orderService: OrdersService,
@@ -73,7 +73,8 @@ export class OrdersListPage implements OnInit {
     })];
     this.tags = await this.tagsService.find();
     this.roles = await this.rolesService.find();
-    this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    // this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
+    await this.search();
     console.log(this.orders);
   }
 
@@ -102,26 +103,35 @@ export class OrdersListPage implements OnInit {
 
   async search() {
 
-    this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    console.log(this.orders);
+    // this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    // console.log(this.orders);
 
-    const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
+    // const checked = this.orders.filter(order => order.client.surname.toLowerCase().includes(this.term) || order.client.name.toLowerCase().includes(this.term) || order.typesOfProcessing.name.toLowerCase().includes(this.term));
 
-    if (checked.length === 0) {
-      this.orders = await this.orderService.find(this.filter, null, 0, 20);
-    } else {
-      this.orders = [...checked];
+    // if (checked.length === 0) {
+    //   this.orders = await this.orderService.find(this.filter, null, 0, 20);
+    // } else {
+    //   this.orders = [...checked];
+    // }
+
+    const client = { _or: [] };
+    for (let work of (this.term || '').split(' ')) {
+      client._or.push({ 'client.name_contains': work });
+      client._or.push({ 'client.surname_contains': work });
     }
+
+    this.orders = await this.orderService.find({ ...this.filter, ...client }, null, 0, this.orders.length + 20, 'deliveryDate:ASC');
+
   };
 
 
   async searchByClient(event) {
-    this.term = event.text
+    this.term = event.text;
 
     const clients = (await this.clientService.find(null, this.term, 0, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
-    })
+    });
     this.clients = [...clients];
 
   }
@@ -131,7 +141,7 @@ export class OrdersListPage implements OnInit {
     const clients = (await this.clientService.find(null, this.term, this.clients.length, 20, 'surname:ASC')).map((c: any) => {
       c.fullname = c.name + ' ' + c.surname;
       return c;
-    })
+    });
     this.clients.push(...clients);
 
     event.component.endInfiniteScroll();
@@ -191,7 +201,7 @@ export class OrdersListPage implements OnInit {
           text: 'OK', handler: async (res) => {
             order.isCompleted = false;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -218,12 +228,12 @@ export class OrdersListPage implements OnInit {
               client.graphicLink = res.graphicLink;
               await this.clientService.updateCustomer(client);
             }
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
           text: 'Annulla', handler: async (res) => {
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         }
       ]
@@ -239,7 +249,7 @@ export class OrdersListPage implements OnInit {
         {
           text: 'OK', handler: async (res) => {
             await this.orderService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -261,7 +271,7 @@ export class OrdersListPage implements OnInit {
           text: 'OK', handler: async (res) => {
             order.isArchived = true;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -283,7 +293,7 @@ export class OrdersListPage implements OnInit {
           text: 'OK', handler: async (res) => {
             order.isArchived = false;
             await this.ordersService.updateOrder(order, order.id, order.client);
-            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC')
+            this.orders = await this.ordersService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
           }
         },
         {
@@ -334,7 +344,7 @@ export class OrdersListPage implements OnInit {
       if (filter.isArchived.find(ia => ia == 'complete')) {
         this.filter.isCompleted = true;
       } else {
-        delete this.filter.isCompleted
+        delete this.filter.isCompleted;
       }
     }
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
@@ -344,7 +354,7 @@ export class OrdersListPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: StorageModalComponent,
       componentProps: { order: order, storageForNote: true }
-    })
+    });
     await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
@@ -377,7 +387,7 @@ export class OrdersListPage implements OnInit {
         this.removeCompletion(order);
         break;
       case "changeInPreventive":
-        this.changeInPreventive(order)
+        this.changeInPreventive(order);
         break;
     }
   }
@@ -424,7 +434,7 @@ export class OrdersListPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: StorageModifyModalComponent,
       componentProps: { order: order }
-    })
+    });
     await modal.present();
     this.orders = await this.orderService.find(this.filter, null, 0, 20, 'deliveryDate:ASC');
   }
